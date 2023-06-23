@@ -15,10 +15,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
 
-	create := "CREATE TABLE nodes-ip (ip TEXT PRIMARY KEY)"
-	_, err = db.Exec(create)
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS nodes-ip (ip TEXT UNIQUE);`)
 
 	if err != nil {
 		panic(err)
@@ -31,4 +29,5 @@ func main() {
 	router.POST("/", handlers.MainPagePOST(db))
 
 	router.Run(":9999")
+	db.Close()
 }
