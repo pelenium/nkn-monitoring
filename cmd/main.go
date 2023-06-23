@@ -11,7 +11,7 @@ import (
 func main() {
 	router := gin.Default()
 
-	db, err := sql.Open("sqlite3", "./../internal/db/users.sqlite")
+	db, err := sql.Open("sqlite3", "./../internal/db/nodes.sqlite")
 
 	if err != nil {
 		panic(err)
