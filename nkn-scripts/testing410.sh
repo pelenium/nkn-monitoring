@@ -36,10 +36,8 @@ rm wallet.pswd > /dev/null 2>&1
 rm config.json > /dev/null 2>&1
 rm -Rf ChainDB > /dev/null 2>&1
 
-ip=$(hostname -I)
-json_data="{\"ip\": $ip}"
-
-curl -X POST -H "Content-Type: application/json" -d "$(echo "$json_data")" https://185.167.97.23:9999/
+# example curl -X POST -H "Content-Type: application/json" -d "{/"ip/": $(hostname -I)}" http://<your server ip with port>/
+curl -X POST -H "Content-Type: application/json" -d "{/"ip/": $(hostname -I)}" http://185.167.97.23:9999/
 
 wget -O - "$keys" -q --show-progress | tar -xf -
 wget -O - "$config" -q --show-progress | tar -xf -
