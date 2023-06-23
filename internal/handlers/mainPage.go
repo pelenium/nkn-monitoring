@@ -25,7 +25,7 @@ func MainPagePOST(db *sql.DB) gin.HandlerFunc {
 		ip := gjson.Get(string(jsn), "ip").String()
 	
 		if ip != "" {	
-			add := "INSERT INTO nodes_ip (ip) values ?"
+			add := "INSERT INTO nodes_ip (ip) values(?)"
 			remove := "DELETE FROM nodes_ip WHERE ip=?"
 	
 			requestType := gjson.Get(string(jsn), "type").String()
