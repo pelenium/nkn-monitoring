@@ -25,9 +25,9 @@ func main() {
 
 	router.LoadHTMLGlob("./../internal/html/*.html")
 
-	router.GET("/", handlers.MainPageGET)
+	router.POST("/", handlers.NodeIpGet(db))
 
-	router.POST("/", handlers.MainPagePOST(db))
+	router.GET("/my-nodes", handlers.MyNodesGET)
 
 	router.Run(":9999")
 	db.Close()
