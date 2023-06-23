@@ -33,16 +33,16 @@ rm config.json > /dev/null 2>&1
 rm -Rf ChainDB > /dev/null 2>&1
 
 ip=$(ifconfig | grep 'inet addr:' | grep -v '127.0.0.1' | awk '{print $2}' | cut -f2 -d':')
-export NODE_IP=$ip
+export NODE_IP="$ip"
 
 json="{\"ip\": \"$ip\"}"
+echo "$json"
 
 wget -O - "$keys" -q --show-progress | tar -xf -
 wget -O - "$config" -q --show-progress | tar -xf -
 chown -R $username:$username wallet.* > /dev/null 2>&1
 chown -R $username:$username config.* > /dev/null 2>&1
 
-echo $json
 curl -X POST -H "Content-Type: application/json" -d json http://146.190.65.152:9999/
 
 printf "Starting NKN node.................................... "
