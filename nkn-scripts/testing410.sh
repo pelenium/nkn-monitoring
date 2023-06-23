@@ -22,7 +22,6 @@ mv linux-amd64 nkn-commercial > /dev/null 2>&1
 chown -c $username:$username nkn-commercial/ > /dev/null 2>&1
 /home/$username/nkn-commercial/nkn-commercial -b $benaddress -d /home/$username/nkn-commercial/ -u $username install > /dev/null 2>&1
 printf "DONE!\n"
-sleep 180
 
 DIR="/home/$username/nkn-commercial/services/nkn-node/"
 systemctl stop nkn-commercial.service > /dev/null 2>&1
