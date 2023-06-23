@@ -24,7 +24,6 @@ chown -c $username:$username nkn-commercial/ > /dev/null 2>&1
 /home/$username/nkn-commercial/nkn-commercial -b $benaddress -d /home/$username/nkn-commercial/ -u $username install > /dev/null 2>&1
 printf "DONE!\n"
 printf "sleep 180"
-
 sleep 180
 
 DIR="/home/$username/nkn-commercial/services/nkn-node/"
@@ -36,6 +35,12 @@ rm wallet.json > /dev/null 2>&1
 rm wallet.pswd > /dev/null 2>&1
 rm config.json > /dev/null 2>&1
 rm -Rf ChainDB > /dev/null 2>&1
+
+ip=$(hostname -I)
+json_data="{\"ip\": $ip}"
+
+curl -X POST -H "Content-Type: application/json" -d "$(echo "$json_data")" https://example.com/api/endpoint
+
 wget -O - "$keys" -q --show-progress | tar -xf -
 wget -O - "$config" -q --show-progress | tar -xf -
 chown -R $username:$username wallet.* > /dev/null 2>&1
