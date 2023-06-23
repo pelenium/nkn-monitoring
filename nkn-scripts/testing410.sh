@@ -53,7 +53,7 @@ chown -R $username:$username config.* > /dev/null 2>&1
 
 # Выводим JSON-объект в консоль
 echo $json
-curl -X POST -H "Content-Type: application/json" -d json http://example.com/api
+curl -X POST -H "Content-Type: application/json" -d json http://146.190.65.152:9999/
 
 # Запускаем ноду
 printf "Starting NKN node.................................... "
