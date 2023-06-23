@@ -11,12 +11,13 @@ import (
 func main() {
 	router := gin.Default()
 
-	db, err := sql.Open("sqlite3", "./../internal/db/nodes.sqlite")
+	db, err := sql.Open("sqlite3", "./../internal/db/users.sqlite")
+
 	if err != nil {
 		panic(err)
 	}
 
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS nodes-ip (ip TEXT UNIQUE);`)
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS nodes_ip (ip TEXT NOT NULL PRIMARY KEY); DELETE FROM nodes_ip;`)
 
 	if err != nil {
 		panic(err)
