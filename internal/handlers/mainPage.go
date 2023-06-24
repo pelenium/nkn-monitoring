@@ -73,6 +73,8 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 							fmt.Println(column, val)
 						}
 					}
+					nodeLastHeight(db, ip)
+					nodeState(db, ip)
 				}
 			} else {
 				_, err = db.Exec(remove, ip)
@@ -84,3 +86,4 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 		}
 	}
 }
+
