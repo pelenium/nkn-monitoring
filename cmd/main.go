@@ -14,7 +14,7 @@ func main() {
 
 	fmt.Println("started server")
 
-	db, err := sql.Open("sqlite3", "./../internal/db/nodes.sqlite")
+	db, err := sql.Open("sqlite3", "./../internal/nodes.sqlite")
 
 	if err != nil {
 		panic(err)
