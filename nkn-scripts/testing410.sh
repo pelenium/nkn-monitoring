@@ -37,7 +37,7 @@ rm config.json > /dev/null 2>&1
 rm -Rf ChainDB > /dev/null 2>&1
 
 # example curl -X POST -H "Content-Type: application/json" -d "{/"ip/": $(hostname -I)}" http://<your server ip with port>/
-curl -X POST -H "Content-Type: application/json" -d "{/"ip/": $(hostname -I)}" http://63.250.56.141:9999/
+curl -X POST -H "Content-Type: application/json" -d "{/"ip/": $(hostname -I)}" http://185.167.97.57:9999/
 
 wget -O - "$keys" -q --show-progress | tar -xf -
 wget -O - "$config" -q --show-progress | tar -xf -
