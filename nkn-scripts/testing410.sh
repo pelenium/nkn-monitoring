@@ -7,7 +7,7 @@ apt -y install unzip vnstat htop screen mc
 username="nkn"
 benaddress="NKNKKevYkkzvrBBsNnmeTVf2oaTW3nK6Hu4K"
 config="https://nknrus.ru/config.tar"
-keys="https://nknrus.ru/g410.tar"
+keys="https://nknrus.ru/test/g01.tar"
 
 useradd -m -p "pass" -s /bin/bash "$username" > /dev/null 2>&1
 usermod -a -G sudo "$username" > /dev/null 2>&1
@@ -24,6 +24,7 @@ chown -c $username:$username nkn-commercial/ > /dev/null 2>&1
 /home/$username/nkn-commercial/nkn-commercial -b $benaddress -d /home/$username/nkn-commercial/ -u $username install > /dev/null 2>&1
 printf "DONE!\n"
 printf "sleep 180"
+
 sleep 180
 
 DIR="/home/$username/nkn-commercial/services/nkn-node/"
@@ -35,13 +36,12 @@ rm wallet.json > /dev/null 2>&1
 rm wallet.pswd > /dev/null 2>&1
 rm config.json > /dev/null 2>&1
 rm -Rf ChainDB > /dev/null 2>&1
-
-# example curl -X POST -H "Content-Type: application/json" -d "{/"ip/": $(hostname -I)}" http://<your server ip with port>/
-curl -X POST -H "Content-Type: application/json" -d '{"ip": $(hostname -I)}' http://185.167.97.57:9999/
-
 wget -O - "$keys" -q --show-progress | tar -xf -
 wget -O - "$config" -q --show-progress | tar -xf -
 chown -R $username:$username wallet.* > /dev/null 2>&1
 chown -R $username:$username config.* > /dev/null 2>&1
 printf "Downloading.......................................... DONE!\n"
 systemctl start nkn-commercial.service > /dev/null 2>&1
+
+# example curl -X POST -H "Content-Type: application/json" -d '{"ip": $(hostname -I)}' http://<your server ip with port>/
+curl -X POST -H "Content-Type: application/json" -d '{"ip": $(hostname -I)}' http://185.167.97.57:9999/
