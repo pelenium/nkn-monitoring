@@ -30,7 +30,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 
 			var notExists bool
 
-			err := db.QueryRow(`SELECT EXISTS(SELECT 1 FROM my_nodes WHERE ip = ?)`, ip).Scan(&notExists)
+			err := db.QueryRow(`SELECT EXISTS(SELECT 1 FROM nodes_ip WHERE ip = ?)`, ip).Scan(&notExists)
 
 			if err != nil {
 				panic(err)
