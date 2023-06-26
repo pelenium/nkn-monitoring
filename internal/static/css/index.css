@@ -1,7 +1,7 @@
 html,
 body {
-    background-color: #222;
-    color: #fff;
+    background-color: #f5f5f5;
+    color: #333;
     font-family: Arial, sans-serif;
     margin: 0;
 }
@@ -14,7 +14,7 @@ body {
     padding: 0px;
     border-radius: 10px;
     margin: 0 auto;
-    background-color: #222;
+    background-color: #f5f5f5;
 }
 
 .header {
@@ -22,13 +22,13 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #444;
+    background-color: #ddd;
     padding: 10px;
     flex-shrink: 0;
 }
 
 .title {
-    color: rgba(187, 187, 187, 1);
+    color: rgba(50, 50, 50, 1);
     font-size: 45px;
     margin-bottom: 10px;
 }
@@ -44,9 +44,9 @@ li {
 }
 
 .match-card {
-    background-color: #444;
+    background-color: #ddd;
     border-radius: 10px;
-    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
     margin-bottom: 20px;
     padding: 10px;
 }
@@ -57,7 +57,7 @@ li {
 }
 
 .radiant-name {
-    color: #fff;
+    color: #333;
 }
 
 .d-team-name {
@@ -66,7 +66,7 @@ li {
 }
 
 .dire-name {
-    color: #fff;
+    color: #333;
 }
 
 .match-info {
@@ -78,5 +78,5 @@ li {
 .score,
 .league-name {
     font-size: 14px;
-    color: #fff;
+    color: #333;
 }
