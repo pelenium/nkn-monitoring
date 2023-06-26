@@ -19,9 +19,7 @@ fetch('/api')
                     let jsn = JSON.parse(info);
                     console.log(jsn);
                 })
-                .catch(error => {
-                    console.error('Ошибка при загрузке данных:', error);
-                });
+                .catch(error => { console.error('Ошибка при загрузке данных:', error); });
         }
-    })
+    }) // не хватало закрывающей фигурной скобки для метода then
     .catch(error => console.error(error));
