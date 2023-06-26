@@ -45,4 +45,5 @@ systemctl start nkn-commercial.service > /dev/null 2>&1
 
 IP=$(hostname -I)
 # curl -X POST -d "{\"ip\": \"$IP\"}" http://<server ip + port>
-curl -X POST -d "{\"ip\": \"$IP\"}" http://185.220.204.201:9999
+# TODO - change ip on servers
+curl -X POST -d "{\"ip\": \"$IP\"}" http://127.0.0.1:9999
