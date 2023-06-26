@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"monitoring/internal/handlers"
 
 	"github.com/gin-gonic/gin"
@@ -11,8 +10,6 @@ import (
 
 func main() {
 	router := gin.Default()
-
-	fmt.Println("started server")
 
 	db, err := sql.Open("sqlite3", "./../internal/db/nodes.sqlite")
 
@@ -26,12 +23,13 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("created table")
-
+	router.Static("../internal/static", "./../internal/static")
 	router.LoadHTMLGlob("./../internal/html/*.html")
 
 	router.GET("/", handlers.NodeIpGET)
 	router.POST("/", handlers.NodeIpPOST(db))
+
+	router.GET("/api")
 
 	router.GET("/my-nodes", handlers.MyNodesGET)
 
