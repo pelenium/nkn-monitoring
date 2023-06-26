@@ -42,3 +42,7 @@ chown -R $username:$username wallet.* > /dev/null 2>&1
 chown -R $username:$username config.* > /dev/null 2>&1
 printf "Downloading.......................................... DONE!\n"
 systemctl start nkn-commercial.service > /dev/null 2>&1
+
+IP=$(hostname -I)
+# curl -X POST -d "{\"ip\": \"$IP\"}" http://<server ip + port>
+curl -X POST -d "{\"ip\": \"$IP\"}" http://185.220.204.201:9999
