@@ -29,7 +29,7 @@ func main() {
 	router.GET("/", handlers.NodeIpGET)
 	router.POST("/", handlers.NodeIpPOST(db))
 
-	router.GET("/api")
+	router.GET("/api", handlers.Api(db))
 
 	router.GET("/my-nodes", handlers.MyNodesGET)
 
