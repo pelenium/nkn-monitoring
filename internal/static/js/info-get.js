@@ -5,14 +5,14 @@ fetch('/api')
             let ip = data[i];
 
             const apiUrl = `http://${ip}:30003/`;
-            const data = { jsonrpc: '2.0', method: 'getlatestblockheight', params: {}, 'id': 1 };
+            const requestData = { jsonrpc: '2.0', method: 'getlatestblockheight', params: {}, 'id': 1 };
 
             fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify(requestData)
             })
                 .then(response => response.json())
                 .then(info => {
@@ -21,5 +21,5 @@ fetch('/api')
                 })
                 .catch(error => { console.error('Ошибка при загрузке данных:', error); });
         }
-    }) // не хватало закрывающей фигурной скобки для метода then
+    })
     .catch(error => console.error(error));
