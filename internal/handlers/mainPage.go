@@ -25,6 +25,8 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 
 		ip := gjson.Get(string(jsn), "ip").String()
 
+		fmt.Println(ip)
+
 		if ip != "" {
 			add := "INSERT INTO nodes_ip (ip) values(?)"
 
@@ -71,9 +73,6 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 					fmt.Println(column, val)
 				}
 			}
-			
-			nodeLastHeight(db, ip)
-			nodeState(db, ip)
 		}
 	}
 }
