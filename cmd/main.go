@@ -20,7 +20,7 @@ func main() {
 		panic(err)
 	}
 
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS nodes_ip (ip TEXT NOT NULL PRIMARY KEY, latest_block_height INT, node_status TEXT); DELETE FROM nodes_ip;`)
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS nodes_ip (ip TEXT NOT NULL PRIMARY KEY); DELETE FROM nodes_ip;`)
 
 	if err != nil {
 		panic(err)
