@@ -6,36 +6,29 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/mattn/go-sqlite3"
 )
 
-func Api(c *gin.Context) {
-	db, err := sql.Open("sqlite3", "./../db/nodes.sqlite")
+func Api(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		result := []string{}
 
-	if err != nil {
-		panic(err)
-	}
+		req := `SELECT * FROM nodes_ip`
 
-	defer db.Close()
-
-	result := []string{}
-
-	req := `SELECT * FROM nodes_ip`
-
-	rows, err := db.Query(req)
-	if err != nil {
-		panic(err)
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var value string
-		err = rows.Scan(&value)
+		rows, err := db.Query(req)
 		if err != nil {
 			panic(err)
 		}
-		result = append(result, value)
+		defer rows.Close()
+
+		for rows.Next() {
+			var value string
+			err = rows.Scan(&value)
+			if err != nil {
+				panic(err)
+			}
+			result = append(result, value)
+		}
+		fmt.Println(result)
+		c.JSON(http.StatusOK, result)
 	}
-	fmt.Println(result)
-	c.JSON(http.StatusOK, result)
 }

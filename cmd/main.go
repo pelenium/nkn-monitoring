@@ -29,9 +29,9 @@ func main() {
 	router.LoadHTMLGlob("./../internal/html/*.html")
 
 	router.GET("/", handlers.NodeIpGET)
-	router.POST("/", handlers.NodeIpPOST)
+	router.POST("/", handlers.NodeIpPOST(db))
 
-	router.GET("/api", handlers.Api)
+	router.GET("/api", handlers.Api(db))
 
 	router.GET("/my-nodes", handlers.MyNodesGET)
 
