@@ -14,13 +14,13 @@ func main() {
 
 	fmt.Println("started server")
 
-	db, err := sql.Open("sqlite3", "./../internal/nodes.sqlite")
+	db, err := sql.Open("sqlite3", "./../internal/db/nodes.sqlite")
 
 	if err != nil {
 		panic(err)
 	}
 
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS nodes_ip (ip TEXT NOT NULL PRIMARY KEY); DELETE FROM nodes_ip;`)
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS nodes_ip (ip TEXT NOT NULL PRIMARY KEY);`)
 
 	if err != nil {
 		panic(err)

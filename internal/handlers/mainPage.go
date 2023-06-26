@@ -39,6 +39,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 			}
 
 			if !notExists {
+				fmt.Println("there no node with such ip")
 				_, err = db.Exec(add, ip)
 
 				if err != nil {
