@@ -137,32 +137,32 @@ function createCard(ip, blockHeight, version, minedToday, minedForAllTime, nodeS
     card.className = 'node-card';
 
     const ipRow = document.createElement('div');
-    ipRow.className = 'node-card-row';
+    ipRow.className = 'node-card-ip';
     ipRow.textContent = ip;
     card.appendChild(ipRow);
 
     const heightRow = document.createElement('div');
-    heightRow.className = 'node-card-row';
+    heightRow.className = 'node-card-height';
     heightRow.textContent = blockHeight;
     card.appendChild(heightRow);
 
     const versionRow = document.createElement('div');
-    versionRow.className = 'node-card-row';
+    versionRow.className = 'node-card-version';
     versionRow.textContent = version;
     card.appendChild(versionRow);
 
     const todayRow = document.createElement('div');
-    todayRow.className = 'node-card-row';
+    todayRow.className = 'node-card-today';
     todayRow.textContent = minedToday;
     card.appendChild(todayRow);
 
     const allTimeRow = document.createElement('div');
-    allTimeRow.className = 'node-card-row';
+    allTimeRow.className = 'node-card-all';
     allTimeRow.textContent = minedForAllTime;
     card.appendChild(allTimeRow);
 
     const stateRow = document.createElement('div');
-    stateRow.className = 'node-card-row';
+    stateRow.className = 'node-card-state';
     stateRow.textContent = nodeState;
     card.appendChild(stateRow);
 

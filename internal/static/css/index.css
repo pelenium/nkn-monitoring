@@ -49,9 +49,33 @@ li {
     align-items: center;
 }
 
-.node-card-row {
+.node-card-ip,
+.node-card-height,
+.node-card-version,
+.node-card-today,
+.node-card-all,
+.node-card-state {
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid black;
+}
+
+.node-card-ip {
+    width: 15%;
+}
+
+.node-card-height {
+    width: 30%;
+}
+
+.node-card-version {
+    width: 15%;
+}
+
+.node-card-today {
+    width: 20%;
+}
+.node-card-all {
+    width: 20%;
 }
