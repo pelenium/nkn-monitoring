@@ -2,9 +2,7 @@ fetch('/api')
     .then(response => response.json()) // Преобразуем ответ в объект JavaScript
     .then(data => {
         for (var i = 0; i < data.length; i++) {
-            let ip = data[i];
-            
-            console.log(ip);
+            console.log(data[i]);
             // const apiUrl = `http://${ip}:30003/`;
             // const requestData = { jsonrpc: '2.0', method: 'getlatestblockheight', params: {}, 'id': 1 };
 
