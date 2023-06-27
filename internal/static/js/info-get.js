@@ -1,9 +1,11 @@
 let blocksfortoday = 0;
 
 function main() {
-    const list = document.getElementById('list');
-    while (list.firstChild) {
-        list.removeChild(list.firstChild);
+    const list = document.getElementById('list-id');
+    if (list.childNodes.length > 0) {
+        while (list.firstChild) {
+            list.removeChild(list.firstChild);
+        }
     }
 
     const now = new Date();
