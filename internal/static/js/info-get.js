@@ -70,7 +70,7 @@ function getBlockHeight(ip) {
         .then(response => response.json())
         .then(data => {
             console.log(data.result);
-            return data.result;
+            return String(data.result);
         })
         .catch(error => console.error(error));
 }
@@ -90,7 +90,7 @@ function getBlockCount(ip) {
         .then(response => response.json())
         .then(data => {
             // console.log(data.result);
-            return data.result;
+            return String(data.result);
         })
         .catch(error => console.error(error));
 }
@@ -111,7 +111,7 @@ function getNodeState(ip) {
         .then(data => {
             // console.log(data.result);
             // console.log(data.result.syncState);
-            return data.result.syncState;
+            return String(data.result.syncState);
         })
         .catch(error => console.error(error));
 }
@@ -131,7 +131,7 @@ function getVersion(ip) {
         .then(response => response.json())
         .then(data => {
             // console.log(data.result);
-            return data.result;
+            return String(data.result);
         })
         .catch(error => console.error(error));
 }
