@@ -1,6 +1,11 @@
 let blocksfortoday = 0;
 
 function main() {
+    const list = document.getElementById('list');
+    while (list.firstChild) {
+        list.removeChild(list.firstChild);
+    }
+
     const now = new Date();
     const timezoneOffset = now.getTimezoneOffset();
     const moscowTimezoneOffset = 180;
@@ -133,4 +138,42 @@ function getVersion(ip) {
         .catch(error => console.error(error));
 }
 
-setInterval(main, 10000); 
+setInterval(main, 10000);
+
+function addNodeToList(ip, blockHeight, version, minedToday, minedForAllTime, nodeState) {
+    const card = document.createElement('div');
+    card.className = 'node-card';
+
+    const ipRow = document.createElement('div');
+    ipRow.className = 'node-card-row';
+    ipRow.textContent = ip;
+    card.appendChild(ipRow);
+
+    const heightRow = document.createElement('div');
+    heightRow.className = 'node-card-row';
+    heightRow.textContent = blockHeight;
+    card.appendChild(heightRow);
+
+    const versionRow = document.createElement('div');
+    versionRow.className = 'node-card-row';
+    versionRow.textContent = version;
+    card.appendChild(versionRow);
+
+    const todayRow = document.createElement('div');
+    todayRow.className = 'node-card-row';
+    todayRow.textContent = minedToday;
+    card.appendChild(todayRow);
+
+    const allTimeRow = document.createElement('div');
+    allTimeRow.className = 'node-card-row';
+    allTimeRow.textContent = minedForAllTime;
+    card.appendChild(allTimeRow);
+
+    const stateRow = document.createElement('div');
+    stateRow.className = 'node-card-row';
+    stateRow.textContent = nodeState;
+    card.appendChild(stateRow);
+
+    const list = document.getElementById("list");
+    list.appendChild(card);
+}
