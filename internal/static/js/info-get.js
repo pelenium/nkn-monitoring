@@ -63,7 +63,7 @@ function getBlockHeight(ip) {
         params: {},
         id: 1,
     };
-    fetch(url, {
+    return fetch(url, {
         method: 'POST',
         body: JSON.stringify(requestData),
     })
@@ -84,7 +84,7 @@ function getBlockCount(ip) {
         params: {},
         id: 1
     };
-    fetch(url, {
+    return fetch(url, {
         method: 'POST',
         body: JSON.stringify(requestData),
     })
@@ -105,7 +105,7 @@ function getNodeState(ip) {
         params: {},
         id: 1,
     };
-    fetch(url, {
+    return fetch(url, {
         method: 'POST',
         body: JSON.stringify(requestData),
     })
@@ -127,7 +127,7 @@ function getVersion(ip) {
         params: {},
         id: 1,
     };
-    fetch(url, {
+    return fetch(url, {
         method: 'POST',
         body: JSON.stringify(requestData),
     })
