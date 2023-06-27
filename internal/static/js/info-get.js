@@ -1,6 +1,6 @@
 let blocksForToday = 0;
 
-function main() {
+async function main() {
     // const now = new Date();
     // const timezoneOffset = now.getTimezoneOffset();
     // const moscowTimezoneOffset = 180;
@@ -12,42 +12,39 @@ function main() {
     //     blocksForToday = 
     // }
 
-    fetch('/api')
-        .then(response => response.json())
-        .then(data => {
-            for (var i = 0; i < data.length; i++) {
-                var ip = data[i].trim();
-                
-                fetch(`http://${ip}:30003/`, {
-                    method: 'POST'
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        // node exists
-                        var h = getBlockHeight(ip);
-                        console.log(typeof h);
-                        var cnt = getBlockCount(ip);
-                        console.log(typeof cnt);
-                        var st = getNodeState(ip);
-                        console.log(typeof st);
-                        var vers = getVersion(ip);
-                        console.log(typeof vers);
+    try {
+        const response = await fetch('/api');
+        const data = await response.json();
 
-                        const list = document.getElementById("list");
-                        if (list != null) {
-                            if (list.childNodes.length > 0) {
-                                while (list.firstChild) {
-                                    list.removeChild(list.firstChild);
-                                }
-                            }
-                        }
-
-                        createCard(ip, h, vers, cnt, cnt, st);
-                    })
-                    .catch(error => console.error(error));
+        const list = document.getElementById("list");
+        if (list != null) {
+            if (list.childNodes.length > 0) {
+                while (list.firstChild) {
+                    list.removeChild(list.firstChild);
+                }
             }
-        })
-        .catch(error => console.error(error));
+        }
+
+        for (var i = 0; i < data.length; i++) {
+            var ip = data[i].trim();
+
+            const blockHeight = await getBlockHeight(ip);
+            console.log(typeof blockHeight);
+
+            const blockCount = await getBlockCount(ip);
+            console.log(typeof blockCount);
+
+            const nodeState = await getNodeState(ip);
+            console.log(typeof nodeState);
+
+            const version = await getVersion(ip);
+            console.log(typeof version);
+
+            createCard(ip, blockHeight, version, blockCount, blockCount, nodeState);
+        }
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 function saveBlockCount(blocksCount) {
@@ -70,7 +67,7 @@ function getBlockHeight(ip) {
         .then(response => response.json())
         .then(data => {
             // console.log(data.result);
-            return String(data.result);
+            return data.result;
         })
         .catch(error => console.error(error));
 }
@@ -90,7 +87,7 @@ function getBlockCount(ip) {
         .then(response => response.json())
         .then(data => {
             // console.log(data.result);
-            return String(data.result);
+            return data.result;
         })
         .catch(error => console.error(error));
 }
@@ -109,7 +106,6 @@ function getNodeState(ip) {
     })
         .then(response => response.json())
         .then(data => {
-            // console.log(data.result);
             // console.log(data.result.syncState);
             return data.result.syncState;
         })
