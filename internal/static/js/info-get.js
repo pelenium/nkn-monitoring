@@ -2,23 +2,27 @@ fetch('/api')
     .then(response => response.json()) // Преобразуем ответ в объект JavaScript
     .then(data => {
         for (var i = 0; i < data.length; i++) {
-            console.log(data[i]);
-            // const apiUrl = `http://${ip}:30003/`;
-            // const requestData = { jsonrpc: '2.0', method: 'getlatestblockheight', params: {}, 'id': 1 };
+            var ip = data[i].trim();
+            console.log(ip, "\n");
 
-            // fetch(apiUrl, {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify(requestData)
-            // })
-            //     .then(response => response.json())
-            //     .then(info => {
-            //         let jsn = JSON.parse(info);
-            //         console.log(jsn);
-            //     })
-            //     .catch(error => { console.error('Ошибка при загрузке данных:', error); });
+            getBlockHeight(ip);
         }
     })
     .catch(error => console.error(error));
+
+function getBlockHeight(ip) {
+    const url = `http://${ip}:30003`;
+    const requestData = {
+        jsonrpc: '2.0',
+        method: 'getlatestblockheight',
+        params: {},
+        id: 1,
+    };
+    fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(requestData),
+    })
+        .then(response => response.json())
+        .then(data => console.log(JSON.stringify(data)))
+        .catch(error => console.error(error));
+}
