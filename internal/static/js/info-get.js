@@ -13,13 +13,13 @@ function main() {
     }
 
     fetch('/api')
-        .then(response => response.json()) // Преобразуем ответ в объект JavaScript
+        .then(response => response.json())
         .then(data => {
             for (var i = 0; i < data.length; i++) {
                 var ip = data[i].trim();
 
                 getBlockHeight(ip);
-                getBlockCount(ip);
+                getBlockCount(ip, moscowNow);
                 getNodeState(ip);
                 getVersion(ip);
             }
@@ -51,7 +51,7 @@ function getBlockHeight(ip) {
         .catch(error => console.error(error));
 }
 
-function getBlockCount(ip) {
+function getBlockCount(ip, moscowNow) {
     const url = `http://${ip}:30003`;
     const requestData = {
         jsonrpc: "2.0",
@@ -133,4 +133,4 @@ function getVersion(ip) {
         .catch(error => console.error(error));
 }
 
-setInterval(main, 10000);
+setInterval(main, 10000); 
