@@ -17,13 +17,13 @@ func main() {
 		panic(err)
 	}
 
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS nodes_ip (ip TEXT NOT NULL PRIMARY KEY); DELETE FROM nodes_ip;`)
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS nodes_ip (ip TEXT NOT NULL);`)
 
 	if err != nil {
 		panic(err)
 	}
 
-	db.Close()
+	defer db.Close()
 
 	router.Static("../internal/static", "./../internal/static")
 	router.LoadHTMLGlob("./../internal/html/*.html")
