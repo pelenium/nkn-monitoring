@@ -45,19 +45,13 @@ li {
 
 .node-card {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-  
-  .node-card-row {
+}
+
+.node-card-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid black;
-  }
-  
+}
