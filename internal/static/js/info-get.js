@@ -70,7 +70,7 @@ function getBlockCount(ip, moscowNow) {
     })
         .then(response => response.json())
         .then(data => {
-            console.log(JSON.stringify(data));
+            console.log(data.result);
             if (moscowNow.getHours() === 0 && moscowNow.getMinutes() === 0) {
                 saveBlockCount(data.result);
             }
@@ -138,8 +138,6 @@ function getVersion(ip) {
         .catch(error => console.error(error));
 }
 
-setInterval(main, 10000);
-
 function addNodeToList(ip, blockHeight, version, minedToday, minedForAllTime, nodeState) {
     const card = document.createElement('div');
     card.className = 'node-card';
@@ -177,3 +175,7 @@ function addNodeToList(ip, blockHeight, version, minedToday, minedForAllTime, no
     const list = document.getElementById("list");
     list.appendChild(card);
 }
+
+main();
+
+setInterval(main, 10000);
