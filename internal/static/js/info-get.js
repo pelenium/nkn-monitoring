@@ -26,15 +26,18 @@ function main() {
         .then(data => {
             for (var i = 0; i < data.length; i++) {
                 var ip = data[i].trim();
-
-                axios.get(`http://${ip}:30001/`)
-                    .then(response => {
+                
+                fetch(`http://${ip}:30003/`, {
+                    method: 'GET'
+                })
+                    .then(response => response.json())
+                    .then(data => {
                         // node exists
-                        getBlockHeight(ip);
-                        getBlockCount(ip, moscowNow);
-                        getNodeState(ip);
-                        getVersion(ip);
-                        createCard(ip, )
+                        var h = getBlockHeight(ip);
+                        var cnt = getBlockCount(ip, moscowNow);
+                        var st = getNodeState(ip);
+                        var vers = getVersion(ip);
+                        createCard(ip, h, vers, cnt, cnt, st)
                     })
                     .catch(error => console.error(error));
             }
