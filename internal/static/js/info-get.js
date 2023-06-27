@@ -25,9 +25,13 @@ function main() {
                     .then(data => {
                         // node exists
                         var h = getBlockHeight(ip);
+                        console.log(typeof h);
                         var cnt = getBlockCount(ip);
+                        console.log(typeof cnt);
                         var st = getNodeState(ip);
+                        console.log(typeof st);
                         var vers = getVersion(ip);
+                        console.log(typeof vers);
 
                         const list = document.getElementById("list");
                         if (list != null) {
@@ -37,6 +41,7 @@ function main() {
                                 }
                             }
                         }
+
                         createCard(ip, h, vers, cnt, cnt, st);
                     })
                     .catch(error => console.error(error));
@@ -84,7 +89,7 @@ function getBlockCount(ip) {
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data.result);
+            // console.log(data.result);
             return data.result;
         })
         .catch(error => console.error(error));
@@ -104,8 +109,8 @@ function getNodeState(ip) {
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data.result);
-            console.log(data.result.syncState);
+            // console.log(data.result);
+            // console.log(data.result.syncState);
             return data.result.syncState;
         })
         .catch(error => console.error(error));
@@ -125,7 +130,7 @@ function getVersion(ip) {
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data.result);
+            // console.log(data.result);
             return data.result;
         })
         .catch(error => console.error(error));
