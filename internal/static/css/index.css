@@ -37,6 +37,7 @@ ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
+    width: 65%;
 }
 
 li {
@@ -45,8 +46,15 @@ li {
 
 .node-card {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    border: 2px solid black;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    position: relative;
 }
 
 .node-card-ip,
@@ -55,27 +63,15 @@ li {
 .node-card-today,
 .node-card-all,
 .node-card-state {
-    display: flex;
-    justify-content: space-between;
+    flex-basis: 0;
+    flex-grow: 1;
+    display: inline-flex;
+    justify-content: center;
     align-items: center;
-    border-bottom: 1px solid black;
+    margin-right: 20px;
+    border-right: 1px solid black;
 }
 
-.node-card-ip {
-    width: 15%;
-}
-
-.node-card-height {
-    width: 30%;
-}
-
-.node-card-version {
-    width: 15%;
-}
-
-.node-card-today {
-    width: 20%;
-}
-.node-card-all {
-    width: 20%;
+.node-card-state {
+    border-right: none;
 }
