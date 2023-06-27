@@ -1,4 +1,4 @@
-let blocksfortoday = 0;
+let blocksForToday = 0;
 
 function main() {
     const list = document.getElementById('list-id');
@@ -10,16 +10,16 @@ function main() {
         }
     }
 
-    const now = new Date();
-    const timezoneOffset = now.getTimezoneOffset();
-    const moscowTimezoneOffset = 180;
-    const differenceInMinutes = (moscowTimezoneOffset - timezoneOffset);
-    const differenceInMillis = differenceInMinutes * 60 * 1000;
-    const moscowNow = new Date(now.getTime() + differenceInMillis);
+    // const now = new Date();
+    // const timezoneOffset = now.getTimezoneOffset();
+    // const moscowTimezoneOffset = 180;
+    // const differenceInMinutes = (moscowTimezoneOffset - timezoneOffset);
+    // const differenceInMillis = differenceInMinutes * 60 * 1000;
+    // const moscowNow = new Date(now.getTime() + differenceInMillis);
 
-    if (moscowNow.getHours() === 0 && moscowNow.getMinutes() === 0) {
-        saveBlockCount(blocksfortoday);
-    }
+    // if (moscowNow.getHours() === 0 && moscowNow.getMinutes() === 0) {
+    //     blocksForToday = 
+    // }
 
     fetch('/api')
         .then(response => response.json())
@@ -27,18 +27,24 @@ function main() {
             for (var i = 0; i < data.length; i++) {
                 var ip = data[i].trim();
 
-                getBlockHeight(ip);
-                getBlockCount(ip, moscowNow);
-                getNodeState(ip);
-                getVersion(ip);
+                axios.get(`http://${ip}:30001/`)
+                    .then(response => {
+                        // node exists
+                        getBlockHeight(ip);
+                        getBlockCount(ip, moscowNow);
+                        getNodeState(ip);
+                        getVersion(ip);
+                        createCard(ip, )
+                    })
+                    .catch(error => console.error(error));
             }
         })
         .catch(error => console.error(error));
 }
 
 function saveBlockCount(blocksCount) {
-    blocksfortoday = blocksCount;
-    console.log(`Saved block count for the day: ${blocksfortoday}`);
+    blocksForToday = blocksCount;
+    console.log(`Saved block count for the day: ${blocksForToday}`);
 }
 
 function getBlockHeight(ip) {
@@ -56,11 +62,12 @@ function getBlockHeight(ip) {
         .then(response => response.json())
         .then(data => {
             console.log(data.result);
+            return data.result;
         })
         .catch(error => console.error(error));
 }
 
-function getBlockCount(ip, moscowNow) {
+function getBlockCount(ip) {
     const url = `http://${ip}:30003`;
     const requestData = {
         jsonrpc: "2.0",
@@ -75,31 +82,7 @@ function getBlockCount(ip, moscowNow) {
         .then(response => response.json())
         .then(data => {
             console.log(data.result);
-            if (moscowNow.getHours() === 0 && moscowNow.getMinutes() === 0) {
-                saveBlockCount(data.result);
-            }
-        })
-        .catch(error => console.error(error));
-}
-
-function getBlockCountToday(ip) {
-    const url = `http://${ip}:30003`;
-    const requestData = {
-        jsonrpc: "2.0",
-        method: "getblockcount",
-        params: {},
-        id: 1
-    };
-    fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(requestData),
-    })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data.result);
-            if (moscowNow.getHours() === 0 && moscowNow.getMinutes() === 0) {
-                saveBlockCount(data.result - blocksfortoday);
-            }
+            return data.result;
         })
         .catch(error => console.error(error));
 }
@@ -119,6 +102,7 @@ function getNodeState(ip) {
         .then(response => response.json())
         .then(data => {
             console.log(data.result);
+            return data.result.syncState;
         })
         .catch(error => console.error(error));
 }
@@ -138,11 +122,12 @@ function getVersion(ip) {
         .then(response => response.json())
         .then(data => {
             console.log(data.result);
+            return data.result;
         })
         .catch(error => console.error(error));
 }
 
-function addNodeToList(ip, blockHeight, version, minedToday, minedForAllTime, nodeState) {
+function createCard(ip, blockHeight, version, minedToday, minedForAllTime, nodeState) {
     const card = document.createElement('div');
     card.className = 'node-card';
 
