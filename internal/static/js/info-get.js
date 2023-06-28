@@ -37,7 +37,9 @@ async function main() {
             if (data[i].ip in blockData) {
                 var arr = blockData[data[i].ip];
                 console.log(arr);
-                arr.push(blockHash);
+                if (!(blockHash in arr)) {
+                    arr.push(blockHash);
+                }
     
                 blockData[data[i].ip] = arr;
             } else {
