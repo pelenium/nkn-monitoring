@@ -20,7 +20,7 @@ func Api(db *sql.DB) gin.HandlerFunc {
 
 		rows, err := db.Query("SELECT ip, blocks_ever, blocks_today FROM nodes_ip;")
 		if err != nil {
-			panic(err)
+			fmt.Println(err)
 		}
 		defer rows.Close()
 		
