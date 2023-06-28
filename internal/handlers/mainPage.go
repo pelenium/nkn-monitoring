@@ -24,11 +24,15 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 		}
 
 		ip := gjson.Get(string(jsn), "ip").String()
+		blocks_ever := gjson.Get(string(jsn), "blocks_ever").Int()
+		blocks_today := gjson.Get(string(jsn), "blocks_today").Int()
 
 		fmt.Println(ip)
+		fmt.Println(blocks_ever)
+		fmt.Println(blocks_today)
 
 		if ip != "" {
-			add := "INSERT INTO nodes_ip (ip) values(?)"
+			add := "INSERT INTO nodes_ip (ip, blocks_ever, blocks_today) values(?, ?, ?)"
 
 			var notExists bool
 
@@ -40,7 +44,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 
 			if !notExists {
 				fmt.Println("there no node with such ip")
-				_, err = db.Exec(add, ip)
+				_, err = db.Exec(add, ip, blocks_ever, blocks_today)
 
 				if err != nil {
 					panic(err)

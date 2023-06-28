@@ -17,7 +17,7 @@ func main() {
 		panic(err)
 	}
 
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS nodes_ip (ip TEXT NOT NULL);`)
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS nodes_ip (ip TEXT NOT NULL, blocks_ever INT, blocks_today INT);`)
 
 	if err != nil {
 		panic(err)
@@ -36,5 +36,4 @@ func main() {
 	router.GET("/my-nodes", handlers.MyNodesGET)
 
 	router.Run(":9999")
-
 }
