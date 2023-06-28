@@ -18,17 +18,10 @@ async function main() {
             // TODO - make block number for today
             const blockHeight = await getBlockHeight(ip);
             var blockNumberEver, blockNumberToday
-            if (data[i].ip in blockData) {
-                blockNumberEver = blockData[data[i].ip].length;
-                blockNumberToday = blockData[data[i].ip].length;
-            } else {
-                blockNumberEver = 0;
-                blockNumberToday = 0;
-            }
             const nodeState = await getNodeState(ip);
             const version = await getVersion(ip);
             const blockHash = await getBlockHash(ip);
-
+            
             if (data[i].ip in blockData) {
                 var arr = blockData[data[i].ip];
                 arr.push(blockHash);
@@ -38,25 +31,35 @@ async function main() {
                 blockData[data[i].ip] = [blockHash];
             }
 
+            if (data[i].ip in blockData) {
+                blockNumberEver = blockData[data[i].ip].length;
+                blockNumberToday = blockData[data[i].ip].length;
+            } else {
+                blockNumberEver = 0;
+                blockNumberToday = 0;
+            }
+
+            sendData(blockData, blockNumberEver, blockNumberToday)
+
             createCard(ip, blockHeight, version, blockNumberEver, blockNumberToday, nodeState);
         }
         console.log(JSON.stringify(blockData));
-        sendData(blockData)
     } catch (error) {
         console.error(error);
     }
 }
 
-function sendData(jsn) {
+function sendData(jsn, ever, today) {
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/", true);
     xhr.setRequestHeader("Content-Type", "application/json");
 
     var data = {
-        key1: 'value1',
-        key2: 'value2'
+        ip: jsn,
+        num_ever: ever, 
+        num_today: today
     };
-    xhr.send(JSON.stringify(jsn));
+    xhr.send(JSON.stringify(data));
 }
 
 function getBlockHeight(ip) {
