@@ -31,6 +31,8 @@ async function main() {
             const version = await getVersion(ip);
             const blockHash = await getBlockHashByHeight(ip, blockHeight);
 
+            console.log(blockHash);
+
             arr = blockData[data[i].ip];
             console.log(arr);
             arr.push(blockHash);
