@@ -13,17 +13,18 @@ async function main() {
         }
 
         for (var i = 0; i < data.length; i++) {
-            var ip = data[i].trim();
+            console.log(data[i])
+            // var ip = data[i].trim();
 
-            console.log(ip);
+            // console.log(ip);
 
-            const blockHeight = await getBlockHeight(ip);
-            const blockCount = data[i].blocks_ever;
-            console.log(`height - ${blockHeight}\ncount - ${blockCount}`);
-            const nodeState = data[i].blocks_ever;
-            const version = await getVersion(ip);
+            // const blockHeight = await getBlockHeight(ip);
+            // const blockCount = data[i].blocks_ever;
+            // console.log(`height - ${blockHeight}\ncount - ${blockCount}`);
+            // const nodeState = data[i].blocks_ever;
+            // const version = await getVersion(ip);
 
-            createCard(ip, blockHeight, version, blockCount, blockCount, nodeState);
+            // createCard(ip, blockHeight, version, blockCount, blockCount, nodeState);
         }
     } catch (error) {
         console.error(error);
