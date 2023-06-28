@@ -61,6 +61,7 @@ function getBlockCount(ip) {
     })
         .then(response => response.json())
         .then(data => {
+            console.log(data.result);
             return data.result;
         })
         .catch(error => console.error(error));
