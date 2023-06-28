@@ -1,17 +1,4 @@
-let blocksForToday = 0;
-
 async function main() {
-    // const now = new Date();
-    // const timezoneOffset = now.getTimezoneOffset();
-    // const moscowTimezoneOffset = 180;
-    // const differenceInMinutes = (moscowTimezoneOffset - timezoneOffset);
-    // const differenceInMillis = differenceInMinutes * 60 * 1000;
-    // const moscowNow = new Date(now.getTime() + differenceInMillis);
-
-    // if (moscowNow.getHours() === 0 && moscowNow.getMinutes() === 0) {
-    //     blocksForToday = 
-    // }
-
     try {
         const response = await fetch('/api');
         const data = await response.json();
@@ -47,11 +34,6 @@ async function main() {
     }
 }
 
-function saveBlockCount(blocksCount) {
-    blocksForToday = blocksCount;
-    console.log(`Saved block count for the day: ${blocksForToday}`);
-}
-
 function getBlockHeight(ip) {
     const url = `http://${ip}:30003`;
     const requestData = {
@@ -66,7 +48,6 @@ function getBlockHeight(ip) {
     })
         .then(response => response.json())
         .then(data => {
-            // console.log(data.result);
             return data.result;
         })
         .catch(error => console.error(error));
@@ -76,9 +57,9 @@ function getBlockCount(ip) {
     const url = `http://${ip}:30003`;
     const requestData = {
         jsonrpc: "2.0",
-        method: "getblockcount",
-        params: {},
-        id: 1
+        method:  "getblockcount",
+        params:  {},
+        id: 1,
     };
     return fetch(url, {
         method: 'POST',
@@ -86,7 +67,6 @@ function getBlockCount(ip) {
     })
         .then(response => response.json())
         .then(data => {
-            // console.log(data.result);
             return data.result;
         })
         .catch(error => console.error(error));
@@ -106,7 +86,6 @@ function getNodeState(ip) {
     })
         .then(response => response.json())
         .then(data => {
-            // console.log(data.result.syncState);
             return data.result.syncState;
         })
         .catch(error => console.error(error));
@@ -126,7 +105,6 @@ function getVersion(ip) {
     })
         .then(response => response.json())
         .then(data => {
-            // console.log(data.result);
             return data.result;
         })
         .catch(error => console.error(error));
