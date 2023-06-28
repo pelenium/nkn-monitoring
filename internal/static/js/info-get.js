@@ -27,33 +27,16 @@ async function main() {
 
             createCard(ip, blockHeight, version, blockNumberEver, blockNumberToday, nodeState);
 
+            const uniqueBlockHashes = blockHashes.filter((value, index, self) => self.indexOf(value) === index);
+
             blockData.push({
                 ip: ip,
                 blocks_ever: blockNumberEver,
                 blocks_today: blockNumberToday,
-                hashes: blockHashes.filter((value, index, self) => self.indexOf(value) === index)
+                hashes: uniqueBlockHashes
             });
         }
-        const uniqueBlockData = blockData.reduce((accumulator, current) => {
-            const isDuplicate = accumulator.some(item =>
-                item.ip === current.ip &&
-                item.blocks_ever === current.blocks_ever &&
-                item.blocks_today === current.blocks_today
-            );
-        
-            if (!isDuplicate) {
-                accumulator.push(current);
-            }
-        
-            return accumulator;
-        }, []);
-        
-        blockData.length = 0;
-        
-        uniqueBlockData.forEach(item => {
-            blockData.push(item);
-        });
-        
+
         console.log(blockData);
     } catch (error) {
         console.error(error);
@@ -184,7 +167,7 @@ function createCard(ip, blockHeight, version, minedForAllTime, minedToday, nodeS
     versionRow.textContent = version;
     card.appendChild(versionRow);
 
-    
+
     const allTimeRow = document.createElement('div');
     allTimeRow.className = 'node-card-all';
     allTimeRow.textContent = minedForAllTime;
