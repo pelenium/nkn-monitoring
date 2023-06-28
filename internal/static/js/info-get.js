@@ -15,11 +15,11 @@ async function main() {
 
         blockData.length = data.length;
 
-        if (blockData.length == 0) {
-            for (var i = 0; i < data.length; i++) {
-                blockData[data[i].ip] = [];
-            }
-        }
+        // if (blockData.length == 0) {
+        //     for (var i = 0; i < data.length; i++) {
+        //         blockData[data[i].ip] = [];
+        //     }
+        // }
 
 
         for (var i = 0; i < data.length; i++) {
@@ -34,11 +34,16 @@ async function main() {
 
             console.log(blockHash);
 
-            var arr = blockData[data[i].ip];
-            console.log(arr);
-            arr.push(blockHash);
+            if (data[i].ip in blockData) {
+                var arr = blockData[data[i].ip];
+                console.log(arr);
+                arr.push(blockHash);
+    
+                blockData[data[i].ip] = arr;
+            } else {
+                blockData[data[i].ip] = [blockHash];
+            }
 
-            blockData[data[i].ip] = arr;
 
             createCard(ip, blockHeight, version, blockNumberEver, blockNumberToday, nodeState);
         }
