@@ -1,4 +1,4 @@
-const blockData = []; // Array to store IP, blocks_ever, blocks_today, and hashes
+const blockData = [];
 
 async function main() {
     try {
@@ -23,19 +23,37 @@ async function main() {
             const blockNumberToday = data[i].blocks_today;
             const nodeState = await getNodeState(ip);
             const version = await getVersion(ip);
-            const blockHashes = await getBlockHashes(ip); // Get block hashes for the IP
+            const blockHashes = await getBlockHashes(ip);
 
             createCard(ip, blockHeight, version, blockNumberEver, blockNumberToday, nodeState);
 
-            // Store IP, blocks_ever, blocks_today, and hashes in the array
             blockData.push({
                 ip: ip,
                 blocks_ever: blockNumberEver,
                 blocks_today: blockNumberToday,
-                hashes: blockHashes.filter((value, index, self) => self.indexOf(value) === index) // Remove duplicate hashes
+                hashes: blockHashes.filter((value, index, self) => self.indexOf(value) === index)
             });
         }
-        blockData = [...new Set(blockData)];
+        const uniqueBlockData = blockData.reduce((accumulator, current) => {
+            const isDuplicate = accumulator.some(item =>
+                item.ip === current.ip &&
+                item.blocks_ever === current.blocks_ever &&
+                item.blocks_today === current.blocks_today
+            );
+        
+            if (!isDuplicate) {
+                accumulator.push(current);
+            }
+        
+            return accumulator;
+        }, []);
+        
+        blockData.length = 0;
+        
+        uniqueBlockData.forEach(item => {
+            blockData.push(item);
+        });
+        
         console.log(blockData);
     } catch (error) {
         console.error(error);
@@ -166,15 +184,16 @@ function createCard(ip, blockHeight, version, minedForAllTime, minedToday, nodeS
     versionRow.textContent = version;
     card.appendChild(versionRow);
 
-    const todayRow = document.createElement('div');
-    todayRow.className = 'node-card-today';
-    todayRow.textContent = minedToday;
-    card.appendChild(todayRow);
-
+    
     const allTimeRow = document.createElement('div');
     allTimeRow.className = 'node-card-all';
     allTimeRow.textContent = minedForAllTime;
     card.appendChild(allTimeRow);
+
+    const todayRow = document.createElement('div');
+    todayRow.className = 'node-card-today';
+    todayRow.textContent = minedToday;
+    card.appendChild(todayRow);
 
     const stateRow = document.createElement('div');
     stateRow.className = 'node-card-state';
