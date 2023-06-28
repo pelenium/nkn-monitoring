@@ -49,25 +49,33 @@ function getBlockHeight(ip) {
         .catch(error => console.error(error));
 }
 
-function getBlockCount(ip) {
+async function getBlockCount(ip) {
     const url = `http://${ip}:30003`;
     const requestData = {
-        jsonrpc: "2.0",
-        method:  "getblockcount",
-        params:  {},
-        id: 1,
+      jsonrpc: '2.0',
+      method: 'getblockcount',
+      params: {},
+      id: 1,
     };
-    return fetch(url, {
+  
+    try {
+      const response = await fetch(url, {
         method: 'POST',
         body: JSON.stringify(requestData),
-    })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data.result);
-            return data.result;
-        })
-        .catch(error => console.error(error));
-}
+      });
+      const data = await response.json();
+  
+      if (response.ok) {
+        return data.result; // Возвращаем общее количество блоков
+      } else {
+        throw new Error(data.error.message);
+      }
+    } catch (error) {
+      console.error('Произошла ошибка:', error.message);
+      // Обработка ошибки - можно вернуть значение по умолчанию или выбрать другой способ обработки.
+      return null;
+    }
+  }
 
 function getNodeState(ip) {
     const url = `http://${ip}:30003`;
