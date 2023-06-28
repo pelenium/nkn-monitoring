@@ -1,5 +1,5 @@
+var blockData = {};
 async function main() {
-    var blockData = {};
     try {
         const response = await fetch('/api');
         const data = await response.json();
