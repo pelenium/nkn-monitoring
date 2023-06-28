@@ -10,13 +10,13 @@ import (
 
 type data struct {
 	ip    string
-	ever  int
-	today int
+	blocks_ever  int
+	blocks_today int
 }
 
 func Api(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		result := []interface{}{}
+		result := []data{}
 
 		req := `SELECT * FROM nodes_ip`
 
@@ -28,10 +28,11 @@ func Api(db *sql.DB) gin.HandlerFunc {
 
 		for rows.Next() {
 			var info data
-			err = rows.Scan(&info.ip, &info.ever, &info.today)
+			err = rows.Scan(&info.ip, &info.blocks_ever, &info.blocks_today)
 			if err != nil {
 				panic(err)
 			}
+			fmt.Println(info)
 			result = append(result, info)
 		}
 		fmt.Println(result)
