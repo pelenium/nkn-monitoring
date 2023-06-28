@@ -29,7 +29,7 @@ async function main() {
             const blockNumberToday = data[i].blocks_today;
             const nodeState = await getNodeState(ip);
             const version = await getVersion(ip);
-            const blockHash = await getBlockHash(ip, blockHeight);
+            const blockHash = await getBlockHash(ip);
 
             console.log(blockHash);
 
@@ -51,8 +51,8 @@ async function main() {
 function getBlockHeight(ip) {
     const url = `http://${ip}:30003`;
     const requestData = {
-        jsonrpc: '2.0',
-        method: 'getlatestblockheight',
+        jsonrpc: "2.0",
+        method: "getlatestblockheight",
         params: {},
         id: 1,
     };
