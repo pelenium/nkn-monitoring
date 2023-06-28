@@ -16,18 +16,11 @@ async function main() {
             var ip = data[i].trim();
 
             const blockHeight = await getBlockHeight(ip);
-            console.log(blockHeight);
-
             const blockCount = await getBlockCount(ip);
-            console.log(blockCount);
-
             const nodeState = await getNodeState(ip);
-            console.log(nodeState);
-
             const version = await getVersion(ip);
-            console.log(version);
 
-            createCard(ip, blockHeight, version, blockCount, blockCount, nodeState);
+            createCard(ip, blockHeight, version, 25, 25, nodeState);
         }
     } catch (error) {
         console.error(error);
