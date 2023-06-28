@@ -15,6 +15,8 @@ async function main() {
         for (var i = 0; i < data.length; i++) {
             var ip = data[i].trim();
 
+            console.log(ip);
+
             const blockHeight = await getBlockHeight(ip);
             const blockCount = await getBlockCount(ip);
             console.log(`height - ${blockHeight}\ncount - ${blockCount}`);
