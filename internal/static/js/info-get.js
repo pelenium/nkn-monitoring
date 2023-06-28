@@ -20,7 +20,7 @@ async function main() {
             const nodeState = await getNodeState(ip);
             const version = await getVersion(ip);
 
-            createCard(ip, blockHeight, version, 25, 25, nodeState);
+            createCard(ip, 25, version, 25, 25, nodeState);
         }
     } catch (error) {
         console.error(error);
