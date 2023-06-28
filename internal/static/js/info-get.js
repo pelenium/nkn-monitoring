@@ -56,8 +56,8 @@ function sendData(jsn, ever, today) {
 
     var data = {
         ip: jsn,
-        num_ever: ever, 
-        num_today: today
+        blocks_ever: ever, 
+        blocks_today: today
     };
     xhr.send(JSON.stringify(data));
 }
