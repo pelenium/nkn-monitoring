@@ -30,8 +30,11 @@ async function main() {
             const nodeState = await getNodeState(ip);
             const version = await getVersion(ip);
             const blockHash = await getBlockHashByHeight(ip, blockHeight);
+            
+            arr = blockData[data[i].ip];
+            arr.push(blockHash)
 
-            blockData[data[i].ip.trim()] = blockData[data[i].ip.trim()].push(blockHash)
+            blockData[data[i].ip] = arr
 
             createCard(ip, blockHeight, version, blockNumberEver, blockNumberToday, nodeState);
         }
