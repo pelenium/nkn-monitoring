@@ -15,10 +15,8 @@ async function main() {
 
         blockData.length = data.length;
 
-        if (blockData.length == 0) {
-            for (var i = 0; i < data.length; i++) {
-                blockData[data[i].ip] = [];
-            }
+        for (var i = 0; i < data.length; i++) {
+            blockData[data[i].ip] = [];
         }
 
 
