@@ -29,16 +29,16 @@ async function main() {
             var ip = data[i].trim();
 
             const blockHeight = await getBlockHeight(ip);
-            console.log(typeof blockHeight);
+            console.log(blockHeight);
 
             const blockCount = await getBlockCount(ip);
-            console.log(typeof blockCount);
+            console.log(blockCount);
 
             const nodeState = await getNodeState(ip);
-            console.log(typeof nodeState);
+            console.log(nodeState);
 
             const version = await getVersion(ip);
-            console.log(typeof version);
+            console.log(version);
 
             createCard(ip, blockHeight, version, blockCount, blockCount, nodeState);
         }
