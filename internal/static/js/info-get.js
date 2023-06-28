@@ -13,7 +13,7 @@ async function main() {
         }
 
         for (var i = 0; i < data.length; i++) {
-            console.log(data)
+            console.log(data[i])
             // var ip = data[i].trim();
 
             // console.log(ip);
