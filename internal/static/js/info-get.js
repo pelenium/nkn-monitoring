@@ -1,4 +1,3 @@
-
 async function main() {
     var blockData = [];
     try {
@@ -41,7 +40,7 @@ async function main() {
             createCard(ip, blockHeight, version, blockNumberEver, blockNumberToday, nodeState);
         }
 
-        console.log(JSON.stringify(blockData));
+        console.log(blockData);
     } catch (error) {
         console.error(error);
     }
