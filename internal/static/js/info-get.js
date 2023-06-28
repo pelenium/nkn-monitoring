@@ -35,6 +35,7 @@ async function main() {
                 hashes: blockHashes.filter((value, index, self) => self.indexOf(value) === index) // Remove duplicate hashes
             });
         }
+        blockData = [...new Set(blockData)];
         console.log(blockData);
     } catch (error) {
         console.error(error);
