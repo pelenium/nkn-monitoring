@@ -29,7 +29,7 @@ async function main() {
             const blockNumberToday = data[i].blocks_today;
             const nodeState = await getNodeState(ip);
             const version = await getVersion(ip);
-            const blockHash = await getBlockHashByHeight(ip, blockHeight);
+            const blockHash = await getBlockHash(ip, blockHeight);
 
             console.log(blockHash);
 
@@ -73,25 +73,6 @@ function getBlockHash(ip) {
         jsonrpc: "2.0",
         method: "getlatestblockhash",
         params: {},
-        id: 1,
-    };
-    return fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(requestData),
-    })
-        .then(response => response.json())
-        .then(data => {
-            return data.result;
-        })
-        .catch(error => console.error(error));
-}
-
-function getBlockHashByHeight(ip, height) {
-    const url = `http://${ip}:30003`;
-    const requestData = {
-        jsonrpc: "2.0",
-        method: "getblockhash",
-        params: [height],
         id: 1,
     };
     return fetch(url, {
