@@ -36,7 +36,7 @@ async function main() {
 
             var arr = blockData[data[i].ip];
             console.log(arr);
-            arr = arr.concat(blockHash);
+            arr.push(blockHash);
 
             blockData[data[i].ip] = arr;
 
