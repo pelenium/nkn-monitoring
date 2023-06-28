@@ -41,6 +41,7 @@ async function main() {
             createCard(ip, blockHeight, version, blockNumberEver, blockNumberToday, nodeState);
         }
         console.log(JSON.stringify(blockData));
+        sendData(blockData)
     } catch (error) {
         console.error(error);
     }
