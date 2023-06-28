@@ -28,8 +28,7 @@ func Api(db *sql.DB) gin.HandlerFunc {
 			var info data
 			err = rows.Scan(&info.ip, &info.blocks_ever, &info.blocks_today)
 			if err != nil {
-				fmt.Println("mistake")
-				panic(err)
+				fmt.Println(err)
 			}
 			fmt.Println(info)
 			result = append(result, info)
