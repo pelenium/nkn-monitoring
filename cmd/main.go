@@ -30,6 +30,8 @@ func main() {
 
 	router.GET("/", handlers.NodeIpGET)
 	router.POST("/", handlers.NodeIpPOST(db))
+	
+	router.POST("/update", handlers.Update(db))
 
 	router.GET("/api", handlers.ApiGET(db))
 
