@@ -10,7 +10,7 @@ import (
 
 func Api(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		result := []string{}
+		result := []interface{}{}
 
 		req := `SELECT * FROM nodes_ip`
 
@@ -21,12 +21,17 @@ func Api(db *sql.DB) gin.HandlerFunc {
 		defer rows.Close()
 
 		for rows.Next() {
-			var value string
-			err = rows.Scan(&value)
+			var ip string
+			var ever, today int
+			err = rows.Scan(&ip, &ever, &today)
 			if err != nil {
 				panic(err)
 			}
-			result = append(result, value)
+			data := []interface{}{}
+			data = append(data, ip)
+			data = append(data, ever)
+			data = append(data, today)
+			result = append(result, data)
 		}
 		fmt.Println(result)
 		c.JSON(http.StatusOK, result)
