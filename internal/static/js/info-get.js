@@ -12,31 +12,19 @@ async function main() {
                 }
             }
         }
-
         blockData.length = data.length;
-
-        // if (blockData.length == 0) {
-        //     for (var i = 0; i < data.length; i++) {
-        //         blockData[data[i].ip] = [];
-        //     }
-        // }
-
-
         for (var i = 0; i < data.length; i++) {
             var ip = data[i].ip.trim();
-
+            // TODO - make block number for today
             const blockHeight = await getBlockHeight(ip);
-            const blockNumberEver = data[i].blocks_ever;
-            const blockNumberToday = data[i].blocks_today;
+            const blockNumberEver = blockData[data[i].ip].length;
+            const blockNumberToday = blockData[data[i].ip].length;
             const nodeState = await getNodeState(ip);
             const version = await getVersion(ip);
             const blockHash = await getBlockHash(ip);
 
-            console.log(blockHash);
-
             if (data[i].ip in blockData) {
                 var arr = blockData[data[i].ip];
-                console.log(arr);
                 arr.push(blockHash);
                 arr = [...new Set(arr)];
                 blockData[data[i].ip] = arr;
@@ -44,14 +32,24 @@ async function main() {
                 blockData[data[i].ip] = [blockHash];
             }
 
-
             createCard(ip, blockHeight, version, blockNumberEver, blockNumberToday, nodeState);
         }
-
-        console.log(blockData);
+        console.log(JSON.stringify(blockData));
     } catch (error) {
         console.error(error);
     }
+}
+
+function sendData(jsn) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+
+    var data = {
+        key1: 'value1',
+        key2: 'value2'
+    };
+    xhr.send(JSON.stringify(jsn));
 }
 
 function getBlockHeight(ip) {
