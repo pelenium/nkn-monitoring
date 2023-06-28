@@ -20,7 +20,7 @@ async function main() {
             const nodeState = await getNodeState(ip);
             const version = await getVersion(ip);
 
-            createCard(ip, 25, version, 25, 25, nodeState);
+            createCard(ip, blockHeight, version, blockCount, blockCount, nodeState);
         }
     } catch (error) {
         console.error(error);
@@ -114,7 +114,7 @@ function createCard(ip, blockHeight, version, minedToday, minedForAllTime, nodeS
 
     const heightRow = document.createElement('div');
     heightRow.className = 'node-card-height';
-    heightRow.textContent = 230;
+    heightRow.textContent = blockHeight;
     card.appendChild(heightRow);
 
     const versionRow = document.createElement('div');
