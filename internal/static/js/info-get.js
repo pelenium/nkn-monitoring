@@ -22,7 +22,6 @@ async function main() {
 
         for (var i = 0; i < data.length; i++) {
             var ip = data[i].ip.trim();
-            console.log(ip);
 
             const blockHeight = await getBlockHeight(ip);
             const blockNumberEver = data[i].blocks_ever;
@@ -81,7 +80,7 @@ function getBlockHash(ip) {
     })
         .then(response => response.json())
         .then(data => {
-            return data.result;
+            return data.result.hash;
         })
         .catch(error => console.error(error));
 }
