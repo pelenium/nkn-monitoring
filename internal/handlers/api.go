@@ -16,7 +16,7 @@ type data struct {
 
 func Api(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		result := []data{}
+		result := []interface{}{}
 
 		rows, err := db.Query("SELECT ip, blocks_ever, blocks_today FROM nodes_ip;")
 		if err != nil {
@@ -31,7 +31,7 @@ func Api(db *sql.DB) gin.HandlerFunc {
 				fmt.Println(err)
 			}
 			fmt.Println(info)
-			result = append(result, info)
+			result = append(result, info.ip, info.blocks_ever, info.blocks_today)
 		}
 		fmt.Println(result)
 		c.JSON(http.StatusOK, result)
