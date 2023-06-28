@@ -18,7 +18,7 @@ func Api(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		result := []data{}
 
-		req := `SELECT * FROM nodes_ip`
+		req := `SELECT ip, blocks_ever, blocks_today FROM nodes_ip`
 
 		rows, err := db.Query(req)
 		if err != nil {
