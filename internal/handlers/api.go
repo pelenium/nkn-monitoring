@@ -3,12 +3,13 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func Api(db *sql.DB) gin.HandlerFunc {
+func ApiGET(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		result := []interface{}{}
 
@@ -17,7 +18,7 @@ func Api(db *sql.DB) gin.HandlerFunc {
 			fmt.Println(err)
 		}
 		defer rows.Close()
-		
+
 		for rows.Next() {
 			var ip string
 			var blocks_ever, blocks_today int
@@ -31,5 +32,16 @@ func Api(db *sql.DB) gin.HandlerFunc {
 		}
 		fmt.Println(result)
 		c.JSON(http.StatusOK, result)
+	}
+}
+
+func ApiPOST(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		data, err := ioutil.ReadAll(c.Request.Body)
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println(string(data))
 	}
 }

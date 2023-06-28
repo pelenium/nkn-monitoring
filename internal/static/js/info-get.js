@@ -1,3 +1,5 @@
+const blockData = []; // Array to store IP, blocks_ever, blocks_today, and hashes
+
 async function main() {
     try {
         const response = await fetch('/api');
@@ -13,9 +15,7 @@ async function main() {
         }
 
         for (var i = 0; i < data.length; i++) {
-            console.log(data[i].ip, data[i].blocks_ever, data[i].blocks_today);
             var ip = data[i].ip.trim();
-
             console.log(ip);
 
             const blockHeight = await getBlockHeight(ip);
@@ -23,8 +23,17 @@ async function main() {
             const blockNumberToday = data[i].blocks_today;
             const nodeState = await getNodeState(ip);
             const version = await getVersion(ip);
+            const blockHashes = await getBlockHashes(ip); // Get block hashes for the IP
 
             createCard(ip, blockHeight, version, blockNumberEver, blockNumberToday, nodeState);
+
+            // Store IP, blocks_ever, blocks_today, and hashes in the array
+            blockData.push({
+                ip: ip,
+                blocks_ever: blockNumberEver,
+                blocks_today: blockNumberToday,
+                hashes: blockHashes.filter((value, index, self) => self.indexOf(value) === index) // Remove duplicate hashes
+            });
         }
     } catch (error) {
         console.error(error);
@@ -50,32 +59,52 @@ function getBlockHeight(ip) {
         .catch(error => console.error(error));
 }
 
-async function getBlockCount(ip) {
+function getBlockHash(ip) {
     const url = `http://${ip}:30003`;
     const requestData = {
-        jsonrpc: '2.0',
-        method: 'getblockcount',
+        jsonrpc: "2.0",
+        method: "getlatestblockhash",
         params: {},
         id: 1,
     };
+    return fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(requestData),
+    })
+        .then(response => response.json())
+        .then(data => {
+            return data.result;
+        })
+        .catch(error => console.error(error));
+}
 
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            body: JSON.stringify(requestData),
-        });
-        const data = await response.json();
-
-        if (response.ok) {
-            return data.result; // Возвращаем общее количество блоков
-        } else {
-            throw new Error(data.error.message);
-        }
-    } catch (error) {
-        console.error('Произошла ошибка:', error.message);
-        // Обработка ошибки - можно вернуть значение по умолчанию или выбрать другой способ обработки.
-        return null;
+async function getBlockHashes(ip) {
+    const blockHashes = [];
+    const blockHeight = await getBlockHeight(ip);
+    for (let i = 1; i <= blockHeight; i++) {
+        const blockHash = await getBlockHashByHeight(ip, i);
+        blockHashes.push(blockHash);
     }
+    return blockHashes;
+}
+
+function getBlockHashByHeight(ip, height) {
+    const url = `http://${ip}:30003`;
+    const requestData = {
+        jsonrpc: "2.0",
+        method: "getblockhash",
+        params: [height],
+        id: 1,
+    };
+    return fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(requestData),
+    })
+        .then(response => response.json())
+        .then(data => {
+            return data.result;
+        })
+        .catch(error => console.error(error));
 }
 
 function getNodeState(ip) {
@@ -155,5 +184,4 @@ function createCard(ip, blockHeight, version, minedForAllTime, minedToday, nodeS
 }
 
 main();
-
 setInterval(main, 10000);
