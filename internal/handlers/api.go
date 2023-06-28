@@ -8,6 +8,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type data struct {
+	ip    string
+	ever  int
+	today int
+}
+
 func Api(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		result := []interface{}{}
@@ -21,17 +27,12 @@ func Api(db *sql.DB) gin.HandlerFunc {
 		defer rows.Close()
 
 		for rows.Next() {
-			var ip string
-			var ever, today int
-			err = rows.Scan(&ip, &ever, &today)
+			var info data
+			err = rows.Scan(&info.ip, &info.ever, &info.today)
 			if err != nil {
 				panic(err)
 			}
-			data := []interface{}{}
-			data = append(data, ip)
-			data = append(data, ever)
-			data = append(data, today)
-			result = append(result, data)
+			result = append(result, info)
 		}
 		fmt.Println(result)
 		c.JSON(http.StatusOK, result)
