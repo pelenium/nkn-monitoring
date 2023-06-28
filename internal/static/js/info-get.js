@@ -17,6 +17,7 @@ async function main() {
 
             const blockHeight = await getBlockHeight(ip);
             const blockCount = await getBlockCount(ip);
+            console.log(`height - ${blockHeight}\ncount - ${blockCount}`);
             const nodeState = await getNodeState(ip);
             const version = await getVersion(ip);
 
