@@ -1,6 +1,6 @@
-const blockData = [];
 
 async function main() {
+    var blockData = [];
     try {
         const response = await fetch('/api');
         const data = await response.json();
@@ -14,6 +14,12 @@ async function main() {
             }
         }
 
+        blockData.length = data.length;
+
+        for (var i = 0; i < data.length; i++) {
+            blockData[data[i].ip] = [];
+        }
+
         for (var i = 0; i < data.length; i++) {
             var ip = data[i].ip.trim();
             console.log(ip);
@@ -23,21 +29,14 @@ async function main() {
             const blockNumberToday = data[i].blocks_today;
             const nodeState = await getNodeState(ip);
             const version = await getVersion(ip);
-            const blockHashes = await getBlockHashes(ip);
+            const blockHash = await getBlockHashByHeight(ip, blockHeight);
+
+            blockData[data[i].ip.trim()] = blockData[data[i].ip.trim()].push(blockHash)
 
             createCard(ip, blockHeight, version, blockNumberEver, blockNumberToday, nodeState);
-
-            const uniqueBlockHashes = blockHashes.filter((value, index, self) => self.indexOf(value) === index);
-
-            blockData.push({
-                ip: ip,
-                blocks_ever: blockNumberEver,
-                blocks_today: blockNumberToday,
-                hashes: uniqueBlockHashes
-            });
         }
 
-        console.log(blockData);
+        console.log(JSON.stringify(blockData));
     } catch (error) {
         console.error(error);
     }
@@ -79,16 +78,6 @@ function getBlockHash(ip) {
             return data.result;
         })
         .catch(error => console.error(error));
-}
-
-async function getBlockHashes(ip) {
-    const blockHashes = [];
-    const blockHeight = await getBlockHeight(ip);
-    for (let i = 1; i <= blockHeight; i++) {
-        const blockHash = await getBlockHashByHeight(ip, i);
-        blockHashes.push(blockHash);
-    }
-    return blockHashes;
 }
 
 function getBlockHashByHeight(ip, height) {
@@ -167,16 +156,15 @@ function createCard(ip, blockHeight, version, minedForAllTime, minedToday, nodeS
     versionRow.textContent = version;
     card.appendChild(versionRow);
 
+    const todayRow = document.createElement('div');
+    todayRow.className = 'node-card-today';
+    todayRow.textContent = minedToday;
+    card.appendChild(todayRow);
 
     const allTimeRow = document.createElement('div');
     allTimeRow.className = 'node-card-all';
     allTimeRow.textContent = minedForAllTime;
     card.appendChild(allTimeRow);
-
-    const todayRow = document.createElement('div');
-    todayRow.className = 'node-card-today';
-    todayRow.textContent = minedToday;
-    card.appendChild(todayRow);
 
     const stateRow = document.createElement('div');
     stateRow.className = 'node-card-state';
