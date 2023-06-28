@@ -114,7 +114,7 @@ function createCard(ip, blockHeight, version, minedToday, minedForAllTime, nodeS
 
     const heightRow = document.createElement('div');
     heightRow.className = 'node-card-height';
-    heightRow.textContent = blockHeight;
+    heightRow.textContent = 230;
     card.appendChild(heightRow);
 
     const versionRow = document.createElement('div');
