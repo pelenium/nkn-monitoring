@@ -17,8 +17,14 @@ async function main() {
             var ip = data[i].ip.trim();
             // TODO - make block number for today
             const blockHeight = await getBlockHeight(ip);
-            const blockNumberEver = blockData[data[i].ip].length;
-            const blockNumberToday = blockData[data[i].ip].length;
+            var blockNumberEver, blockNumberToday
+            if (data[i].ip in blockData) {
+                blockNumberEver = blockData[data[i].ip].length;
+                blockNumberToday = blockData[data[i].ip].length;
+            } else {
+                blockNumberEver = 0;
+                blockNumberToday = 0;
+            }
             const nodeState = await getNodeState(ip);
             const version = await getVersion(ip);
             const blockHash = await getBlockHash(ip);
