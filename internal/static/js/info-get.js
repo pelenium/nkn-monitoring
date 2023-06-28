@@ -51,7 +51,7 @@ async function main() {
 
 function sendData(jsn, ever, today) {
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/", true);
+    xhr.open("POST", "/update", true);
     xhr.setRequestHeader("Content-Type", "application/json");
 
     var data = {
