@@ -25,7 +25,7 @@ func Api(db *sql.DB) gin.HandlerFunc {
 			if err != nil {
 				fmt.Println(err)
 			}
-			data := []interface{}{ip, blocks_ever, blocks_today}
+			data := map[string]interface{}{"ip": ip, "blocks_ever": blocks_ever, "blocks_today": blocks_today}
 
 			result = append(result, data)
 		}
