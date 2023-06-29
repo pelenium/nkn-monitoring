@@ -1,26 +1,32 @@
+document.getElementById("myButton").addEventListener("click", async function () {
+    await sendIP();
+    console.log("Асинхронная функция выполнена");
+});
+
+
 async function sendIP() {
     var ip = String(document.getElementById("ip").value);
     var url = "/";
     var arr = ip.split(" ");
 
-    for (var i = 0; i < arr.length; i++) {
-        console.log(arr[i].trim());
-        var data = JSON.stringify({
-            ip: arr[i].trim(),
-        });
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
 
-        try {
-            await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: data,
+    var i = 0;
+
+    function sendNextIP() {
+        if (i < arr.length) {
+            var data = JSON.stringify({
+                ip: arr[i],
             });
-        } catch (error) {
-            console.error(error);
+            xhr.send(data);
+            i++;
+
+            setTimeout(sendNextIP, 100);
         }
     }
-    
+
+    sendNextIP();
+
     document.getElementById("ip").value = "";
 }
