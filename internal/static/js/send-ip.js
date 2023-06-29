@@ -3,7 +3,7 @@ function sendIP() {
     var url = "/";
     console.log(ip);
     var arr = ip.split(" ");
-    arr.unshift("aaa");
+    arr.unshift("0.0.0.0");
     console.log(arr);
 
     for (var i = 0; i < arr.length; i++) {
