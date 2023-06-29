@@ -35,7 +35,7 @@ body {
 
 input[type="text"] {
     padding: 10px;
-    border: none;
+    border-color: black;
     border-radius: 5px;
     font-size: 16px;
     color: #333;
@@ -45,7 +45,7 @@ input[type="text"] {
     max-width: 100%;
     box-sizing: border-box;
     margin: 0 auto;
-  }
+}
 
 .names,
 ul {
