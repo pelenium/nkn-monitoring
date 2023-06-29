@@ -1,4 +1,3 @@
-var blockData = {};
 async function main() {
     try {
         const response = await fetch('/api');
@@ -12,44 +11,25 @@ async function main() {
                 }
             }
         }
-        blockData.length = data.length;
         for (var i = 0; i < data.length; i++) {
             var ip = data[i].ip.trim();
             // TODO - make block number for today
             const blockHeight = await getBlockHeight(ip);
-            var blockNumberEver, blockNumberToday
+            const blockNumberEver = await getBlockNumber(ip);
+            const blockNumberToday = await getBlockNumber(ip);
             const nodeState = await getNodeState(ip);
             const version = await getVersion(ip);
-            const blockHash = await getBlockHash(ip);
 
-            if (data[i].ip in blockData) {
-                var arr = blockData[data[i].ip];
-                arr.push(blockHash);
-                arr = [...new Set(arr)];
-                blockData[data[i].ip] = arr;
-            } else {
-                blockData[data[i].ip] = [blockHash];
-            }
-
-            if (data[i].ip in blockData) {
-                blockNumberEver = blockData[data[i].ip].length;
-                blockNumberToday = blockData[data[i].ip].length;
-            } else {
-                blockNumberEver = 0;
-                blockNumberToday = 0;
-            }
-
-            sendData(blockData, data[i].ip, blockNumberEver, blockNumberToday)
+            sendData(data[i].ip, blockNumberEver, blockNumberToday)
 
             createCard(ip, blockHeight, version, blockNumberEver, blockNumberToday, nodeState);
         }
-        console.log(JSON.stringify(blockData));
     } catch (error) {
         console.error(error);
     }
 }
 
-function sendData(jsn, ip, ever, today) {
+function sendData(ip, ever, today) {
     let xhr = new XMLHttpRequest();
     let url = "/update";
 
@@ -90,11 +70,11 @@ function getBlockHeight(ip) {
         .catch(error => console.error(error));
 }
 
-function getBlockHash(ip) {
+function getBlockNumber(ip) {
     const url = `http://${ip}:30003`;
     const requestData = {
         jsonrpc: "2.0",
-        method: "getlatestblockhash",
+        method: "getnodestate",
         params: {},
         id: 1,
     };
@@ -104,7 +84,7 @@ function getBlockHash(ip) {
     })
         .then(response => response.json())
         .then(data => {
-            return data.result.hash;
+            return data.result.proposalSubmitted;
         })
         .catch(error => console.error(error));
 }
