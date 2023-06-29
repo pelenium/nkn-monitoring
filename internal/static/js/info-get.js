@@ -198,4 +198,4 @@ function createCard(ip, blockHeight, version, time, hours, minedForAllTime, mine
     list.appendChild(card);
 }
 main();
-setInterval(main, 10000);
+setInterval(main, 15000);
