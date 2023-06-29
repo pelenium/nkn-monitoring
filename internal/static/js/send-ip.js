@@ -14,4 +14,6 @@ function sendIP() {
         });
         xhr.send(data);
     }
+
+    document.getElementById("ip").value = ""
 }
