@@ -23,7 +23,8 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 			panic(err)
 		}
 
-		ip := gjson.Get(string(jsn), "ip").String()
+		ip_first := gjson.Get(string(jsn), "ip").String()
+		ip := ip_first[:len(ip_first) - 1]
 		blocks_ever := gjson.Get(string(jsn), "blocks_ever").Int()
 		blocks_today := gjson.Get(string(jsn), "blocks_today").Int()
 
