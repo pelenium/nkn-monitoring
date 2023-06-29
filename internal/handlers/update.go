@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 
 	"github.com/gin-gonic/gin"
+	"github.com/tidwall/gjson"
 )
 
 func Update(db *sql.DB) gin.HandlerFunc {
@@ -15,6 +16,10 @@ func Update(db *sql.DB) gin.HandlerFunc {
 			panic(err)
 		}
 
-		fmt.Println(string(req))
+		ip := gjson.Get(string(req), "ip").String()
+		ever := gjson.Get(string(req), "blocks_ever").String()
+		today := gjson.Get(string(req), "blocks_today").String()
+
+		fmt.Println(ip, "\n", ever, "\n", today)
 	}
 }
