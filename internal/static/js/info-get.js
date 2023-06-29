@@ -19,12 +19,17 @@ async function main() {
                 const blockNumberToday = await getBlockNumber(ip);
                 const nodeState = await getNodeState(ip);
                 const time = await getTime(ip);
-                var workTime = time < 24 ? time : time / 24;
                 const version = await getVersion(ip);
+                var workTime = time
+                var flag = true
+                if (time > 24) {
+                    workTime = time / 24;
+                    flag = false
+                }
                 if (workTime == time) {
-                    createCard(ip, blockHeight, version, time, true, blockNumberEver, blockNumberToday, nodeState);
+                    createCard(ip, blockHeight, version, time, flag, blockNumberEver, blockNumberToday, nodeState);
                 } else {
-                    createCard(ip, blockHeight, version, time, false, blockNumberEver, blockNumberToday, nodeState);
+                    createCard(ip, blockHeight, version, time, flag, blockNumberEver, blockNumberToday, nodeState);
                 }
 
             } else {
