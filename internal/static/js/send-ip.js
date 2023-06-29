@@ -9,6 +9,7 @@ function sendIP() {
     xhr.setRequestHeader("Content-Type", "application/json");
 
     for (var i = 0; i < arr.length; i++) {
+        console.log(arr[i].trim());
         var data = JSON.stringify({
             ip: arr[i].trim(),
         });
