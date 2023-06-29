@@ -10,23 +10,29 @@ async function main() {
                 }
             }
         }
-        for (var i = 0; i < data.length; i++) {
-            var ip = data[i].ip;
-            // TODO - make block number for today
-            const blockHeight = await getBlockHeight(ip);
-            const blockNumberEver = await getBlockNumber(ip);
-            const blockNumberToday = await getBlockNumber(ip);
-            const nodeState = await getNodeState(ip);
-            const time = await getTime(ip);
-            const version = await getVersion(ip);
-            var workTime = parseFloat(time).toFixed(1)
-            var flag = true
-            if (time > 24) {
-                workTime = (time / 24).toFixed(1);
-                flag = false
+
+        const requests = data.map(async (item) => {
+            const ip = item.ip;
+            try {
+                const blockHeight = await getBlockHeight(ip);
+                const blockNumberEver = await getBlockNumber(ip);
+                const blockNumberToday = await getBlockNumber(ip);
+                const nodeState = await getNodeState(ip);
+                const time = await getTime(ip);
+                const version = await getVersion(ip);
+                var workTime = parseFloat(time).toFixed(1)
+                var flag = true
+                if (time > 24) {
+                    workTime = (time / 24).toFixed(1);
+                    flag = false
+                }
+                createCard(ip, blockHeight, version, workTime, flag, blockNumberEver, blockNumberToday, nodeState);
+            } catch (error) {
+                console.error(error);
             }
-            createCard(ip, blockHeight, version, workTime, flag, blockNumberEver, blockNumberToday, nodeState);
-        }
+        });
+
+        await Promise.all(requests);
     } catch (error) {
         console.error(error);
     }
