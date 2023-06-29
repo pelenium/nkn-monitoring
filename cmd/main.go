@@ -33,8 +33,8 @@ func main() {
 	
 	router.GET("/api", handlers.ApiGET(db))
 
-	router.GET("/update", handlers.NodeIpGET)
-	router.POST("/update", handlers.NodeIpPOST(db))
+	router.GET("/update", func(c *gin.Context) {})
+	router.POST("/update", func(c *gin.Context) {})
 	
 	// router.GET("/updt", handlers.NodeIpGET)
 	// router.POST("/updt", handlers.Update(db))
