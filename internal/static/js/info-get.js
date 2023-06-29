@@ -39,7 +39,7 @@ async function main() {
                 blockNumberToday = 0;
             }
 
-            sendData(blockData, blockNumberEver, blockNumberToday)
+            sendData(blockData, data[i].ip, blockNumberEver, blockNumberToday)
 
             createCard(ip, blockHeight, version, blockNumberEver, blockNumberToday, nodeState);
         }
@@ -49,7 +49,7 @@ async function main() {
     }
 }
 
-function sendData(jsn, ever, today) {
+function sendData(jsn, ip, ever, today) {
     let xhr = new XMLHttpRequest();
     let url = "/update";
 
@@ -63,11 +63,11 @@ function sendData(jsn, ever, today) {
     };
     
     var data = JSON.stringify({
-        ip: jsn,
+        ip: ip,
         blocks_ever: ever,
         blocks_today: today,
     });
-    xhr.send(JSON.stringify(jsn));
+    xhr.send(JSON.stringify(data));
 }
 
 function getBlockHeight(ip) {
