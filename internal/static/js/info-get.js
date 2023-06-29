@@ -13,18 +13,24 @@ async function main() {
         for (var i = 0; i < data.length; i++) {
             var ip = data[i].ip;
             // TODO - make block number for today
-            if (checkConnection(ip) !== true) {
-                const blockHeight = await getBlockHeight(ip);
-                const blockNumberEver = await getBlockNumber(ip);
-                const blockNumberToday = await getBlockNumber(ip);
-                const nodeState = await getNodeState(ip);
-                const time = await getTime(ip);
-                const version = await getVersion(ip);
-
-                createCard(ip, blockHeight, version, time, blockNumberEver, blockNumberToday, nodeState);
-            } else {
-                createCard(ip, "-", "-", "-", "-", "-", "OFFLINE");
+            // if (checkConnection(ip) !== true) {
+            const blockHeight = await getBlockHeight(ip);
+            const blockNumberEver = await getBlockNumber(ip);
+            const blockNumberToday = await getBlockNumber(ip);
+            const nodeState = await getNodeState(ip);
+            const time = await getTime(ip);
+            const version = await getVersion(ip);
+            var workTime = parseFloat(time).toFixed(1)
+            var flag = true
+            if (time > 24) {
+                workTime = (time / 24).toFixed(1);
+                flag = false
             }
+            createCard(ip, blockHeight, version, workTime, flag, blockNumberEver, blockNumberToday, nodeState);
+
+            // } else {
+            //     createCard(ip, "-", "-", "-", false, "-", "-", "OFFLINE");
+            // }
         }
     } catch (error) {
         console.error(error);
@@ -61,7 +67,9 @@ function getBlockHeight(ip) {
         .then(data => {
             return data.result;
         })
-        .catch(error => console.error(error));
+        .catch(error => {
+            return "-"
+        });
 }
 
 function getBlockNumber(ip) {
@@ -80,7 +88,9 @@ function getBlockNumber(ip) {
         .then(data => {
             return data.result.proposalSubmitted;
         })
-        .catch(error => console.error(error));
+        .catch(error => {
+            return "-"
+        });
 }
 
 function getTime(ip) {
@@ -99,7 +109,9 @@ function getTime(ip) {
         .then(data => {
             return (parseFloat(data.result.uptime) / 3600.0).toFixed(1);
         })
-        .catch(error => console.error(error));
+        .catch(error => {
+            return "-"
+        });
 }
 
 function getNodeState(ip) {
@@ -118,7 +130,9 @@ function getNodeState(ip) {
         .then(data => {
             return data.result.syncState;
         })
-        .catch(error => console.error(error));
+        .catch(error => {
+            return "OFFLINE"
+        });
 }
 
 function getVersion(ip) {
@@ -137,10 +151,12 @@ function getVersion(ip) {
         .then(data => {
             return data.result;
         })
-        .catch(error => console.error(error));
+        .catch(error => {
+            return "-"
+        });
 }
 
-function createCard(ip, blockHeight, version, time, minedForAllTime, minedToday, nodeState) {
+function createCard(ip, blockHeight, version, time, hours, minedForAllTime, minedToday, nodeState) {
     const card = document.createElement('div');
     card.className = 'node-card';
 
@@ -161,7 +177,11 @@ function createCard(ip, blockHeight, version, time, minedForAllTime, minedToday,
 
     const timeRow = document.createElement('div');
     timeRow.className = 'node-card-time';
-    timeRow.textContent = `${time} hours`;
+    if (hours == true) {
+        timeRow.textContent = `${time} hours`;
+    } else {
+        timeRow.textContent = `${time} days`;
+    }
     card.appendChild(timeRow);
 
     const allTimeRow = document.createElement('div');
