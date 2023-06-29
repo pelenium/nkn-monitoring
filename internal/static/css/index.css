@@ -58,6 +58,17 @@ li {
     position: relative;
 }
 
+.node-card-names {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    position: relative;
+}
+
 .node-card-ip,
 .node-card-height,
 .node-card-version,
