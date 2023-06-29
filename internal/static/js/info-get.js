@@ -13,7 +13,7 @@ async function main() {
         for (var i = 0; i < data.length; i++) {
             var ip = data[i].ip;
             // TODO - make block number for today
-            // if (checkConnection(ip) === true) {
+            if (checkConnection(ip) !== true) {
                 const blockHeight = await getBlockHeight(ip);
                 const blockNumberEver = await getBlockNumber(ip);
                 const blockNumberToday = await getBlockNumber(ip);
@@ -22,9 +22,9 @@ async function main() {
                 const version = await getVersion(ip);
 
                 createCard(ip, blockHeight, version, time, blockNumberEver, blockNumberToday, nodeState);
-            // } else {
-            //     createCard(ip, "-", "-", "-", "-", "-", "OFFLINE");
-            // }
+            } else {
+                createCard(ip, "-", "-", "-", "-", "-", "OFFLINE");
+            }
         }
     } catch (error) {
         console.error(error);
@@ -161,7 +161,7 @@ function createCard(ip, blockHeight, version, time, minedForAllTime, minedToday,
 
     const timeRow = document.createElement('div');
     timeRow.className = 'node-card-time';
-    timeRow.textContent = time;
+    timeRow.textContent = `${time} hours`;
     card.appendChild(timeRow);
 
     const allTimeRow = document.createElement('div');
