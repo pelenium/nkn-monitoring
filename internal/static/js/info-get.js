@@ -5,28 +5,48 @@ async function main() {
         const list = document.getElementById("list");
 
         if (list !== null) {
-            list.innerHTML = ""; // Очистка содержимого списка
-        }
+            for (const { ip } of data) {
+                const listItem = document.querySelector(`[data-ip="${ip}"]`);
+                if (listItem) {
+                    const [blockHeight, , , nodeState, time, version] = await Promise.all([
+                        getBlockHeight(ip),
+                        getBlockNumber(ip),
+                        getBlockNumber(ip),
+                        getNodeState(ip),
+                        getTime(ip),
+                        getVersion(ip)
+                    ]);
 
-        for (const { ip } of data) {
-            const [blockHeight, blockNumberEver, blockNumberToday, nodeState, time, version] = await Promise.all([
-                getBlockHeight(ip),
-                getBlockNumber(ip),
-                getBlockNumber(ip),
-                getNodeState(ip),
-                getTime(ip),
-                getVersion(ip)
-            ]);
+                    let workTime = parseFloat(time).toFixed(1);
+                    let flag = true;
 
-            let workTime = parseFloat(time).toFixed(1);
-            let flag = true;
+                    if (time > 24) {
+                        workTime = parseFloat(time / 24).toFixed(1);
+                        flag = false;
+                    }
 
-            if (time > 24) {
-                workTime = parseFloat(time / 24).toFixed(1);
-                flag = false;
+                    updateCard(listItem, blockHeight, version, workTime, flag, nodeState);
+                } else {
+                    const [blockHeight, blockNumberEver, blockNumberToday, nodeState, time, version] = await Promise.all([
+                        getBlockHeight(ip),
+                        getBlockNumber(ip),
+                        getBlockNumber(ip),
+                        getNodeState(ip),
+                        getTime(ip),
+                        getVersion(ip)
+                    ]);
+
+                    let workTime = parseFloat(time).toFixed(1);
+                    let flag = true;
+
+                    if (time > 24) {
+                        workTime = parseFloat(time / 24).toFixed(1);
+                        flag = false;
+                    }
+
+                    createCard(ip, blockHeight, version, workTime, flag, blockNumberEver, blockNumberToday, nodeState);
+                }
             }
-
-            createCard(ip, blockHeight, version, workTime, flag, blockNumberEver, blockNumberToday, nodeState);
         }
     } catch (error) {
         console.error(error);
@@ -90,6 +110,7 @@ async function getVersion(ip) {
 function createCard(ip, blockHeight, version, time, hours, minedForAllTime, minedToday, nodeState) {
     const card = document.createElement('div');
     card.className = 'node-card';
+    card.setAttribute('data-ip', ip);
 
     const ipRow = document.createElement('div');
     ipRow.className = 'node-card-ip';
@@ -129,6 +150,29 @@ function createCard(ip, blockHeight, version, time, hours, minedForAllTime, mine
     const list = document.getElementById("list");
     if (list !== null) {
         list.appendChild(card);
+    }
+}
+
+function updateCard(card, blockHeight, version, time, hours, nodeState) {
+    const heightRow = card.querySelector('.node-card-height');
+    const versionRow = card.querySelector('.node-card-version');
+    const timeRow = card.querySelector('.node-card-time');
+    const stateRow = card.querySelector('.node-card-state');
+
+    if (heightRow) {
+        heightRow.textContent = blockHeight;
+    }
+
+    if (versionRow) {
+        versionRow.textContent = version;
+    }
+
+    if (timeRow) {
+        timeRow.textContent = hours ? `${time} hours` : `${time} days`;
+    }
+
+    if (stateRow) {
+        stateRow.textContent = nodeState;
     }
 }
 
