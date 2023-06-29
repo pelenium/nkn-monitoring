@@ -19,9 +19,14 @@ async function main() {
                 const blockNumberToday = await getBlockNumber(ip);
                 const nodeState = await getNodeState(ip);
                 const time = await getTime(ip);
+                var workTime = time < 24 ? time : time / 24;
                 const version = await getVersion(ip);
+                if (workTime == time) {
+                    createCard(ip, blockHeight, version, time, true, blockNumberEver, blockNumberToday, nodeState);
+                } else {
+                    createCard(ip, blockHeight, version, time, false, blockNumberEver, blockNumberToday, nodeState);
+                }
 
-                createCard(ip, blockHeight, version, time, blockNumberEver, blockNumberToday, nodeState);
             } else {
                 createCard(ip, "-", "-", "-", "-", "-", "OFFLINE");
             }
@@ -140,7 +145,7 @@ function getVersion(ip) {
         .catch(error => console.error(error));
 }
 
-function createCard(ip, blockHeight, version, time, minedForAllTime, minedToday, nodeState) {
+function createCard(ip, blockHeight, version, time, hours, minedForAllTime, minedToday, nodeState) {
     const card = document.createElement('div');
     card.className = 'node-card';
 
@@ -161,7 +166,11 @@ function createCard(ip, blockHeight, version, time, minedForAllTime, minedToday,
 
     const timeRow = document.createElement('div');
     timeRow.className = 'node-card-time';
-    timeRow.textContent = `${time} hours`;
+    if (hours == true) {
+        timeRow.textContent = `${time} hours`;
+    } else {
+        timeRow.textContent = `${time} days`;
+    }
     card.appendChild(timeRow);
 
     const allTimeRow = document.createElement('div');
