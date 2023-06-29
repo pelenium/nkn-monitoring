@@ -51,11 +51,11 @@ async function main() {
 
 function sendData(jsn, ever, today) {
     let xhr = new XMLHttpRequest();
-    let url = "/update";
+    let url = "/updt";
 
     xhr.open("POST", url, true);
     xhr.setRequestHeader("Content-Type", "application/json");
-    
+
     xhr.onload = function () {
         if (xhr.status === 200) {
             console.log("it's ok");
