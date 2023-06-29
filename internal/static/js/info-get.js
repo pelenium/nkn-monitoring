@@ -61,11 +61,11 @@ function sendData(jsn, ever, today) {
             console.log("it's ok");
         }
     };
-    // ip: jsn,
-    // blocks_ever: ever,
-    // blocks_today: today,
+    
     var data = JSON.stringify({
-        some_key: "aaaaaaaa",
+        ip: jsn,
+        blocks_ever: ever,
+        blocks_today: today,
     });
     xhr.send(data);
 }
