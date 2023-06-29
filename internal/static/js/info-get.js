@@ -131,7 +131,7 @@ function getNodeState(ip) {
             return data.result.syncState;
         })
         .catch(error => {
-            return "-"
+            return "OFFLINE"
         });
 }
 
