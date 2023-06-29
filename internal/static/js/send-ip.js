@@ -1,4 +1,4 @@
-document.getElementById("myButton").addEventListener("click", async function () {
+document.getElementById("submit").addEventListener("click", async function () {
     await sendIP();
     console.log("Асинхронная функция выполнена");
 });
