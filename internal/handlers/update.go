@@ -17,11 +17,11 @@ func Update(db *sql.DB) gin.HandlerFunc {
 		}
 
 		ip := gjson.Get(string(req), "ip").String()
-		ever := gjson.Get(string(req), "blocks_ever").String()
-		today := gjson.Get(string(req), "blocks_today").String()
+		ever := gjson.Get(string(req), "blocks_ever").Int()
+		today := gjson.Get(string(req), "blocks_today").Int()
 
-		update := "UPDATE nodes_ip WHERE blocks_ever = ?, blocks_today = ? WHERE ip = ?"
-		_, err = db.Exec(update, ever, today, ip)
+		// update := "UPDATE nodes_ip WHERE blocks_ever = ?, blocks_today = ? WHERE ip = ?"
+		_, err = db.Exec("UPDATE nodes_ip WHERE blocks_ever = ?, blocks_today = ? WHERE ip = ?", ever, today, ip)
 
 		if err != nil {
 			panic(err)
