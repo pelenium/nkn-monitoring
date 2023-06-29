@@ -67,7 +67,7 @@ function sendData(jsn, ip, ever, today) {
         blocks_ever: ever,
         blocks_today: today,
     });
-    xhr.send(JSON.stringify(data));
+    xhr.send(data);
 }
 
 function getBlockHeight(ip) {
