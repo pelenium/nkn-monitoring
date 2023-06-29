@@ -61,7 +61,8 @@ function sendData(jsn, ip, ever, today) {
             console.log("it's ok");
         }
     };
-    
+    console.log(typeof ever);
+    console.log(typeof today);
     var data = JSON.stringify({
         ip: ip,
         blocks_ever: ever,

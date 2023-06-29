@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"database/sql"
-	"fmt"
+	_"fmt"
 	"io/ioutil"
 
 	"github.com/gin-gonic/gin"
@@ -21,12 +21,12 @@ func Update(db *sql.DB) gin.HandlerFunc {
 		today := gjson.Get(string(req), "blocks_today").Int()
 
 		// update := "UPDATE nodes_ip WHERE blocks_ever = ?, blocks_today = ? WHERE ip = ?"
-		_, err = db.Exec("UPDATE nodes_ip WHERE blocks_ever = ?, blocks_today = ? WHERE ip = ?", ever, today, ip)
+		_, err = db.Exec("UPDATE nodes_ip SET blocks_ever = ?, blocks_today = ? WHERE ip = ?", ever, today, ip)
 
 		if err != nil {
 			panic(err)
 		}
 
-		fmt.Println(ip, "\n", ever, "\n", today)
+		// fmt.Println(ip, "\n", ever, "\n", today)
 	}
 }
