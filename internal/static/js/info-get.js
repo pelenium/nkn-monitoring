@@ -14,15 +14,21 @@ async function main() {
         for (var i = 0; i < data.length; i++) {
             var ip = data[i].ip.trim();
             // TODO - make block number for today
-            const blockHeight = await getBlockHeight(ip);
-            const blockNumberEver = await getBlockNumber(ip);
-            const blockNumberToday = await getBlockNumber(ip);
-            const nodeState = await getNodeState(ip);
-            const version = await getVersion(ip);
+            if (checkConnection(ip) === true) {
+                const blockHeight = await getBlockHeight(ip);
+                const blockNumberEver = await getBlockNumber(ip);
+                const blockNumberToday = await getBlockNumber(ip);
+                const nodeState = await getNodeState(ip);
+                const version = await getVersion(ip);
 
-            sendData(data[i].ip, blockNumberEver, blockNumberToday)
+                sendData(data[i].ip, blockNumberEver, blockNumberToday)
 
-            createCard(ip, blockHeight, version, blockNumberEver, blockNumberToday, nodeState);
+                createCard(ip, blockHeight, version, blockNumberEver, blockNumberToday, nodeState);
+            } else {
+                sendData(data[i].ip, 0, 0)
+
+                createCard(ip, "-", "-", "-", "-", "Offline");
+            }
         }
     } catch (error) {
         console.error(error);
@@ -50,6 +56,21 @@ function sendData(ip, ever, today) {
     });
     xhr.send(data);
 }
+
+async function checkConnection(ip) {
+    const url = `http://${ip}:30003`;
+    
+    try {
+      const response = await fetch(url);
+      if (response.ok) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      return false;
+    }
+  }
 
 function getBlockHeight(ip) {
     const url = `http://${ip}:30003`;
