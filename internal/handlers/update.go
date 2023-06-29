@@ -27,6 +27,6 @@ func Update(db *sql.DB) gin.HandlerFunc {
 			panic(err)
 		}
 
-		fmt.Println(ip + "\n" + ever + "\n" + today)
+		fmt.Println(ip, "\n", ever, "\n", today)
 	}
 }
