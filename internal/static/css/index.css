@@ -33,6 +33,7 @@ body {
     margin-bottom: 10px;
 }
 
+.names,
 ul {
     list-style-type: none;
     margin: 0;
