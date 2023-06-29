@@ -35,7 +35,7 @@ async function main() {
             createCard(ip, blockHeight, version, workTime, flag, blockNumberEver, blockNumberToday, nodeState);
         }
     } catch (error) {
-        console.error(error);
+        console.log("some error");
     }
 }
 

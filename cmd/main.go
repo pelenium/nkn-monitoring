@@ -30,6 +30,8 @@ func main() {
 
 	router.GET("/", handlers.PermissionDenied)
 	router.POST("/", handlers.NodeIpPOST(db))
+	
+	router.POST("/delete", handlers.Delete(db))
 
 	router.GET("/api", handlers.ApiGET(db))
 
