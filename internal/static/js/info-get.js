@@ -2,7 +2,6 @@ async function main() {
     try {
         const response = await fetch('/api');
         const data = await response.json();
-
         const list = document.getElementById("list");
         if (list != null) {
             if (list.childNodes.length > 0) {
@@ -19,15 +18,12 @@ async function main() {
                 const blockNumberEver = await getBlockNumber(ip);
                 const blockNumberToday = await getBlockNumber(ip);
                 const nodeState = await getNodeState(ip);
+                const time = await getTime(ip);
                 const version = await getVersion(ip);
 
-                sendData(ip, blockNumberEver, blockNumberToday)
-
-                createCard(ip, blockHeight, version, blockNumberEver, blockNumberToday, nodeState);
+                createCard(ip, blockHeight, version, time, blockNumberEver, blockNumberToday, nodeState);
             } else {
-                sendData(ip, 0, 0)
-
-                createCard(ip, "-", "-", "-", "-", "Offline");
+                createCard(ip, "-", "-", "-", "-", "-", "OFFLINE");
             }
         }
     } catch (error) {
@@ -35,42 +31,19 @@ async function main() {
     }
 }
 
-function sendData(ip, ever, today) {
-    let xhr = new XMLHttpRequest();
-    let url = "/update";
-
-    xhr.open("POST", url, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            console.log("it's ok");
-        }
-    };
-    console.log(typeof ever);
-    console.log(typeof today);
-    var data = JSON.stringify({
-        ip: ip,
-        blocks_ever: ever,
-        blocks_today: today,
-    });
-    xhr.send(data);
-}
-
 async function checkConnection(ip) {
     const url = `http://${ip}:30003`;
-    
     try {
-      const response = await fetch(url);
-      if (response.ok) {
-        return true;
-      } else {
-        return false;
-      }
+        const response = await fetch(url);
+        if (response.ok) {
+            return true;
+        } else {
+            return false;
+        }
     } catch (error) {
-      return false;
+        return false;
     }
-  }
+}
 
 function getBlockHeight(ip) {
     const url = `http://${ip}:30003`;
@@ -106,6 +79,25 @@ function getBlockNumber(ip) {
         .then(response => response.json())
         .then(data => {
             return data.result.proposalSubmitted;
+        })
+        .catch(error => console.error(error));
+}
+
+function getTime(ip) {
+    const url = `http://${ip}:30003`;
+    const requestData = {
+        jsonrpc: "2.0",
+        method: "getnodestate",
+        params: {},
+        id: 1,
+    };
+    return fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(requestData),
+    })
+        .then(response => response.json())
+        .then(data => {
+            return (parseFloat(data.result.uptime) / 3600.0).toFixed(1);
         })
         .catch(error => console.error(error));
 }
@@ -148,7 +140,7 @@ function getVersion(ip) {
         .catch(error => console.error(error));
 }
 
-function createCard(ip, blockHeight, version, minedForAllTime, minedToday, nodeState) {
+function createCard(ip, blockHeight, version, time, minedForAllTime, minedToday, nodeState) {
     const card = document.createElement('div');
     card.className = 'node-card';
 
@@ -167,15 +159,20 @@ function createCard(ip, blockHeight, version, minedForAllTime, minedToday, nodeS
     versionRow.textContent = version;
     card.appendChild(versionRow);
 
-    const todayRow = document.createElement('div');
-    todayRow.className = 'node-card-today';
-    todayRow.textContent = minedToday;
-    card.appendChild(todayRow);
+    const timeRow = document.createElement('div');
+    timeRow.className = 'node-card-time';
+    timeRow.textContent = time;
+    card.appendChild(timeRow);
 
     const allTimeRow = document.createElement('div');
     allTimeRow.className = 'node-card-all';
     allTimeRow.textContent = minedForAllTime;
     card.appendChild(allTimeRow);
+
+    const todayRow = document.createElement('div');
+    todayRow.className = 'node-card-today';
+    todayRow.textContent = minedToday;
+    card.appendChild(todayRow);
 
     const stateRow = document.createElement('div');
     stateRow.className = 'node-card-state';
@@ -185,6 +182,5 @@ function createCard(ip, blockHeight, version, minedForAllTime, minedToday, nodeS
     const list = document.getElementById("list");
     list.appendChild(card);
 }
-
 main();
 setInterval(main, 10000);

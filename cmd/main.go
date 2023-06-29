@@ -17,7 +17,7 @@ func main() {
 		panic(err)
 	}
 
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS nodes_ip (ip TEXT NOT NULL, blocks_ever INT, blocks_today INT);`)
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS nodes_ip (ip TEXT NOT NULL);`)
 
 	if err != nil {
 		panic(err)
@@ -28,12 +28,10 @@ func main() {
 	router.Static("../internal/static", "./../internal/static")
 	router.LoadHTMLGlob("./../internal/html/*.html")
 
-	router.GET("/", handlers.NodeIpGET)
+	router.GET("/", handlers.PermissionDenied)
 	router.POST("/", handlers.NodeIpPOST(db))
 	
 	router.GET("/api", handlers.ApiGET(db))
-
-	router.POST("/update", handlers.Update(db))
 
 	router.GET("/my-nodes", handlers.MyNodesGET)
 

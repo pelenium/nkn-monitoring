@@ -10,7 +10,7 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-func NodeIpGET(c *gin.Context) {
+func PermissionDenied(c *gin.Context) {
 	c.HTML(http.StatusOK, "permissionDenied.html", gin.H{})
 }
 
@@ -25,15 +25,11 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 
 		ip_first := gjson.Get(string(jsn), "ip").String()
 		ip := ip_first[:len(ip_first) - 1]
-		blocks_ever := gjson.Get(string(jsn), "blocks_ever").Int()
-		blocks_today := gjson.Get(string(jsn), "blocks_today").Int()
 
 		fmt.Println(ip)
-		fmt.Println(blocks_ever)
-		fmt.Println(blocks_today)
 
 		if ip != "" {
-			add := "INSERT INTO nodes_ip (ip, blocks_ever, blocks_today) values(?, ?, ?)"
+			add := "INSERT INTO nodes_ip (ip) value = ?"
 
 			var notExists bool
 
@@ -45,11 +41,13 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 
 			if !notExists {
 				fmt.Println("there no node with such ip")
-				_, err = db.Exec(add, ip, blocks_ever, blocks_today)
+				_, err = db.Exec(add, ip)
 
 				if err != nil {
 					panic(err)
 				}
+			} else {
+				fmt.Println("there's such ip")
 			}
 
 			rows, err := db.Query("SELECT * FROM nodes_ip")
