@@ -4,17 +4,28 @@ function sendIP() {
     console.log(ip);
     var arr = ip.split(" ");
     console.log(arr);
-    var xhr = new XMLHttpRequest();
-
-    xhr.open("POST", url, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-
-    for (var i = 0; i < arr.length; i++) {
-        var data = JSON.stringify({
-            ip: arr[i],
-        });
-        xhr.send(data);
+  
+    function sendRequest(index) {
+      if (index >= arr.length) {
+        document.getElementById("ip").value = "";
+        return;
+      }
+  
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", url, true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+  
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          sendRequest(index + 1);
+        }
+      };
+  
+      var data = JSON.stringify({
+        ip: arr[index],
+      });
+      xhr.send(data);
     }
-
-    document.getElementById("ip").value = "";
-}
+  
+    sendRequest(0);
+  }  
