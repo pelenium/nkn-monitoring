@@ -21,7 +21,7 @@ async function main() {
             const nodeState = await getNodeState(ip);
             const version = await getVersion(ip);
             const blockHash = await getBlockHash(ip);
-            
+
             if (data[i].ip in blockData) {
                 var arr = blockData[data[i].ip];
                 arr.push(blockHash);
@@ -50,16 +50,23 @@ async function main() {
 }
 
 function sendData(jsn, ever, today) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/update", true);
-    xhr.setRequestHeader("Content-Type", "application/json");
+    let xhr = new XMLHttpRequest();
+    let url = "/update";
 
-    var data = {
-        ip: jsn,
-        blocks_ever: ever, 
-        blocks_today: today
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            console.log("it's ok");
+        }
     };
-    xhr.send(JSON.stringify(data));
+    var data = JSON.stringify({
+        ip: jsn,
+        blocks_ever: ever,
+        blocks_today: today,
+    });
+    xhr.send(data);
 }
 
 function getBlockHeight(ip) {
