@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"monitoring/internal/handlers"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
@@ -33,11 +34,9 @@ func main() {
 	
 	router.GET("/api", handlers.ApiGET(db))
 
-	router.GET("/update", func(c *gin.Context) {})
-	router.POST("/update", func(c *gin.Context) {})
-	
-	// router.GET("/updt", handlers.NodeIpGET)
-	// router.POST("/updt", handlers.Update(db))
+	router.GET("/aaa", func(c *gin.Context) {
+		c.JSON(http.StatusTeapot, gin.H{"I'm a ": "teapot"})
+	})
 
 	router.GET("/my-nodes", handlers.MyNodesGET)
 
