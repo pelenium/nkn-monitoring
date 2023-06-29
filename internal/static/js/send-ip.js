@@ -14,7 +14,5 @@ function sendIP() {
         xhr.send(data);
     }
 
-    sendNextIP();
-
     document.getElementById("ip").value = "";
 }
