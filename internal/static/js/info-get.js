@@ -20,13 +20,13 @@ async function main() {
             const nodeState = await getNodeState(ip);
             const time = await getTime(ip);
             const version = await getVersion(ip);
-            var workTime = parseFloat(time).toFixed(1)
+            var workTime = time
             var flag = true
             if (time > 24) {
-                workTime = (time / 24).toFixed(1);
+                workTime = time / 24;
                 flag = false
             }
-            createCard(ip, blockHeight, version, workTime, flag, blockNumberEver, blockNumberToday, nodeState);
+            createCard(ip, blockHeight, version, workTime.toFixed(1), flag, blockNumberEver, blockNumberToday, nodeState);
 
             // } else {
             //     createCard(ip, "-", "-", "-", false, "-", "-", "OFFLINE");
@@ -131,7 +131,7 @@ function getNodeState(ip) {
             return data.result.syncState;
         })
         .catch(error => {
-            return "OFFLINE"
+            return "-"
         });
 }
 
