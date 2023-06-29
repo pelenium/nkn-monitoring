@@ -1,7 +1,9 @@
 function sendIP() {
     var ip = String(document.getElementById("ip").value);
     var url = "/";
+    console.log(ip);
     var arr = ip.split(" ");
+    console.log(arr);
     var xhr = new XMLHttpRequest();
 
     xhr.open("POST", url, true);
