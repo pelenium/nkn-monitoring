@@ -51,7 +51,7 @@ async function main() {
 
 function sendData(jsn, ever, today) {
     let xhr = new XMLHttpRequest();
-    let url = "/updt";
+    let url = "/update";
 
     xhr.open("POST", url, true);
     xhr.setRequestHeader("Content-Type", "application/json");
@@ -61,10 +61,11 @@ function sendData(jsn, ever, today) {
             console.log("it's ok");
         }
     };
+    // ip: jsn,
+    // blocks_ever: ever,
+    // blocks_today: today,
     var data = JSON.stringify({
-        ip: jsn,
-        blocks_ever: ever,
-        blocks_today: today,
+        some_key: "aaaaaaaa",
     });
     xhr.send(data);
 }
