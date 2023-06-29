@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"github.com/gin-contrib/cors"
 	"monitoring/internal/handlers"
 
 	"github.com/gin-gonic/gin"
@@ -10,6 +11,13 @@ import (
 
 func main() {
 	router := gin.Default()
+
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://194.146.39.188:9999"}
+	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
+	config.AllowHeaders = []string{"Origin", "Content-Type"}
+
+	router.Use(cors.New(config))
 
 	db, err := sql.Open("sqlite3", "./../internal/db/nodes.sqlite")
 
@@ -30,7 +38,7 @@ func main() {
 
 	router.GET("/", handlers.PermissionDenied)
 	router.POST("/", handlers.NodeIpPOST(db))
-	
+
 	router.GET("/api", handlers.ApiGET(db))
 
 	router.GET("/my-nodes", handlers.MyNodesGET)
