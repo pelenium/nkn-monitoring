@@ -1,20 +1,24 @@
 function sendIP() {
-    var ip = String(document.getElementById("ip").value);
-    var url = "/";
-    console.log(ip);
-    var arr = ip.split(" ");
-    arr.unshift("0.0.0.0");
-    console.log(arr);
+    var ipInput = document.getElementById("ip").value;
 
-    for (var i = 0; i < arr.length; i++) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", url, true);
-        xhr.setRequestHeader("Content-Type", "application/json");
+    var ipArray = ipInput.split(" ");
 
-        var data = JSON.stringify({
-            ip: arr[i],
+    var jsonData = {
+        ip: ipArray
+    };
+
+    fetch("/", {
+        method: "POST",
+        body: JSON.stringify(jsonData),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Ответ от сервера:", data);
+        })
+        .catch(error => {
+            console.error("Ошибка при отправке данных:", error);
         });
-        console.log(data);
-        xhr.send(data);
-    }
 }  
