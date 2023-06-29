@@ -14,11 +14,10 @@ async function main() {
         for (var i = 0; i < data.length; i++) {
             var ip = data[i].ip;
 
-            const isConnected = await checkConnection(ip);
-            if (!isConnected) {
-                console.log(`Невозможно установить соединение с узлом ${ip}. Пропускаем.`);
+            if (hasLetters(ip)) {
                 continue;
             }
+
             // TODO - make block number for today
             const blockHeight = await getBlockHeight(ip);
             const blockNumberEver = await getBlockNumber(ip);
@@ -39,18 +38,9 @@ async function main() {
     }
 }
 
-async function checkConnection(ip) {
-    const url = `http://${ip}:30003`;
-    try {
-        const response = await fetch(url);
-        if (response.ok) {
-            return true;
-        } else {
-            return false;
-        }
-    } catch (error) {
-        return false;
-    }
+function hasLetters(string) {
+    const regex = /[а-яА-Яa-zA-Z]/;
+    return regex.test(string);
 }
 
 async function checkConnection(ip) {
