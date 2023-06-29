@@ -33,6 +33,20 @@ body {
     margin-bottom: 10px;
 }
 
+input[type="text"] {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    background-color: #fff;
+    width: 50%;
+    height: 30px;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 0 auto;
+  }
+
 .names,
 ul {
     list-style-type: none;

@@ -15,6 +15,13 @@
 
     <div class="container">
         <h1>My working nodes</h1>
+
+        <form onsubmit="sendIP()">
+            <label for="id">Введите ip:</label>
+            <input type="text" id="id" name="search-input" required />
+            <button type="submit">Добавить</button>
+        </form>
+
         <ul id="names">
             <div class="node-card-names">
                 <div class="node-card-ip-name" style="font-weight: bold;">IP</div>
