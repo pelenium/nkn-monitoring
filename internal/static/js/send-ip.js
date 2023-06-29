@@ -1,9 +1,3 @@
-document.getElementById("submit").addEventListener("click", async function () {
-    await sendIP();
-    console.log("Асинхронная функция выполнена");
-});
-
-
 function sendIP() {
     var ip = String(document.getElementById("ip").value);
     var url = "/";
