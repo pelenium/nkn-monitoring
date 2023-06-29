@@ -13,7 +13,7 @@ async function main() {
         for (var i = 0; i < data.length; i++) {
             var ip = data[i].ip;
             // TODO - make block number for today
-            if (checkConnection(ip) === true) {
+            // if (checkConnection(ip) !== true) {
                 const blockHeight = await getBlockHeight(ip);
                 const blockNumberEver = await getBlockNumber(ip);
                 const blockNumberToday = await getBlockNumber(ip);
@@ -28,9 +28,9 @@ async function main() {
                 }
                 createCard(ip, blockHeight, version, workTime.toFixed(1), flag, blockNumberEver, blockNumberToday, nodeState);
 
-            } else {
-                createCard(ip, "-", "-", "-", "-", "-", "OFFLINE");
-            }
+            // } else {
+            //     createCard(ip, "-", "-", "-", false, "-", "-", "OFFLINE");
+            // }
         }
     } catch (error) {
         console.error(error);
@@ -67,7 +67,9 @@ function getBlockHeight(ip) {
         .then(data => {
             return data.result;
         })
-        .catch(error => console.error(error));
+        .catch(error => {
+            return "-"
+        });
 }
 
 function getBlockNumber(ip) {
@@ -86,7 +88,9 @@ function getBlockNumber(ip) {
         .then(data => {
             return data.result.proposalSubmitted;
         })
-        .catch(error => console.error(error));
+        .catch(error => {
+            return "-"
+        });
 }
 
 function getTime(ip) {
@@ -105,7 +109,9 @@ function getTime(ip) {
         .then(data => {
             return (parseFloat(data.result.uptime) / 3600.0).toFixed(1);
         })
-        .catch(error => console.error(error));
+        .catch(error => {
+            return "-"
+        });
 }
 
 function getNodeState(ip) {
@@ -124,7 +130,9 @@ function getNodeState(ip) {
         .then(data => {
             return data.result.syncState;
         })
-        .catch(error => console.error(error));
+        .catch(error => {
+            return "-"
+        });
 }
 
 function getVersion(ip) {
@@ -143,7 +151,9 @@ function getVersion(ip) {
         .then(data => {
             return data.result;
         })
-        .catch(error => console.error(error));
+        .catch(error => {
+            return "-"
+        });
 }
 
 function createCard(ip, blockHeight, version, time, hours, minedForAllTime, minedToday, nodeState) {
