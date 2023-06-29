@@ -24,7 +24,12 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 		}
 
 		ip_first := gjson.Get(string(jsn), "ip").String()
-		ip := ip_first[:len(ip_first) - 1]
+		var ip string
+		if ip_first[len(ip_first)-1:] == " " {
+			ip = ip_first[:len(ip_first)-1]
+		} else {
+			ip = ip_first
+		}
 
 		fmt.Println(ip)
 
@@ -60,7 +65,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 			if err != nil {
 				panic(err)
 			}
-			
+
 			all_ips := make([]interface{}, len(cols))
 			for i := range cols {
 				all_ips[i] = new(interface{})
