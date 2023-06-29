@@ -168,7 +168,7 @@ function updateCard(card, blockHeight, version, time, hours, nodeState) {
     }
 
     if (timeRow) {
-        timeRow.textContent = hours ? `${time} hours` : `${time} days`;
+        timeRow.textContent = time == "-" ? `-` : hours ? `${time} hours` : `${time} days`;
     }
 
     if (stateRow) {
