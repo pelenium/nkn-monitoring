@@ -33,6 +33,8 @@ func main() {
 
 	router.GET("/api", handlers.ApiGET(db))
 
+	router.POST("/update", handlers.Update(db))
+
 	router.GET("/my-nodes", handlers.MyNodesGET)
 
 	router.Run(":9999")
