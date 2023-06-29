@@ -26,11 +26,7 @@ async function main() {
                     workTime = time / 24;
                     flag = false
                 }
-                if (workTime == time) {
-                    createCard(ip, blockHeight, version, time, flag, blockNumberEver, blockNumberToday, nodeState);
-                } else {
-                    createCard(ip, blockHeight, version, time, flag, blockNumberEver, blockNumberToday, nodeState);
-                }
+                createCard(ip, blockHeight, version, workTime, flag, blockNumberEver, blockNumberToday, nodeState);
 
             } else {
                 createCard(ip, "-", "-", "-", "-", "-", "OFFLINE");
