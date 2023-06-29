@@ -69,6 +69,22 @@ li {
     position: relative;
 }
 
+.node-card-ip-name,
+.node-card-height-name,
+.node-card-version-name,
+.node-card-today-name,
+.node-card-all-name,
+.node-card-state-name {
+    flex-basis: 0;
+    flex-grow: 1;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+    border-right: none;
+}
+
+
 .node-card-ip,
 .node-card-height,
 .node-card-version,
