@@ -21,5 +21,11 @@ func Update(db *sql.DB) gin.HandlerFunc {
 		today := gjson.Get(string(req), "blocks_today").String()
 
 		fmt.Println(ip, "\n", ever, "\n", today)
+		fmt.Println()
+		fmt.Println(ip, "\n", ever, "\n", today)
+		fmt.Println()
+		fmt.Println(ip, "\n", ever, "\n", today)
+		fmt.Println()
+		fmt.Println(ip, "\n", ever, "\n", today)
 	}
 }
