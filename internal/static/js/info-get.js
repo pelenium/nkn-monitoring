@@ -3,140 +3,144 @@ async function main() {
         const response = await fetch('/api');
         const data = await response.json();
         const list = document.getElementById("list");
-
-        if (list && list.childNodes.length > 0) {
-            while (list.firstChild) {
-                list.removeChild(list.firstChild);
+        if (list != null) {
+            if (list.childNodes.length > 0) {
+                while (list.firstChild) {
+                    list.removeChild(list.firstChild);
+                }
             }
         }
+        for (var i = 0; i < data.length; i++) {
+            var ip = data[i].ip;
+            // TODO - make block number for today
+            if (checkConnection(ip) !== true) {
+                const blockHeight = await getBlockHeight(ip);
+                const blockNumberEver = await getBlockNumber(ip);
+                const blockNumberToday = await getBlockNumber(ip);
+                const nodeState = await getNodeState(ip);
+                const time = await getTime(ip);
+                const version = await getVersion(ip);
 
-        for (const { ip } of data) {
-            console.log(ip);
-
-            if (hasLetters(ip)) {
-                continue;
+                createCard(ip, blockHeight, version, time, blockNumberEver, blockNumberToday, nodeState);
+            } else {
+                createCard(ip, "-", "-", "-", "-", "-", "OFFLINE");
             }
-
-            const [blockHeight, blockNumberEver, blockNumberToday, nodeState, time, version] = await Promise.all([
-                getBlockHeight(ip),
-                getBlockNumber(ip),
-                getBlockNumber(ip),
-                getNodeState(ip),
-                getTime(ip),
-                getVersion(ip)
-            ]);
-
-            let workTime = parseFloat(time).toFixed(1);
-            let flag = true;
-
-            if (time > 24) {
-                workTime = (time / 24).toFixed(1);
-                flag = false;
-            }
-
-            createCard(ip, blockHeight, version, workTime, flag, blockNumberEver, blockNumberToday, nodeState);
         }
     } catch (error) {
         console.error(error);
     }
 }
 
-function hasLetters(string) {
-    const regex = /[а-яА-Яa-zA-Z]/;
-    return regex.test(string);
-}
-
 async function checkConnection(ip) {
     const url = `http://${ip}:30003`;
-
     try {
         const response = await fetch(url);
-        return response.ok;
+        if (response.ok) {
+            return true;
+        } else {
+            return false;
+        }
     } catch (error) {
         return false;
     }
 }
 
-async function fetchData(ip, method, requestData) {
+function getBlockHeight(ip) {
     const url = `http://${ip}:30003`;
-
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            body: JSON.stringify(requestData),
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            return data.result;
-        } else {
-            return "-";
-        }
-    } catch (error) {
-        return "-";
-    }
-}
-
-async function getBlockHeight(ip) {
     const requestData = {
         jsonrpc: "2.0",
         method: "getlatestblockheight",
         params: {},
         id: 1,
     };
-
-    return fetchData(ip, 'POST', requestData);
+    return fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(requestData),
+    })
+        .then(response => response.json())
+        .then(data => {
+            return data.result;
+        })
+        .catch(error => console.error(error));
 }
 
-async function getBlockNumber(ip) {
+function getBlockNumber(ip) {
+    const url = `http://${ip}:30003`;
     const requestData = {
         jsonrpc: "2.0",
         method: "getnodestate",
         params: {},
         id: 1,
     };
-
-    const data = await fetchData(ip, 'POST', requestData);
-    return data.proposalSubmitted || "-";
+    return fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(requestData),
+    })
+        .then(response => response.json())
+        .then(data => {
+            return data.result.proposalSubmitted;
+        })
+        .catch(error => console.error(error));
 }
 
-async function getTime(ip) {
+function getTime(ip) {
+    const url = `http://${ip}:30003`;
     const requestData = {
         jsonrpc: "2.0",
         method: "getnodestate",
         params: {},
         id: 1,
     };
-
-    const data = await fetchData(ip, 'POST', requestData);
-    return (parseFloat(data.uptime) / 3600.0).toFixed(1) || "-";
+    return fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(requestData),
+    })
+        .then(response => response.json())
+        .then(data => {
+            return (parseFloat(data.result.uptime) / 3600.0).toFixed(1);
+        })
+        .catch(error => console.error(error));
 }
 
-async function getNodeState(ip) {
+function getNodeState(ip) {
+    const url = `http://${ip}:30003`;
     const requestData = {
         jsonrpc: "2.0",
         method: "getnodestate",
         params: {},
         id: 1,
     };
-
-    const data = await fetchData(ip, 'POST', requestData);
-    return data.syncState || "OFFLINE";
+    return fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(requestData),
+    })
+        .then(response => response.json())
+        .then(data => {
+            return data.result.syncState;
+        })
+        .catch(error => console.error(error));
 }
 
-async function getVersion(ip) {
+function getVersion(ip) {
+    const url = `http://${ip}:30003`;
     const requestData = {
         jsonrpc: "2.0",
         method: "getversion",
         params: {},
         id: 1,
     };
-
-    const data = await fetchData(ip, 'POST', requestData);
-    return data || "-";
+    return fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(requestData),
+    })
+        .then(response => response.json())
+        .then(data => {
+            return data.result;
+        })
+        .catch(error => console.error(error));
 }
 
-function createCard(ip, blockHeight, version, time, hours, minedForAllTime, minedToday, nodeState) {
+function createCard(ip, blockHeight, version, time, minedForAllTime, minedToday, nodeState) {
     const card = document.createElement('div');
     card.className = 'node-card';
 
@@ -157,11 +161,7 @@ function createCard(ip, blockHeight, version, time, hours, minedForAllTime, mine
 
     const timeRow = document.createElement('div');
     timeRow.className = 'node-card-time';
-    if (hours == true) {
-        timeRow.textContent = `${time} hours`;
-    } else {
-        timeRow.textContent = `${time} days`;
-    }
+    timeRow.textContent = `${time} hours`;
     card.appendChild(timeRow);
 
     const allTimeRow = document.createElement('div');
@@ -183,4 +183,4 @@ function createCard(ip, blockHeight, version, time, hours, minedForAllTime, mine
     list.appendChild(card);
 }
 main();
-setInterval(main, 15000);
+setInterval(main, 10000);
