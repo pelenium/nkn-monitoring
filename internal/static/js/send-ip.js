@@ -21,6 +21,6 @@ async function sendIP() {
             console.error(error);
         }
     }
-
+    
     document.getElementById("ip").value = "";
 }
