@@ -13,7 +13,7 @@ async function main() {
         for (var i = 0; i < data.length; i++) {
             var ip = data[i].ip;
             // TODO - make block number for today
-            if (checkConnection(ip) !== true) {
+            if (checkConnection(ip) === true) {
                 const blockHeight = await getBlockHeight(ip);
                 const blockNumberEver = await getBlockNumber(ip);
                 const blockNumberToday = await getBlockNumber(ip);
@@ -26,7 +26,7 @@ async function main() {
                     workTime = time / 24;
                     flag = false
                 }
-                createCard(ip, blockHeight, version, workTime, flag, blockNumberEver, blockNumberToday, nodeState);
+                createCard(ip, blockHeight, version, workTime.toFixed(1), flag, blockNumberEver, blockNumberToday, nodeState);
 
             } else {
                 createCard(ip, "-", "-", "-", "-", "-", "OFFLINE");
