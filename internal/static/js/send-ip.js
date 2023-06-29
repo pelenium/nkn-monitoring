@@ -11,7 +11,7 @@ function sendIP() {
         xhr.setRequestHeader("Content-Type", "application/json");
 
         var data = JSON.stringify({
-            ip: arr[index],
+            ip: arr[i],
         });
         console.log(data);
         xhr.send(data);
