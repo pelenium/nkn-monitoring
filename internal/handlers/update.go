@@ -20,12 +20,13 @@ func Update(db *sql.DB) gin.HandlerFunc {
 		ever := gjson.Get(string(req), "blocks_ever").String()
 		today := gjson.Get(string(req), "blocks_today").String()
 
-		fmt.Println(ip, "\n", ever, "\n", today)
-		fmt.Println()
-		fmt.Println(ip, "\n", ever, "\n", today)
-		fmt.Println()
-		fmt.Println(ip, "\n", ever, "\n", today)
-		fmt.Println()
-		fmt.Println(ip, "\n", ever, "\n", today)
+		update := "UPDATE nodes_ip WHERE blocks_ever = ?, blocks_today = ? WHERE ip = ?"
+		_, err = db.Exec(update, ever, today, ip)
+
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println(ip + "\n" + ever + "\n" + today)
 	}
 }
