@@ -29,7 +29,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 		fmt.Println(ip)
 
 		if ip != "" {
-			add := "INSERT INTO nodes_ip (ip) value = ?"
+			add := "INSERT INTO nodes_ip (ip) VALUES(?)"
 
 			var notExists bool
 
