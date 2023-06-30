@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
@@ -23,15 +24,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 			panic(err)
 		}
 
-		ip_first := gjson.Get(string(jsn), "ip").String()
-		var ip string
-		if ip_first[len(ip_first)-1:] == " " {
-			ip = ip_first[:len(ip_first)-1]
-		} else {
-			ip = ip_first
-		}
-
-		fmt.Println(ip)
+		ip := strings.TrimSpace(gjson.Get(string(jsn), "ip").String())
 
 		if ip != "" {
 			add := "INSERT INTO nodes_ip (ip) VALUES(?)"
