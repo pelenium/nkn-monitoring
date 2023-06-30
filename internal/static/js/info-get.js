@@ -44,7 +44,7 @@ async function main() {
                         updateCard(listItem, blockHeight, version, workTime, flag, nodeState);
                     }
                 } else {
-                    createCard(ip, "-", "-", "-", false, "-", "-");
+                    createCard(ip, "-", "-", "-", false, "-", "OFFLINE");
                 }
             });
 
