@@ -111,7 +111,7 @@ async function getTime(ip) {
 }
 
 async function getNodeState(ip) {
-    return fetchData(ip, "getnodestate").then(result => result.sync_state);
+    return fetchData(ip, "getnodestate").then(result => result.syncState);
 }
 
 async function getVersion(ip) {
