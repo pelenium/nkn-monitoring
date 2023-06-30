@@ -154,25 +154,25 @@ function updateCard(card, blockHeight, version, time, hours, nodeState) {
     const timeRow = card.querySelector('.node-card-time');
     const stateRow = card.querySelector('.node-card-state');
 
-    if (typeof heightRow != "undefined") {
+    if (heightRow !== null) {
         heightRow.textContent = blockHeight;
     } else {
         heightRow.textContent = "-";
     }
 
-    if (typeof versionRow != "undefined") {
+    if (versionRow !== null) {
         versionRow.textContent = version;
     } else {
         versionRow.textContent = "-";
     }
 
-    if (typeof timeRow != "undefined") {
+    if (timeRow !== null) {
         timeRow.textContent = time == "-" ? `-` : hours ? `${time} hours` : `${time} days`;
     } else {
         timeRow.textContent = "-";
     }
 
-    if (typeof stateRow != "undefined") {
+    if (stateRow !== null) {
         stateRow.textContent = nodeState;
     } else {
         stateRow.textContent = "OFFLINE";
