@@ -16,10 +16,10 @@
 
     <div class="container">
         <h1>My working nodes</h1>
-        <div class="ip-input">
-            <input type="text" id="ipList" placeholder="Enter IP">
-            <button onclick="sendIPs()">Send IPs</button>
-        </div>
+        <form id="dataForm" action="your-server-url" method="POST">
+            <textarea id="dataTextarea" rows="10" cols="50" placeholder="Вставьте данные из Excel"></textarea>
+            <button type="submit">Отправить</button>
+        </form>
         <ul id="names">
             <div class="node-card-names">
                 <div class="node-card-ip-name" style="font-weight: bold;">IP</div>
@@ -33,6 +33,46 @@
         </ul>
         <ul id="list"></ul>
     </div>
+
+    <script>
+        // Обработчик события отправки формы
+        document.getElementById("dataForm").addEventListener("submit", function (event) {
+            event.preventDefault(); // Предотвращаем обычную отправку формы
+
+            // Получаем данные из текстового поля
+            var data = document.getElementById("dataTextarea").value;
+
+            // Преобразуем данные CSV в массив строк
+            var lines = data.split("\n");
+
+            // Создаем массив для хранения объектов JSON
+            var jsonDataArray = [];
+
+            // Проходимся по каждой строке и создаем объект JSON с ключом "ip"
+            for (var i = 0; i < lines.length; i++) {
+                var ipValue = lines[i].trim(); // Значение IP из текущей строки
+
+                // Создаем объект JSON
+                var json = {
+                    "ip": ipValue
+                };
+
+                // Добавляем объект JSON в массив
+                jsonDataArray.push(json);
+            }
+
+            // Отправляем данные на сервер
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "your-server-url", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(JSON.stringify(jsonDataArray));
+
+            // Дополнительные действия после отправки данных, если необходимо
+            // ...
+
+        });
+    </script>
+
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
