@@ -131,7 +131,6 @@ function createCard(ip, blockHeight, version, time, hours, minedToday, nodeState
         blockNumberToday: minedToday
     };
     nodeList.push(nodeInfo);
-
 }
 
 function updateCard(card, blockHeight, version, time, hours, nodeState) {
@@ -142,18 +141,26 @@ function updateCard(card, blockHeight, version, time, hours, nodeState) {
 
     if (heightRow) {
         heightRow.textContent = blockHeight;
+    } else {
+        heightRow.textContent = "-";
     }
 
     if (versionRow) {
         versionRow.textContent = version;
+    } else {
+        versionRow.textContent = "-";
     }
 
     if (timeRow) {
         timeRow.textContent = time == "-" ? `-` : hours ? `${time} hours` : `${time} days`;
+    } else {
+        timeRow.textContent = "-";
     }
 
     if (stateRow) {
         stateRow.textContent = nodeState;
+    } else {
+        stateRow.textContent = "-";
     }
 
 }
