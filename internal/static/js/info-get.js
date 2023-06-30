@@ -103,7 +103,7 @@ function createCard(ip, blockHeight, version, time, hours, minedToday, nodeState
 
     const timeRow = document.createElement('div');
     timeRow.className = 'node-card-time';
-    timeRow.textContent = hours ? `${time} hours` : `${time} days`;
+    timeRow.textContent = time === "NaN" ? "-" : hours ? `${time} hours` : `${time} days`;
     card.appendChild(timeRow);
 
     const todayRow = document.createElement('div');
@@ -139,28 +139,28 @@ function updateCard(card, blockHeight, version, time, hours, nodeState) {
     const timeRow = card.querySelector('.node-card-time');
     const stateRow = card.querySelector('.node-card-state');
 
-    if (heightRow) {
+    if (typeof heightRow != "undefined") {
         heightRow.textContent = blockHeight;
     } else {
         heightRow.textContent = "-";
     }
 
-    if (versionRow) {
+    if (typeof versionRow != "undefined") {
         versionRow.textContent = version;
     } else {
         versionRow.textContent = "-";
     }
 
-    if (timeRow) {
+    if (typeof timeRow != "undefined") {
         timeRow.textContent = time == "-" ? `-` : hours ? `${time} hours` : `${time} days`;
     } else {
         timeRow.textContent = "-";
     }
 
-    if (stateRow) {
+    if (typeof stateRow != "undefined") {
         stateRow.textContent = nodeState;
     } else {
-        stateRow.textContent = "-";
+        stateRow.textContent = "OFFLINE";
     }
 
 }
@@ -175,6 +175,7 @@ async function updateBlockNumbers() {
             const listItem = document.querySelector(`[data-ip="${ip}"]`);
             if (listItem) {
                 const blockNumberTodayRow = listItem.querySelector('.node-card-today');
+                const blockNumberEver = listItem.querySelector('.node-card-all');
                 if (blockNumberTodayRow) {
                     try {
                         const blockNumberToday = await fetchData(ip, "getnodestate").then(result => result.proposalSubmitted);
@@ -182,6 +183,7 @@ async function updateBlockNumbers() {
                     } catch (error) {
                         console.error(error);
                         blockNumberTodayRow.textContent = "-";
+                        blockNumberEver.textContent = "-";
                     }
                 }
             }
