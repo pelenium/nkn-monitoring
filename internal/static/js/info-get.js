@@ -1,3 +1,6 @@
+let nodeList = [];
+let today = new Date().toLocaleDateString("en-US");
+
 async function main() {
     try {
         const response = await fetch('/api');
@@ -53,6 +56,14 @@ async function main() {
     }
 }
 
+function resetList() {
+    const list = document.getElementById("list");
+    if (list !== null) {
+        nodeList = [];
+        list.innerHTML = '';
+    }
+}
+
 async function checkConnection(ip) {
     const url = `http://${ip}:30003`;
 
@@ -100,7 +111,7 @@ async function getTime(ip) {
 }
 
 async function getNodeState(ip) {
-    return fetchData(ip, "getnodestate").then(result => result.syncState);
+    return fetchData(ip, "getnodestate").then(result => result.sync_state);
 }
 
 async function getVersion(ip) {
@@ -151,6 +162,12 @@ function createCard(ip, blockHeight, version, time, hours, minedForAllTime, mine
     if (list !== null) {
         list.appendChild(card);
     }
+
+    const nodeInfo = {
+        ip: ip,
+        blockNumberToday: minedToday
+    };
+    nodeList.push(nodeInfo);
 }
 
 function updateCard(card, blockHeight, version, time, hours, nodeState) {
@@ -176,5 +193,31 @@ function updateCard(card, blockHeight, version, time, hours, nodeState) {
     }
 }
 
+function updateBlockNumbers() {
+    const currentDate = new Date().toLocaleDateString("en-US");
+    if (currentDate !== today) {
+        resetList();
+        today = currentDate;
+    } else {
+        for (const { ip } of nodeList) {
+            const listItem = document.querySelector(`[data-ip="${ip}"]`);
+            if (listItem) {
+                const blockNumberTodayRow = listItem.querySelector('.node-card-today');
+                if (blockNumberTodayRow) {
+                    getBlockNumber(ip)
+                        .then(blockNumberToday => {
+                            blockNumberTodayRow.textContent = blockNumberToday;
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            blockNumberTodayRow.textContent = "-";
+                        });
+                }
+            }
+        }
+    }
+}
+
 main();
 setInterval(main, 10000);
+setInterval(updateBlockNumbers, 60000);
