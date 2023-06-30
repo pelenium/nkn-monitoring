@@ -61,15 +61,10 @@
                 jsonDataArray.push(json);
             }
 
-            // Отправляем данные на сервер
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "your-server-url", true);
+            xhr.open("POST", "/", true);
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.send(JSON.stringify(jsonDataArray));
-
-            // Дополнительные действия после отправки данных, если необходимо
-            // ...
-
         });
     </script>
 
