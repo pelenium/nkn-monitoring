@@ -5,6 +5,7 @@
     <title>Main page</title>
     <link href="/internal/static/css/index.css" rel="stylesheet">
     <script src="/internal/static/js/info-get.js"></script>
+    <script src="/internal/static/js/send-ip.js"></script>
     <link rel="icon" type="image/x-icon" href="/internal/static/img/logo.png">
 </head>
 
@@ -16,7 +17,7 @@
     <div class="container">
         <h1>My working nodes</h1>
         <div class="ip-input">
-            <input type="text" id="ipList" placeholder="Enter IP addresses separated by space">
+            <input type="text" id="ipList" placeholder="Enter IP">
             <button onclick="sendIPs()">Send IPs</button>
         </div>
         <ul id="names">
@@ -32,28 +33,6 @@
         </ul>
         <ul id="list"></ul>
     </div>
-    <script>
-        function sendIPs() {
-            var ipList = document.getElementById("ipList").value;
-            var ips = ipList.split(" ");
-
-            if (ips.length > 0) {
-                ips.unshift(ips[0]);
-            }
-            
-            for (var i = 0; i < ips.length; i++) {
-                var ip = ips[i];
-                var data = {
-                    ip: ip
-                };
-
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "/", true);
-                xhr.setRequestHeader("Content-Type", "application/json");
-                xhr.send(JSON.stringify(data));
-            }
-        }
-    </script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
