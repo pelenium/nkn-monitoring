@@ -46,7 +46,7 @@ async function main() {
                         workTime = parseFloat(time / 24).toFixed(1);
                         flag = false;
                     }
-
+                    console.log(nodeState);
                     createCard(ip, blockHeight, version, workTime, flag, blockNumberEver, blockNumberToday, nodeState);
                 }
             }
