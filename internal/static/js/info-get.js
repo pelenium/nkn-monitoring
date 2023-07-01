@@ -197,4 +197,4 @@ async function updateBlockNumbers() {
 
 main();
 setInterval(main, 10000);
-setInterval(updateBlockNumbers, 60000);
+setInterval(updateBlockNumbers, 10000);
