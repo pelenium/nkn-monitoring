@@ -42,6 +42,12 @@ async function main() {
                         }
 
                         updateCard(listItem, blockHeight, version, workTime, flag, nodeState);
+
+                        // Update block number for today
+                        const blockNumberTodayRow = listItem.querySelector('.node-card-today');
+                        if (blockNumberTodayRow) {
+                            blockNumberTodayRow.textContent = blockNumberToday;
+                        }
                     }
                 } else {
                     createCard(ip, "-", "-", "-", false, "-", "OFFLINE");
@@ -177,7 +183,6 @@ function updateCard(card, blockHeight, version, time, hours, nodeState) {
     } else {
         stateRow.textContent = "OFFLINE";
     }
-
 }
 
 async function updateBlockNumbers() {
@@ -189,24 +194,20 @@ async function updateBlockNumbers() {
         const promises = nodeList.map(async ({ ip }) => {
             const listItem = document.querySelector(`[data-ip="${ip}"]`);
             if (listItem) {
-                const blockNumberTodayRow = listItem.querySelector('.node-card-today');
-                const blockNumberEver = listItem.querySelector('.node-card-all');
-                if (blockNumberTodayRow) {
-                    try {
+                try {
+                    const blockNumberTodayRow = listItem.querySelector('.node-card-today');
+                    if (blockNumberTodayRow) {
                         const blockNumberToday = await fetchData(ip, "getnodestate").then(result => result.proposalSubmitted);
                         blockNumberTodayRow.textContent = blockNumberToday;
-                    } catch (error) {
-                        console.error(error);
-                        blockNumberTodayRow.textContent = "-";
-                        blockNumberEver.textContent = "-";
                     }
+                } catch (error) {
+                    console.error(error);
                 }
             }
         });
 
         await Promise.all(promises);
     }
-
 }
 
 main();
