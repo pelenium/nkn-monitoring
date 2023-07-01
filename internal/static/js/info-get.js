@@ -1,5 +1,6 @@
 let blockData = {};
 
+
 async function main() {
     try {
         const response = await fetch('/api');
@@ -8,6 +9,13 @@ async function main() {
 
         for (const { ip } of data) {
             const card = document.querySelector(`.node-card[data-ip="${ip}"]`);
+
+            const isConnected = await checkConnection(ip);
+
+            if (!isConnected) {
+                updateCard(card, ip, '-', '-', '-', '-', '-', 'OFFLINE');
+                continue;
+            }
 
             const [blockHeight, blockNumberEver, nodeState, time, version] = await Promise.all([
                 getBlockHeight(ip),
@@ -38,7 +46,7 @@ async function main() {
             }
 
             if (card) {
-                updateCard(card, blockHeight, version, workTime, flag, blockData[ip].blocksEver, blockData[ip].blocksToday, nodeState);
+                updateCard(card, ip, blockHeight, version, workTime, flag, blockData[ip].blocksEver, blockData[ip].blocksToday, nodeState);
             } else {
                 createCard(ip, blockHeight, version, workTime, flag, blockData[ip].blocksEver, blockData[ip].blocksToday, nodeState);
             }
