@@ -172,5 +172,6 @@ main();
 setInterval(main, 10000);
 
 const now = new Date();
-const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0) - now;
+const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+const msUntilMidnight = midnight.getTime() - now.getTime();
 setTimeout(resetTodayBlocks, msUntilMidnight);
