@@ -9,6 +9,10 @@ async function main() {
         for (const { ip } of data) {
             const card = document.querySelector(`.node-card[data-ip="${ip}"]`);
 
+            if (!card) {
+                createCard(ip, "-", "-", "-", true, "-", "-", "OFFLINE");
+            }
+
             const isConnected = await checkConnection(ip);
 
             if (isConnected) {
@@ -40,15 +44,9 @@ async function main() {
                     blockData[ip].blocksEver = blockNumberEver;
                 }
 
-                if (card) {
-                    updateCard(card, blockHeight, version, workTime, flag, blockData[ip].blocksEver, blockData[ip].blocksToday, nodeState);
-                } else {
-                    createCard(ip, blockHeight, version, workTime, flag, blockData[ip].blocksEver, blockData[ip].blocksToday, nodeState);
-                }
+                updateCard(card, blockHeight, version, workTime, flag, blockData[ip].blocksEver, blockData[ip].blocksToday, nodeState);               
             } else {
-                if (!card) {
-                    createCard(ip, "-", "-", "-", true, "-", "-", "OFFLINE");
-                }
+                updateCard(card, "-", "-", "-", true, "-", "-", "-");                
             }
         }
     } catch (error) {
