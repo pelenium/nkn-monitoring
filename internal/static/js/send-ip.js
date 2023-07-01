@@ -9,7 +9,7 @@ function sendIP() {
 
     fetch("/", {
         method: "POST",
-        body: JSON.stringify(jsonData),
+        body: jsonData,
         headers: {
             "Content-Type": "application/json"
         }
