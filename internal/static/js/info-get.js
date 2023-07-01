@@ -47,9 +47,9 @@ async function main() {
                 }
             } else {
                 if (card) {
-                    setCardDisconnected(card);
+                    updateCard(card, "-", "-", "-", true, "-", "-", "-");
                 } else {
-                    createDisconnectedCard(ip);
+                    createCard(ip, "-", "-", "-", true, "-", "-", "-");
                 }
             }
         }
