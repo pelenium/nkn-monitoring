@@ -26,13 +26,13 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 		}
 
 		ip := strings.TrimSpace(gjson.Get(string(jsn), "ip").String())
+		fmt.Println(ip)
 		host, err := strconv.Atoi(strings.TrimSpace(gjson.Get(string(jsn), "host").String()))
 
 		if err != nil {
 			panic(err)
 		}
 
-		fmt.Println(ip)
 		fmt.Println(host)
 
 		host++
