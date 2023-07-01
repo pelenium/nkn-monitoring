@@ -43,6 +43,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 			panic(err)
 		}
 		if !isHostFree {
+			fmt.Println("this host isn't avaliable")
 			host++
 			goto repeat
 		}
