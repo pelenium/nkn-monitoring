@@ -16,25 +16,23 @@
             var ip = document.getElementById('ip').value;
             var host = document.getElementById('host').value;
 
-            if (typeof host === "number") {
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', '/add', true);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/add', true);
 
-                xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader("Content-Type", "application/json");
 
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        console.log(xhr.responseText);
-                    }
-                };
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log(xhr.responseText);
+                }
+            };
 
-                var data = JSON.stringify({
-                    ip: ip,
-                    host: host,
-                });
+            var data = JSON.stringify({
+                ip: ip,
+                host: host,
+            });
 
-                xhr.send(data);
-            }
+            xhr.send(data);
         }
     </script>
 </body>
