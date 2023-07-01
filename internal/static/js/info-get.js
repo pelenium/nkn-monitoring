@@ -1,45 +1,55 @@
 let nodeList = [];
 let today = new Date().toLocaleDateString("en-US");
 
-async function checkConnectionAndUpdateCard(ip, listItem) {
-    const isOnline = await checkConnection(ip);
-    if (!isOnline) {
-        updateCard(listItem, "-", "-", "-", false, "-");
-    }
-    return isOnline;
-}
-
 async function main() {
     try {
         const response = await fetch('/api');
         const data = await response.json();
         const list = document.getElementById("list");
+
         if (list !== null) {
-            const promises = data.map(async ({ ip }) => {
+            for (const { ip } of data) {
                 const listItem = document.querySelector(`[data-ip="${ip}"]`);
                 if (listItem) {
-                    const isOnline = await checkConnectionAndUpdateCard(ip, listItem);
-                    if (isOnline) {
-                        const [blockHeight, blockNumberToday, nodeState, time, version] = await Promise.all([
-                            fetchData(ip, "getlatestblockheight"),
-                            fetchData(ip, "getnodestate").then(result => result.proposalSubmitted),
-                            fetchData(ip, "getnodestate").then(result => result.syncState),
-                            fetchData(ip, "getnodestate").then(result => (parseFloat(result.uptime) / 3600.0).toFixed(1)),
-                            fetchData(ip, "getversion")
-                        ]);
-                        let workTime = parseFloat(time).toFixed(1);
-                        let flag = true;
-                        if (workTime > 24) {
-                            workTime = parseFloat(workTime / 24).toFixed(1);
-                            flag = false;
-                        }
-                        updateCard(listItem, blockHeight, version, workTime, flag, nodeState);
+                    const [blockHeight, , , nodeState, time, version] = await Promise.all([
+                        getBlockHeight(ip),
+                        getBlockNumber(ip),
+                        getBlockNumber(ip),
+                        getNodeState(ip),
+                        getTime(ip),
+                        getVersion(ip)
+                    ]);
+
+                    let workTime = parseFloat(time).toFixed(1);
+                    let flag = true;
+
+                    if (time > 24) {
+                        workTime = parseFloat(time / 24).toFixed(1);
+                        flag = false;
                     }
+
+                    updateCard(listItem, blockHeight, version, workTime, flag, nodeState);
                 } else {
-                    createCard(ip, "-", "-", "-", false, "-", "OFFLINE");
+                    const [blockHeight, blockNumberEver, blockNumberToday, nodeState, time, version] = await Promise.all([
+                        getBlockHeight(ip),
+                        getBlockNumber(ip),
+                        getBlockNumber(ip),
+                        getNodeState(ip),
+                        getTime(ip),
+                        getVersion(ip)
+                    ]);
+
+                    let workTime = parseFloat(time).toFixed(1);
+                    let flag = true;
+
+                    if (time > 24) {
+                        workTime = parseFloat(time / 24).toFixed(1);
+                        flag = false;
+                    }
+
+                    createCard(ip, blockHeight, version, workTime, flag, blockNumberEver, blockNumberToday, nodeState);
                 }
-            });
-            await Promise.all(promises);
+            }
         }
     } catch (error) {
         console.error(error);
@@ -56,6 +66,7 @@ function resetList() {
 
 async function checkConnection(ip) {
     const url = `http://${ip}:30003`;
+
     try {
         const response = await fetch(url);
         return response.ok;
@@ -72,11 +83,13 @@ async function fetchData(ip, requestDataKey) {
         params: {},
         id: 1
     };
+
     try {
         const response = await fetch(url, {
             method: 'POST',
             body: JSON.stringify(requestData)
         });
+
         const data = await response.json();
         return data.result;
     } catch (error) {
@@ -84,7 +97,28 @@ async function fetchData(ip, requestDataKey) {
     }
 }
 
-function createCard(ip, blockHeight, version, time, hours, minedToday, nodeState) {
+async function getBlockHeight(ip) {
+    return fetchData(ip, "getlatestblockheight");
+}
+
+async function getBlockNumber(ip) {
+    return fetchData(ip, "getnodestate").then(result => result.proposalSubmitted);
+}
+
+async function getTime(ip) {
+    return fetchData(ip, "getnodestate")
+        .then(result => (parseFloat(result.uptime) / 3600.0).toFixed(1));
+}
+
+async function getNodeState(ip) {
+    return fetchData(ip, "getnodestate").then(result => result.sync_state);
+}
+
+async function getVersion(ip) {
+    return fetchData(ip, "getversion");
+}
+
+function createCard(ip, blockHeight, version, time, hours, minedForAllTime, minedToday, nodeState) {
     const card = document.createElement('div');
     card.className = 'node-card';
     card.setAttribute('data-ip', ip);
@@ -106,18 +140,18 @@ function createCard(ip, blockHeight, version, time, hours, minedToday, nodeState
 
     const timeRow = document.createElement('div');
     timeRow.className = 'node-card-time';
-    timeRow.textContent = time === "NaN" ? "-" : hours ? `${time} hours` : `${time} days`;
+    timeRow.textContent = hours ? `${time} hours` : `${time} days`;
     card.appendChild(timeRow);
+
+    const allTimeRow = document.createElement('div');
+    allTimeRow.className = 'node-card-all';
+    allTimeRow.textContent = minedForAllTime;
+    card.appendChild(allTimeRow);
 
     const todayRow = document.createElement('div');
     todayRow.className = 'node-card-today';
     todayRow.textContent = minedToday;
     card.appendChild(todayRow);
-
-    const allTimeRow = document.createElement('div');
-    allTimeRow.className = 'node-card-all';
-    allTimeRow.textContent = "-";
-    card.appendChild(allTimeRow);
 
     const stateRow = document.createElement('div');
     stateRow.className = 'node-card-state';
@@ -142,59 +176,48 @@ function updateCard(card, blockHeight, version, time, hours, nodeState) {
     const timeRow = card.querySelector('.node-card-time');
     const stateRow = card.querySelector('.node-card-state');
 
-    if (heightRow !== null) {
+    if (heightRow) {
         heightRow.textContent = blockHeight;
-    } else {
-        heightRow.textContent = "-";
     }
 
-    if (versionRow !== null) {
+    if (versionRow) {
         versionRow.textContent = version;
-    } else {
-        versionRow.textContent = "-";
     }
 
-    if (timeRow !== null) {
-        timeRow.textContent = time === "-" ? "-" : hours ? `${time} hours` : `${time} days`;
-    } else {
-        timeRow.textContent = "-";
+    if (timeRow) {
+        timeRow.textContent = time == "-" ? `-` : hours ? `${time} hours` : `${time} days`;
     }
 
-    if (stateRow !== null) {
+    if (stateRow) {
         stateRow.textContent = nodeState;
-    } else {
-        stateRow.textContent = "OFFLINE";
     }
-
 }
 
-async function updateBlockNumbers() {
+function updateBlockNumbers() {
     const currentDate = new Date().toLocaleDateString("en-US");
     if (currentDate !== today) {
         resetList();
         today = currentDate;
     } else {
-        const promises = nodeList.map(async ({ ip }) => {
+        for (const { ip } of nodeList) {
             const listItem = document.querySelector(`[data-ip="${ip}"]`);
             if (listItem) {
                 const blockNumberTodayRow = listItem.querySelector('.node-card-today');
-                const blockNumberEver = listItem.querySelector('.node-card-all');
                 if (blockNumberTodayRow) {
-                    try {
-                        const blockNumberToday = await fetchData(ip, "getnodestate").then(result => result.proposalSubmitted);
-                        blockNumberTodayRow.textContent = blockNumberToday;
-                    } catch (error) {
-                        console.error(error);
-                        blockNumberTodayRow.textContent = "-";
-                        blockNumberEver.textContent = "-";
-                    }
+                    getBlockNumber(ip)
+                        .then(blockNumberToday => {
+                            blockNumberTodayRow.textContent = blockNumberToday;
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            blockNumberTodayRow.textContent = "-";
+                        });
                 }
             }
-        });
-        await Promise.all(promises);
+        }
     }
 }
 
 main();
 setInterval(main, 10000);
-setInterval(updateBlockNumbers, 10000);
+setInterval(updateBlockNumbers, 60000);
