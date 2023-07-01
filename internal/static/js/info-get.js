@@ -36,14 +36,13 @@ async function main() {
                         let workTime = parseFloat(time).toFixed(1);
                         let flag = true;
 
-                        if (time > 24) {
-                            workTime = parseFloat(time / 24).toFixed(1);
+                        if (workTime > 24) {
+                            workTime = parseFloat(workTime / 24).toFixed(1);
                             flag = false;
                         }
 
                         updateCard(listItem, blockHeight, version, workTime, flag, nodeState);
 
-                        // Update block number for today
                         const blockNumberTodayRow = listItem.querySelector('.node-card-today');
                         if (blockNumberTodayRow) {
                             blockNumberTodayRow.textContent = blockNumberToday;
