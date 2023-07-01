@@ -27,18 +27,20 @@ async function main() {
 
             if (!blockData[ip]) {
                 blockData[ip] = {
-                    blocksAllTime: blockNumberEver,
-                    blocksToday: blockNumberEver
+                    blocksEver: blockNumberEver,
+                    blocksToday: 0
                 };
-            } else {
-                blockData[ip].blocksAllTime = blockNumberEver;
-                blockData[ip].blocksToday = blockNumberEver - blockData[ip].blocksToday;
+            }
+
+            if (blockData[ip].blocksEver !== blockNumberEver) {
+                blockData[ip].blocksToday = blockNumberEver - blockData[ip].blocksEver;
+                blockData[ip].blocksEver = blockNumberEver;
             }
 
             if (card) {
-                updateCard(card, blockHeight, version, workTime, flag, blockData[ip].blocksAllTime, blockData[ip].blocksToday, nodeState);
+                updateCard(card, blockHeight, version, workTime, flag, blockData[ip].blocksEver, blockData[ip].blocksToday, nodeState);
             } else {
-                createCard(ip, blockHeight, version, workTime, flag, blockData[ip].blocksAllTime, blockData[ip].blocksToday, nodeState);
+                createCard(ip, blockHeight, version, workTime, flag, blockData[ip].blocksEver, blockData[ip].blocksToday, nodeState);
             }
         }
     } catch (error) {
@@ -160,11 +162,12 @@ function updateCard(card, blockHeight, version, time, hours, minedForAllTime, mi
     allTimeRow.textContent = minedForAllTime;
     todayRow.textContent = minedToday;
     stateRow.textContent = nodeState;
+
 }
 
 function resetTodayBlocks() {
     for (const ip in blockData) {
-        blockData[ip].blocksToday = blockData[ip].blocksAllTime;
+        blockData[ip].blocksToday = 0;
     }
 }
 
