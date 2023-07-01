@@ -43,6 +43,7 @@ async function main() {
 
                         updateCard(listItem, blockHeight, version, workTime, flag, nodeState);
 
+                        // Update block number for today
                         const blockNumberTodayRow = listItem.querySelector('.node-card-today');
                         if (blockNumberTodayRow) {
                             blockNumberTodayRow.textContent = blockNumberToday;
@@ -159,29 +160,30 @@ function updateCard(card, blockHeight, version, time, hours, nodeState) {
     const timeRow = card.querySelector('.node-card-time');
     const stateRow = card.querySelector('.node-card-state');
 
-    if (typeof heightRow != "undefined") {
+    if (typeof heightRow !== "undefined") {
         heightRow.textContent = blockHeight;
     } else {
         heightRow.textContent = "-";
     }
 
-    if (typeof versionRow != "undefined") {
+    if (typeof versionRow !== "undefined") {
         versionRow.textContent = version;
     } else {
         versionRow.textContent = "-";
     }
 
-    if (typeof timeRow != "undefined") {
-        timeRow.textContent = time == "-" ? `-` : hours ? `${time} hours` : `${time} days`;
+    if (typeof timeRow !== "undefined") {
+        timeRow.textContent = time === "-" ? "-" : hours ? `${time} hours` : `${time} days`;
     } else {
         timeRow.textContent = "-";
     }
 
-    if (typeof stateRow != "undefined") {
+    if (typeof stateRow !== "undefined") {
         stateRow.textContent = nodeState;
     } else {
         stateRow.textContent = "OFFLINE";
     }
+
 }
 
 async function updateBlockNumbers() {
@@ -207,6 +209,7 @@ async function updateBlockNumbers() {
 
         await Promise.all(promises);
     }
+
 }
 
 main();
