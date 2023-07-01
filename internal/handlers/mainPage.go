@@ -35,18 +35,16 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 		fmt.Println(ip)
 		fmt.Println(host)
 
-		if host == 0 {
+		host++
+	repeat:
+		var isHostFree bool
+		err = db.QueryRow(`SELECT EXISTS(SELECT 1 FROM nodes_ip WHERE host = ?)`, host).Scan(&isHostFree)
+		if err != nil {
+			panic(err)
+		}
+		if !isHostFree {
 			host++
-			repeat:
-			var isHostFree bool
-			err := db.QueryRow(`SELECT EXISTS(SELECT 1 FROM nodes_ip WHERE host = ?)`, host).Scan(&isHostFree)
-			if err != nil {
-				panic(err)
-			}
-			if !isHostFree {
-				host++
-				goto repeat
-			}
+			goto repeat
 		}
 
 		if ip != "" {
