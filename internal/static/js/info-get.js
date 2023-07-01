@@ -43,14 +43,13 @@ async function main() {
 
                         updateCard(listItem, blockHeight, version, workTime, flag, nodeState);
 
-                        // Update block number for today
                         const blockNumberTodayRow = listItem.querySelector('.node-card-today');
                         if (blockNumberTodayRow) {
                             blockNumberTodayRow.textContent = blockNumberToday;
                         }
                     }
                 } else {
-                    createCard(ip, "-", "-", "-", false, "-", "OFFLINE");
+                    createCard(ip, "-", "-", "-", false, "-", "Wait please");
                 }
             });
 
@@ -58,6 +57,15 @@ async function main() {
         }
     } catch (error) {
         console.error(error);
+    }
+}
+
+function resetBlockNumbers() {
+    const currentHour = new Date().getUTCHours();
+    if (currentHour === 0) {
+        nodeList.forEach(nodeInfo => {
+            nodeInfo.blockNumberToday = 0;
+        });
     }
 }
 
@@ -156,6 +164,7 @@ function createCard(ip, blockHeight, version, time, hours, minedToday, nodeState
 
 function updateCard(card, blockHeight, version, time, hours, nodeState) {
     const heightRow = card.querySelector('.node-card-height');
+    const todayRow = card.querySelector('.node-card-today');
     const versionRow = card.querySelector('.node-card-version');
     const timeRow = card.querySelector('.node-card-time');
     const stateRow = card.querySelector('.node-card-state');
@@ -184,11 +193,18 @@ function updateCard(card, blockHeight, version, time, hours, nodeState) {
         stateRow.textContent = "OFFLINE";
     }
 
+    if (typeof todayRow !== "undefined") {
+        const nodeInfo = nodeList.find(node => node.ip === card.getAttribute('data-ip'));
+        if (nodeInfo) {
+            todayRow.textContent = nodeInfo.blockNumberToday;
+        }
+    }
 }
 
 async function updateBlockNumbers() {
     const currentDate = new Date().toLocaleDateString("en-US");
     if (currentDate !== today) {
+        resetBlockNumbers();
         resetList();
         today = currentDate;
     } else {
