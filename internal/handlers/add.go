@@ -54,7 +54,7 @@ func AddPOST(db *sql.DB) gin.HandlerFunc {
 		}
 		defer session.Close()
 
-		output, err := session.CombinedOutput(fmt.Sprintf(`curl -X POST -d "{\"ip\": \"%s\", \"host\": "%d"}" http://127.0.0.1:9999`, ip, host))
+		output, err := session.CombinedOutput(fmt.Sprintf(`curl -X POST -d "{\"ip\": \"%s\", \"host\": \"%d\"}" http://127.0.0.1:9999`, ip, host))
 		if err != nil {
 			log.Fatalf("Ошибка при выполнении команды: %v", err)
 		}
