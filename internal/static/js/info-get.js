@@ -9,6 +9,8 @@ async function main() {
         const list = document.getElementById("list");
 
         for (const { ip } of data) {
+            console.log(ip);
+
             const card = document.querySelector(`.node-card[data-ip="${ip}"]`);
 
             if (!card) {

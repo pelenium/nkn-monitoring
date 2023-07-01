@@ -35,8 +35,8 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 
 		fmt.Println(host)
 
-	repeat:
 		var isHostFree bool
+	repeat:
 		err = db.QueryRow(`SELECT EXISTS(SELECT 1 FROM nodes_ip WHERE host = ?)`, host).Scan(&isHostFree)
 		if err != nil {
 			panic(err)
