@@ -16,25 +16,23 @@
             var ip = document.getElementById('ip').value;
             var host = document.getElementById('host').value;
 
-            var jsn = JSON.stringify({
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/', true);
+
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log(xhr.responseText);
+                }
+            };
+
+            var data = {
                 ip: ip,
                 host: host,
-            });
+            };
 
-            fetch("/", {
-                method: "POST",
-                body: jsn,
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Ответ от сервера:", data);
-                })
-                .catch(error => {
-                    console.error("Ошибка при отправке данных:", error);
-                });
+            xhr.send(data);
         }
     </script>
 </body>
