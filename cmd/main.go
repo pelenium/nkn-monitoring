@@ -17,11 +17,19 @@ func main() {
 		panic(err)
 	}
 
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS nodes_ip (ip TEXT NOT NULL);`)
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS nodes_ip (ip TEXT NOT NULL, host INT NOT NULL);`)
 
 	if err != nil {
 		panic(err)
 	}
+
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS hosts (host INT NOT NULL);`)
+
+	if err != nil {
+		panic(err)
+	}
+
+	_ = `INSERT INTO hosts (host) VALUES(?);`
 
 	defer db.Close()
 
@@ -30,7 +38,9 @@ func main() {
 
 	router.GET("/", handlers.PermissionDenied)
 	router.POST("/", handlers.NodeIpPOST(db))
-	
+
+	router.POST("/add", handlers.NodeIpPOST(db))
+
 	router.POST("/delete", handlers.Delete(db))
 
 	router.GET("/api", handlers.ApiGET(db))

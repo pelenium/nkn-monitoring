@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
@@ -23,36 +25,50 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 			panic(err)
 		}
 
-		ip_first := gjson.Get(string(jsn), "ip").String()
-		var ip string
-		if ip_first[len(ip_first)-1:] == " " {
-			ip = ip_first[:len(ip_first)-1]
-		} else {
-			ip = ip_first
+		ip := strings.TrimSpace(gjson.Get(string(jsn), "ip").String())
+		host, err := strconv.Atoi(strings.TrimSpace(gjson.Get(string(jsn), "host").String()))
+
+		if err != nil {
+			panic(err)
 		}
 
 		fmt.Println(ip)
+		fmt.Println(host)
+
+		if host == 0 {
+			host++
+			repeat:
+			var isHostFree bool
+			err := db.QueryRow(`SELECT EXISTS(SELECT 1 FROM nodes_ip WHERE host = ?)`, host).Scan(&isHostFree)
+			if err != nil {
+				panic(err)
+			}
+			if !isHostFree {
+				host++
+				goto repeat
+			}
+		}
 
 		if ip != "" {
-			add := "INSERT INTO nodes_ip (ip) VALUES(?)"
+			add := "INSERT INTO nodes_ip (ip, host) VALUES(?, ?)"
 
-			var notExists bool
+			var exists bool
 
-			err := db.QueryRow(`SELECT EXISTS(SELECT 1 FROM nodes_ip WHERE ip = ?)`, ip).Scan(&notExists)
+			err := db.QueryRow(`SELECT EXISTS(SELECT 1 FROM nodes_ip WHERE ip = ?)`, ip).Scan(&exists)
 
 			if err != nil {
 				panic(err)
 			}
 
-			if !notExists {
+			if exists {
+				fmt.Println("there's such ip")
+			} else {
 				fmt.Println("there no node with such ip")
-				_, err = db.Exec(add, ip)
+				_, err = db.Exec(add, ip, host)
 
 				if err != nil {
 					panic(err)
 				}
-			} else {
-				fmt.Println("there's such ip")
 			}
 
 			rows, err := db.Query("SELECT * FROM nodes_ip")
