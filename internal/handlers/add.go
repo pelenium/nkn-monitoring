@@ -42,7 +42,7 @@ func AddPOST(db *sql.DB) gin.HandlerFunc {
 			HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 		}
 
-		client, err := ssh.Dial("tcp", "5.180.181.133", config)
+		client, err := ssh.Dial("tcp", "5.180.181.133:22", config)
 		if err != nil {
 			log.Fatalf("Ошибка при подключении: %v", err)
 		}
