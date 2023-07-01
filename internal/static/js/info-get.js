@@ -1,3 +1,5 @@
+let blockData = {};
+
 async function main() {
     try {
         const response = await fetch('/api');
@@ -7,9 +9,8 @@ async function main() {
         for (const { ip } of data) {
             const card = document.querySelector(`.node-card[data-ip="${ip}"]`);
 
-            const [blockHeight, blockNumberEver, blockNumberToday, nodeState, time, version] = await Promise.all([
+            const [blockHeight, blockNumberEver, nodeState, time, version] = await Promise.all([
                 getBlockHeight(ip),
-                getBlockNumber(ip),
                 getBlockNumber(ip),
                 getNodeState(ip),
                 getTime(ip),
@@ -24,10 +25,20 @@ async function main() {
                 flag = false;
             }
 
-            if (card) {
-                updateCard(card, blockHeight, version, workTime, flag, blockNumberEver, blockNumberToday, nodeState);
+            if (!blockData[ip]) {
+                blockData[ip] = {
+                    blocksAllTime: blockNumberEver,
+                    blocksToday: blockNumberEver
+                };
             } else {
-                createCard(ip, blockHeight, version, workTime, flag, blockNumberEver, blockNumberToday, nodeState);
+                blockData[ip].blocksAllTime = blockNumberEver;
+                blockData[ip].blocksToday = blockNumberEver - blockData[ip].blocksToday;
+            }
+
+            if (card) {
+                updateCard(card, blockHeight, version, workTime, flag, blockData[ip].blocksAllTime, blockData[ip].blocksToday, nodeState);
+            } else {
+                createCard(ip, blockHeight, version, workTime, flag, blockData[ip].blocksAllTime, blockData[ip].blocksToday, nodeState);
             }
         }
     } catch (error) {
@@ -151,5 +162,15 @@ function updateCard(card, blockHeight, version, time, hours, minedForAllTime, mi
     stateRow.textContent = nodeState;
 }
 
+function resetTodayBlocks() {
+    for (const ip in blockData) {
+        blockData[ip].blocksToday = blockData[ip].blocksAllTime;
+    }
+}
+
 main();
 setInterval(main, 10000);
+
+const now = new Date();
+const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0) - now;
+setTimeout(resetTodayBlocks, msUntilMidnight);
