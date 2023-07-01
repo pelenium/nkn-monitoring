@@ -46,10 +46,8 @@ async function main() {
                     createCard(ip, blockHeight, version, workTime, flag, blockData[ip].blocksEver, blockData[ip].blocksToday, nodeState);
                 }
             } else {
-                if (card) {
-                    updateCard(card, "-", "-", "-", true, "-", "-", "-");
-                } else {
-                    createCard(ip, "-", "-", "-", true, "-", "-", "-");
+                if (!card) {
+                    createCard(ip, "-", "-", "-", true, "-", "-", "OFFLINE");
                 }
             }
         }
