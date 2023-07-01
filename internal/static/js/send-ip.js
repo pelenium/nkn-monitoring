@@ -1,22 +1,24 @@
-function sendIPs() {
-    var ipList = document.getElementById("ipList").value;
-    var ips = ipList.split(" ");
+function sendIP() {
+    var ipInput = document.getElementById("ip").value;
 
-    if (ips.length > 0) {
-        ips.unshift(ips[0]);
-    }
+    var ipArray = ipInput.split(" ");
 
-    for (var i = 0; i < ips.length; i++) {
-        var ip = ips[i];
-        var data = {
-            ip: ip
-        };
+    var jsonData = {
+        ip: ipArray
+    };
 
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send(JSON.stringify(data));
-    }
-
-    document.getElementById("ipList").value = "";
-}
+    fetch("/", {
+        method: "POST",
+        body: JSON.stringify(jsonData),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Ответ от сервера:", data);
+        })
+        .catch(error => {
+            console.error("Ошибка при отправке данных:", error);
+        });
+}  
