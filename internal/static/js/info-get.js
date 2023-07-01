@@ -13,7 +13,7 @@ async function main() {
             const isConnected = await checkConnection(ip);
 
             if (!isConnected) {
-                updateCard(card, ip, '-', '-', '-', '-', '-', 'OFFLINE');
+                updateCard(card, '-', '-', '-', '-', '-', 'OFFLINE');
                 continue;
             }
 
@@ -66,6 +66,7 @@ async function checkConnection(ip) {
         return false;
     }
 }
+
 
 async function fetchData(ip, requestDataKey) {
     const url = `http://${ip}:30003`;
