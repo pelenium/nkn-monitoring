@@ -4,11 +4,9 @@ async function main() {
         const data = await response.json();
         const list = document.getElementById("list");
 
-        if (list !== null) {
-            list.innerHTML = ""; // Очистка содержимого списка
-        }
-
         for (const { ip } of data) {
+            const card = document.querySelector(`.node-card[data-ip="${ip}"]`);
+
             const [blockHeight, blockNumberEver, blockNumberToday, nodeState, time, version] = await Promise.all([
                 getBlockHeight(ip),
                 getBlockNumber(ip),
@@ -26,7 +24,11 @@ async function main() {
                 flag = false;
             }
 
-            createCard(ip, blockHeight, version, workTime, flag, blockNumberEver, blockNumberToday, nodeState);
+            if (card) {
+                updateCard(card, blockHeight, version, workTime, flag, blockNumberEver, blockNumberToday, nodeState);
+            } else {
+                createCard(ip, blockHeight, version, workTime, flag, blockNumberEver, blockNumberToday, nodeState);
+            }
         }
     } catch (error) {
         console.error(error);
@@ -90,6 +92,7 @@ async function getVersion(ip) {
 function createCard(ip, blockHeight, version, time, hours, minedForAllTime, minedToday, nodeState) {
     const card = document.createElement('div');
     card.className = 'node-card';
+    card.setAttribute('data-ip', ip);
 
     const ipRow = document.createElement('div');
     ipRow.className = 'node-card-ip';
@@ -130,6 +133,22 @@ function createCard(ip, blockHeight, version, time, hours, minedForAllTime, mine
     if (list !== null) {
         list.appendChild(card);
     }
+}
+
+function updateCard(card, blockHeight, version, time, hours, minedForAllTime, minedToday, nodeState) {
+    const heightRow = card.querySelector('.node-card-height');
+    const versionRow = card.querySelector('.node-card-version');
+    const timeRow = card.querySelector('.node-card-time');
+    const allTimeRow = card.querySelector('.node-card-all');
+    const todayRow = card.querySelector('.node-card-today');
+    const stateRow = card.querySelector('.node-card-state');
+
+    heightRow.textContent = blockHeight;
+    versionRow.textContent = version;
+    timeRow.textContent = hours ? `${time} hours` : `${time} days`;
+    allTimeRow.textContent = minedForAllTime;
+    todayRow.textContent = minedToday;
+    stateRow.textContent = nodeState;
 }
 
 main();
