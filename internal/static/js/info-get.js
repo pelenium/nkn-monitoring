@@ -1,6 +1,5 @@
 let blockData = {};
 
-
 async function main() {
     try {
         const response = await fetch('/api');
@@ -12,43 +11,46 @@ async function main() {
 
             const isConnected = await checkConnection(ip);
 
-            if (!isConnected) {
-                updateCard(card, '-', '-', '-', '-', '-', 'OFFLINE');
-                continue;
-            }
+            if (isConnected) {
+                const [blockHeight, blockNumberEver, nodeState, time, version] = await Promise.all([
+                    getBlockHeight(ip),
+                    getBlockNumber(ip),
+                    getNodeState(ip),
+                    getTime(ip),
+                    getVersion(ip)
+                ]);
 
-            const [blockHeight, blockNumberEver, nodeState, time, version] = await Promise.all([
-                getBlockHeight(ip),
-                getBlockNumber(ip),
-                getNodeState(ip),
-                getTime(ip),
-                getVersion(ip)
-            ]);
+                let workTime = parseFloat(time).toFixed(1);
+                let flag = true;
 
-            let workTime = parseFloat(time).toFixed(1);
-            let flag = true;
+                if (time > 24) {
+                    workTime = parseFloat(time / 24).toFixed(1);
+                    flag = false;
+                }
 
-            if (time > 24) {
-                workTime = parseFloat(time / 24).toFixed(1);
-                flag = false;
-            }
+                if (!blockData[ip]) {
+                    blockData[ip] = {
+                        blocksEver: blockNumberEver,
+                        blocksToday: 0
+                    };
+                }
 
-            if (!blockData[ip]) {
-                blockData[ip] = {
-                    blocksEver: blockNumberEver,
-                    blocksToday: 0
-                };
-            }
+                if (blockData[ip].blocksEver !== blockNumberEver) {
+                    blockData[ip].blocksToday = blockNumberEver - blockData[ip].blocksEver;
+                    blockData[ip].blocksEver = blockNumberEver;
+                }
 
-            if (blockData[ip].blocksEver !== blockNumberEver) {
-                blockData[ip].blocksToday = blockNumberEver - blockData[ip].blocksEver;
-                blockData[ip].blocksEver = blockNumberEver;
-            }
-
-            if (card) {
-                updateCard(card, ip, blockHeight, version, workTime, flag, blockData[ip].blocksEver, blockData[ip].blocksToday, nodeState);
+                if (card) {
+                    updateCard(card, blockHeight, version, workTime, flag, blockData[ip].blocksEver, blockData[ip].blocksToday, nodeState);
+                } else {
+                    createCard(ip, blockHeight, version, workTime, flag, blockData[ip].blocksEver, blockData[ip].blocksToday, nodeState);
+                }
             } else {
-                createCard(ip, blockHeight, version, workTime, flag, blockData[ip].blocksEver, blockData[ip].blocksToday, nodeState);
+                if (card) {
+                    setCardDisconnected(card);
+                } else {
+                    createDisconnectedCard(ip);
+                }
             }
         }
     } catch (error) {
@@ -58,15 +60,13 @@ async function main() {
 
 async function checkConnection(ip) {
     const url = `http://${ip}:30003`;
-
     try {
         const response = await fetch(url);
-        return response.ok;
+        return true;
     } catch (error) {
         return false;
     }
 }
-
 
 async function fetchData(ip, requestDataKey) {
     const url = `http://${ip}:30003`;
