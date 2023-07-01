@@ -5,7 +5,6 @@
     <title>Main page</title>
     <link href="/internal/static/css/index.css" rel="stylesheet">
     <script src="/internal/static/js/info-get.js"></script>
-    <script src="/internal/static/js/send-ip.js"></script>
     <link rel="icon" type="image/x-icon" href="/internal/static/img/logo.png">
 </head>
 
@@ -16,10 +15,10 @@
 
     <div class="container">
         <h1>My working nodes</h1>
-        <form id="dataForm" action="your-server-url" method="POST">
-            <textarea id="dataTextarea" rows="10" cols="50" placeholder="Вставьте данные из Excel"></textarea>
-            <button type="submit">Отправить</button>
-        </form>
+        <div class="ip-input">
+            <input type="text" id="ipList" placeholder="Enter IP addresses separated by space">
+            <button onclick="sendIPs()">Send IPs</button>
+        </div>
         <ul id="names">
             <div class="node-card-names">
                 <div class="node-card-ip-name" style="font-weight: bold;">IP</div>
@@ -33,31 +32,24 @@
         </ul>
         <ul id="list"></ul>
     </div>
-
     <script>
-        document.getElementById("dataForm").addEventListener("submit", function (event) {
-            event.preventDefault();
+        function sendIPs() {
+            var ipList = document.getElementById("ipList").value;
+            var ips = ipList.split(" ");
 
-            var data = document.getElementById("dataTextarea").value;
-
-            var lines = data.split("\n");
-
-            for (var i = 0; i < lines.length; i++) {
-                var ipValue = lines[i].trim();
-
-                var json = {
-                    "ip": ipValue
+            for (var i = 0; i < ips.length; i++) {
+                var ip = ips[i];
+                var data = {
+                    ip: ip
                 };
 
                 var xhr = new XMLHttpRequest();
                 xhr.open("POST", "/", true);
                 xhr.setRequestHeader("Content-Type", "application/json");
-                xhr.send(JSON.stringify(json));
+                xhr.send(JSON.stringify(data));
             }
-
-        });
+        }
     </script>
-
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

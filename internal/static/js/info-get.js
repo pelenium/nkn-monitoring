@@ -46,7 +46,7 @@ async function main() {
                         workTime = parseFloat(time / 24).toFixed(1);
                         flag = false;
                     }
-
+                    console.log(nodeState);
                     createCard(ip, blockHeight, version, workTime, flag, blockNumberEver, blockNumberToday, nodeState);
                 }
             }
@@ -111,7 +111,7 @@ async function getTime(ip) {
 }
 
 async function getNodeState(ip) {
-    return fetchData(ip, "getnodestate").then(result => result.sync_state);
+    return fetchData(ip, "getnodestate").then(result => result.syncState);
 }
 
 async function getVersion(ip) {
@@ -220,4 +220,4 @@ function updateBlockNumbers() {
 
 main();
 setInterval(main, 10000);
-setInterval(updateBlockNumbers, 60000);
+setInterval(updateBlockNumbers, 10000);
