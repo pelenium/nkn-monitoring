@@ -2,6 +2,9 @@ function send() {
     var ip = document.getElementById('ip').value;
     var host = document.getElementById('host').value;
 
+    console.log(ip);
+    console.log(host);
+
     var jsn = {
         ip: ip,
         host: host,
