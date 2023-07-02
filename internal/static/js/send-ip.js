@@ -21,4 +21,7 @@ function send() {
         .catch(error => {
             console.error("Ошибка при отправке данных:", error);
         });
+    
+    document.getElementById('ip').value = "";
+    document.getElementById('host').value = "";
 }
