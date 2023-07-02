@@ -42,7 +42,8 @@ input[type="text"] {
     background-color: #fff;
     height: 30px;
     box-sizing: border-box;
-    width: 75%;
+    width: 20%;
+    margin-right: 20px;
 }
 
 .names,
