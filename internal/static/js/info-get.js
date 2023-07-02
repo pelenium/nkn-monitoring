@@ -48,9 +48,9 @@ async function main() {
                     blockData[ip].blocksEver = blockNumberEver;
                 }
 
-                updateCard(card, blockHeight, version, workTime, flag, blockData[ip].blocksEver, blockData[ip].blocksToday, nodeState);               
+                updateCard(card, blockHeight, version, workTime, flag, blockData[ip].blocksEver, blockData[ip].blocksToday, nodeState);
             } else {
-                updateCard(card, "-", "-", "-", true, "-", "-", "-");                
+                updateCard(card, "-", "-", "-", true, "-", "-", "-");
             }
         }
     } catch (error) {
@@ -187,8 +187,3 @@ const now = new Date();
 const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
 const msUntilMidnight = midnight.getTime() - now.getTime();
 setTimeout(resetTodayBlocks, msUntilMidnight);
-
-/*
-167.172.140.187
-167.172.140.187
-*/

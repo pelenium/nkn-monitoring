@@ -38,9 +38,6 @@ func main() {
 
 	router.GET("/", handlers.PermissionDenied)
 	router.POST("/", handlers.NodeIpPOST(db))
-	
-	router.GET("/add", handlers.AddGET)
-	router.POST("/add", handlers.AddPOST(db))
 
 	router.POST("/delete", handlers.Delete(db))
 

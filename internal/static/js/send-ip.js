@@ -1,6 +1,8 @@
 function send() {
-    var ip = document.getElementById('ip').value;
-    var host = document.getElementById('host').value;
+    var ip = String(document.getElementById('ip').value);
+    var host = String(document.getElementById('host').value);
+
+    host = host.length == 0 ? "0" : host;
 
     console.log(ip);
     console.log(host);
@@ -24,7 +26,7 @@ function send() {
         .catch(error => {
             console.error("Ошибка при отправке данных:", error);
         });
-    
+
     document.getElementById('ip').value = "";
     document.getElementById('host').value = "";
 }

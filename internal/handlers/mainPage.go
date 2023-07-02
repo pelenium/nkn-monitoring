@@ -29,74 +29,80 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 		fmt.Println(ip)
 		host, err := strconv.Atoi(strings.TrimSpace(gjson.Get(string(jsn), "host").String()))
 
+		if host == 0 {
+			host++
+		}
+
 		if err != nil {
 			panic(err)
 		}
 
 		fmt.Println(host)
 
-		var isHostFree bool
-	repeat:
-		err = db.QueryRow(`SELECT EXISTS(SELECT 1 FROM nodes_ip WHERE host = ?)`, host).Scan(&isHostFree)
-		if err != nil {
-			panic(err)
-		}
-		if isHostFree {
-			fmt.Println("this host isn't avaliable")
-			host++
-			goto repeat
-		}
-
 		if ip != "" {
-			add := "INSERT INTO nodes_ip (ip, host) VALUES(?, ?)"
-
-			var exists bool
-
-			err := db.QueryRow(`SELECT EXISTS(SELECT 1 FROM nodes_ip WHERE ip = ?)`, ip).Scan(&exists)
-
+			var isHostFree bool
+		repeat:
+			err = db.QueryRow(`SELECT EXISTS(SELECT 1 FROM nodes_ip WHERE host = ?)`, host).Scan(&isHostFree)
 			if err != nil {
 				panic(err)
 			}
+			if isHostFree {
+				fmt.Println("this host isn't avaliable")
+				host++
+				goto repeat
+			}
 
-			if exists {
-				fmt.Println("there's such ip")
-			} else {
-				fmt.Println("there no node with such ip")
-				_, err = db.Exec(add, ip, host)
+			if ip != "" {
+				add := "INSERT INTO nodes_ip (ip, host) VALUES(?, ?)"
+
+				var exists bool
+
+				err := db.QueryRow(`SELECT EXISTS(SELECT 1 FROM nodes_ip WHERE ip = ?)`, ip).Scan(&exists)
 
 				if err != nil {
 					panic(err)
 				}
-			}
 
-			rows, err := db.Query("SELECT * FROM nodes_ip")
-			if err != nil {
-				panic(err)
-			}
+				if exists {
+					fmt.Println("there's such ip")
+				} else {
+					fmt.Println("there no node with such ip")
+					_, err = db.Exec(add, ip, host)
 
-			defer rows.Close()
-			cols, err := rows.Columns()
-			if err != nil {
-				panic(err)
-			}
+					if err != nil {
+						panic(err)
+					}
+				}
 
-			all_ips := make([]interface{}, len(cols))
-			for i := range cols {
-				all_ips[i] = new(interface{})
-			}
-
-			for rows.Next() {
-				err = rows.Scan(all_ips...)
+				rows, err := db.Query("SELECT * FROM nodes_ip")
 				if err != nil {
 					panic(err)
 				}
 
-				for i, column := range cols {
-					val := *(all_ips[i].(*interface{}))
-					fmt.Println(column, val)
+				defer rows.Close()
+				cols, err := rows.Columns()
+				if err != nil {
+					panic(err)
+				}
+
+				all_ips := make([]interface{}, len(cols))
+				for i := range cols {
+					all_ips[i] = new(interface{})
+				}
+
+				for rows.Next() {
+					err = rows.Scan(all_ips...)
+					if err != nil {
+						panic(err)
+					}
+
+					for i, column := range cols {
+						val := *(all_ips[i].(*interface{}))
+						fmt.Println(column, val)
+					}
 				}
 			}
+			c.JSON(http.StatusOK, gin.H{})
 		}
-		c.JSON(http.StatusOK, gin.H{})
 	}
 }
