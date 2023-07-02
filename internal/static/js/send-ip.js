@@ -1,15 +1,15 @@
-function sendIP() {
-    var ipInput = document.getElementById("ip").value;
+function send() {
+    var ip = document.getElementById('ip').value;
+    var host = document.getElementById('host').value;
 
-    var ipArray = ipInput.split(" ");
-
-    var jsonData = {
-        ip: ipArray
+    var jsn = {
+        ip: ip,
+        host: host,
     };
 
     fetch("/", {
         method: "POST",
-        body: jsonData,
+        body: JSON.stringify(jsn),
         headers: {
             "Content-Type": "application/json"
         }
@@ -21,4 +21,4 @@ function sendIP() {
         .catch(error => {
             console.error("Ошибка при отправке данных:", error);
         });
-}  
+}
