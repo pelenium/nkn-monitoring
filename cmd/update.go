@@ -54,12 +54,14 @@ repeat:
 			version := getData("getversion", ip)
 
 			totalBlocks := gjson.Get(nodeState, "proposalSubmitted").Int()
+			var blocksForToday int
 			lastBlockNumber, err := strconv.Atoi(blocks[indx])
 			if err != nil {
+				blocksForToday = 0
 				panic(err)
+			} else {
+				blocksForToday = int(totalBlocks) - lastBlockNumber
 			}
-
-			blocksForToday := int(totalBlocks) - lastBlockNumber
 
 			state := gjson.Get(nodeState, "syncState").String()
 
