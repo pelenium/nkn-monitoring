@@ -49,7 +49,7 @@ repeat:
 
 	for indx, ip := range ips {
 		if checkConnection(ip) {
-			height := gjson.Get(getData("getlatestblockheight", ip), "result").Int()
+			height := int(gjson.Get(getData("getnodestate", ip), "result.height").Int())
 			nodeState := gjson.Get(getData("getnodestate", ip), "result").String()
 			version := gjson.Get(getData("getversion", ip), "result").String()
 
