@@ -49,9 +49,9 @@ repeat:
 
 	for indx, ip := range ips {
 		if checkConnection(ip) {
-			height := getData("getlatestblockheight", ip)
-			nodeState := getData("getnodestate", ip)
-			version := getData("getversion", ip)
+			height := string(gjson.Get(getData("getlatestblockheight", ip), "result").Int())
+			nodeState := gjson.Get(getData("getnodestate", ip), "result").String()
+			version := gjson.Get(getData("getversion", ip), "result").String()
 
 			totalBlocks := gjson.Get(nodeState, "proposalSubmitted").Int()
 			var blocksForToday int
