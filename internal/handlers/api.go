@@ -12,7 +12,7 @@ func ApiGET(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		result := []interface{}{}
 
-		rows, err := db.Query("SELECT ip, generation, height, version, work_time, mined_ever, mined_today, node_status FROM nodes_ip;")
+		rows, err := db.Query("SELECT * FROM nodes_ip;")
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -21,8 +21,8 @@ func ApiGET(db *sql.DB) gin.HandlerFunc {
 		for rows.Next() {
 			var ip string
 			var generation int
-			var height, version, work_time, mined_ever, mined_today, node_status string
-			err = rows.Scan(&ip, &generation, &height, &version, &work_time, &mined_ever, &mined_today, &node_status)
+			var height, version, work_time, mined_ever, mined_today, node_status, lbn, lu string
+			err = rows.Scan(&ip, &generation, &height, &version, &work_time, &mined_ever, &mined_today, &node_status, &lbn, &lu)
 			if err != nil {
 				fmt.Println(err)
 			}
