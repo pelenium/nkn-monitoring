@@ -116,46 +116,74 @@ function createCard(ip, blockHeight, version, time, hours, minedForAllTime, mine
     card.className = 'node-card';
     card.setAttribute('data-ip', ip);
 
+    const cardContainer = document.createElement('div');
+    cardContainer.className = 'card-container';
+
     const ipRow = document.createElement('div');
     ipRow.className = 'node-card-ip';
     ipRow.textContent = ip;
-    card.appendChild(ipRow);
+    cardContainer.appendChild(ipRow);
 
     const heightRow = document.createElement('div');
     heightRow.className = 'node-card-height';
     heightRow.textContent = blockHeight;
-    card.appendChild(heightRow);
+    cardContainer.appendChild(heightRow);
 
     const versionRow = document.createElement('div');
     versionRow.className = 'node-card-version';
     versionRow.textContent = version;
-    card.appendChild(versionRow);
+    cardContainer.appendChild(versionRow);
 
     const timeRow = document.createElement('div');
     timeRow.className = 'node-card-time';
     timeRow.textContent = hours ? `${time} hours` : `${time} days`;
-    card.appendChild(timeRow);
+    cardContainer.appendChild(timeRow);
 
     const allTimeRow = document.createElement('div');
     allTimeRow.className = 'node-card-all';
     allTimeRow.textContent = minedForAllTime;
-    card.appendChild(allTimeRow);
+    cardContainer.appendChild(allTimeRow);
 
     const todayRow = document.createElement('div');
     todayRow.className = 'node-card-today';
     todayRow.textContent = minedToday;
-    card.appendChild(todayRow);
+    cardContainer.appendChild(todayRow);
 
     const stateRow = document.createElement('div');
     stateRow.className = 'node-card-state';
     stateRow.textContent = nodeState;
-    card.appendChild(stateRow);
+    cardContainer.appendChild(stateRow);
+
+    card.appendChild(cardContainer);
 
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Удалить';
     deleteButton.className = 'delete-button';
 
     deleteButton.addEventListener('click', function () {
+        var ip = String(document.getElementById('ip').value);
+
+        console.log(ip);
+
+        var jsn = {
+            ip: ip,
+        };
+
+        fetch("/delete", {
+            method: "POST",
+            body: JSON.stringify(jsn),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Ответ от сервера:", data);
+            })
+            .catch(error => {
+                console.error("Ошибка при отправке данных:", error);
+            });
+
         card.remove();
     });
 
