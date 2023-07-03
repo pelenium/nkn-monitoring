@@ -53,7 +53,7 @@ repeat:
 			nodeState := gjson.Get(getData("getnodestate", ip), "result").String()
 			version := gjson.Get(getData("getversion", ip), "result").String()
 
-			totalBlocks := gjson.Get(nodeState, "proposalSubmitted").Int()
+			totalBlocks := int(gjson.Get(getData("getnodestate", ip), "result.height").Int())
 			var blocksForToday int
 			if blocks[indx] != "-" {
 				lastBlockNumber, err := strconv.Atoi(blocks[indx])
@@ -73,7 +73,7 @@ repeat:
 			if uptime < 24 {
 				workTime = fmt.Sprintf("%.1f h", uptime)
 			} else {
-				workTime = fmt.Sprintf("%.1f d", uptime)
+				workTime = fmt.Sprintf("%.1f d", uptime / 24)
 			}
 
 			actualTime := strings.Split(time.Now().String(), " ")[0]
