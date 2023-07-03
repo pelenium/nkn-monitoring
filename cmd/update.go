@@ -13,7 +13,6 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/tidwall/gjson"
-	_ "github.com/tidwall/gjson"
 )
 
 func update(db *sql.DB) {
@@ -73,7 +72,7 @@ repeat:
 			if uptime < 24 {
 				workTime = fmt.Sprintf("%.1f h", uptime)
 			} else {
-				workTime = fmt.Sprintf("%.1f d", uptime / 24)
+				workTime = fmt.Sprintf("%.1f d", uptime/24)
 			}
 
 			actualTime := strings.Split(time.Now().String(), " ")[0]
@@ -96,11 +95,7 @@ func checkConnection(ip string) bool {
 
 	_, err := http.Get(url)
 
-	if err != nil {
-		return false
-	}
-
-	return true
+	return err == nil
 }
 
 func getData(method, ip string) string {
