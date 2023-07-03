@@ -1,15 +1,15 @@
 function send() {
     var ip = String(document.getElementById('ip').value);
-    var host = String(document.getElementById('host').value);
+    var generation = String(document.getElementById('generation').value);
 
-    host = host.length == 0 ? "0" : host;
+    generation = generation.length == 0 ? "0" : generation;
 
     console.log(ip);
-    console.log(host);
+    console.log(generation);
 
     var jsn = {
         ip: ip,
-        host: host,
+        generation: generation,
     };
 
     fetch("/", {
@@ -28,5 +28,5 @@ function send() {
         });
 
     document.getElementById('ip').value = "";
-    document.getElementById('host').value = "";
+    document.getElementById('generation').value = "";
 }

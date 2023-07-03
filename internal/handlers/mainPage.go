@@ -27,33 +27,33 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 
 		ip := strings.TrimSpace(gjson.Get(string(jsn), "ip").String())
 		fmt.Println(ip)
-		host, err := strconv.Atoi(strings.TrimSpace(gjson.Get(string(jsn), "host").String()))
+		generation, err := strconv.Atoi(strings.TrimSpace(gjson.Get(string(jsn), "generation").String()))
 
-		if host == 0 {
-			host++
+		if generation == 0 {
+			generation++
 		}
 
 		if err != nil {
 			panic(err)
 		}
 
-		fmt.Println(host)
+		fmt.Println(generation)
 
 		if ip != "" {
-			var isHostFree bool
+			var isGenerationFree bool
 		repeat:
-			err = db.QueryRow(`SELECT EXISTS(SELECT 1 FROM nodes_ip WHERE host = ?)`, host).Scan(&isHostFree)
+			err = db.QueryRow(`SELECT EXISTS(SELECT 1 FROM nodes_ip WHERE generation = ?)`, generation).Scan(&isGenerationFree)
 			if err != nil {
 				panic(err)
 			}
-			if isHostFree {
-				fmt.Println("this host isn't avaliable")
-				host++
+			if isGenerationFree {
+				fmt.Println("this generation isn't avaliable")
+				generation++
 				goto repeat
 			}
 
 			if ip != "" {
-				add := "INSERT INTO nodes_ip (ip, host) VALUES(?, ?)"
+				add := "INSERT INTO nodes_ip (ip, generation, height, version, work_time, mined_ever, mined_today, node_status, last_update) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
 				var exists bool
 
@@ -67,7 +67,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 					fmt.Println("there's such ip")
 				} else {
 					fmt.Println("there no node with such ip")
-					_, err = db.Exec(add, ip, host)
+					_, err = db.Exec(add, ip, generation, "-", "-", "-", "-", "-", "-", "OFFLINE")
 
 					if err != nil {
 						panic(err)
@@ -100,6 +100,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 						val := *(all_ips[i].(*interface{}))
 						fmt.Println(column, val)
 					}
+					fmt.Println()
 				}
 			}
 			c.JSON(http.StatusOK, gin.H{})
