@@ -155,6 +155,12 @@ function createCard(ip, blockHeight, version, time, hours, minedForAllTime, mine
     deleteButton.textContent = 'Удалить';
     deleteButton.className = 'delete-button';
 
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'button-container';
+    buttonContainer.appendChild(deleteButton);
+
+    card.appendChild(buttonContainer);
+
     deleteButton.addEventListener('click', function () {
         var ip = String(document.getElementById('ip').value);
 
@@ -178,7 +184,7 @@ function createCard(ip, blockHeight, version, time, hours, minedForAllTime, mine
             .catch(error => {
                 console.error("Ошибка при отправке данных:", error);
             });
-        
+
         card.remove();
     });
 

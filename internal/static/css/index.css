@@ -71,6 +71,20 @@ li {
     position: relative;
 }
 
+.node-card-content {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 20px;
+    width: 100%;
+}
+
+.button-container {
+    display: flex;
+    align-items: center;
+}
+
 .node-card-names {
     display: flex;
     justify-content: center;
@@ -117,14 +131,4 @@ li {
 
 .node-card-state {
     border-right: none;
-}
-
-.delete-button {
-    background-color: #ff0000;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 5px 10px;
-    font-size: 12px;
-    cursor: pointer;
 }
