@@ -29,7 +29,7 @@ async function main() {
         });
 }
 
-function createCard(ip, blockHeight, version, time, hours, minedForAllTime, minedToday, nodeState) {
+function createCard(ip, blockHeight, version, hours, minedForAllTime, minedToday, nodeState) {
     const card = document.createElement('div');
     card.className = 'node-card';
     card.setAttribute('data-ip', ip);
@@ -51,7 +51,7 @@ function createCard(ip, blockHeight, version, time, hours, minedForAllTime, mine
 
     const timeRow = document.createElement('div');
     timeRow.className = 'node-card-time';
-    timeRow.textContent = hours ? `${time} hours` : `${time} days`;
+    timeRow.textContent = time;
     card.appendChild(timeRow);
 
     const allTimeRow = document.createElement('div');
