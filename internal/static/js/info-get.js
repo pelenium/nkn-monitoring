@@ -151,6 +151,16 @@ function createCard(ip, blockHeight, version, time, hours, minedForAllTime, mine
     stateRow.textContent = nodeState;
     card.appendChild(stateRow);
 
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Удалить';
+    deleteButton.className = 'delete-button';
+
+    deleteButton.addEventListener('click', function () {
+        card.remove();
+    });
+
+    card.appendChild(deleteButton);
+
     const list = document.getElementById("list");
     if (list !== null) {
         list.appendChild(card);

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Main page</title>
     <link href="/internal/static/css/index.css" rel="stylesheet">
@@ -8,22 +7,19 @@
     <script src="/internal/static/js/send-ip.js"></script>
     <link rel="icon" type="image/x-icon" href="/internal/static/img/logo.png">
 </head>
-
 <body>
     <div class="header">
         <div class="title">My nodes</div>
     </div>
-
     <div class="container">
         <h1>My working nodes</h1>
         <div style="width: 50%; margin: 0 auto; text-align: center;">
-            <label for="ip">Введите ip:</label>
+            <label for="ip">Enter ip:</label>
             <input type="text" id="ip" placeholder="ip">
-            <label for="host">Введите хост:</label>
-            <input type="text" id="host" placeholder="host">
-            <button id="btn" onclick="send()">Отправить</button>
+            <label for="host">Enter generation id:</label>
+            <input type="text" id="host" placeholder="generation id">
+            <button id="btn" onclick="send()">Submit</button>
         </div>
-
         <ul id="names">
             <div class="node-card-names">
                 <div class="node-card-ip-name" style="font-weight: bold;">IP</div>
@@ -37,10 +33,8 @@
         </ul>
         <ul id="list"></ul>
     </div>
-
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
-
 </html>
