@@ -116,45 +116,40 @@ function createCard(ip, blockHeight, version, time, hours, minedForAllTime, mine
     card.className = 'node-card';
     card.setAttribute('data-ip', ip);
 
-    const cardContainer = document.createElement('div');
-    cardContainer.className = 'card-container';
-
     const ipRow = document.createElement('div');
     ipRow.className = 'node-card-ip';
     ipRow.textContent = ip;
-    cardContainer.appendChild(ipRow);
+    card.appendChild(ipRow);
 
     const heightRow = document.createElement('div');
     heightRow.className = 'node-card-height';
     heightRow.textContent = blockHeight;
-    cardContainer.appendChild(heightRow);
+    card.appendChild(heightRow);
 
     const versionRow = document.createElement('div');
     versionRow.className = 'node-card-version';
     versionRow.textContent = version;
-    cardContainer.appendChild(versionRow);
+    card.appendChild(versionRow);
 
     const timeRow = document.createElement('div');
     timeRow.className = 'node-card-time';
     timeRow.textContent = hours ? `${time} hours` : `${time} days`;
-    cardContainer.appendChild(timeRow);
+    card.appendChild(timeRow);
 
     const allTimeRow = document.createElement('div');
     allTimeRow.className = 'node-card-all';
     allTimeRow.textContent = minedForAllTime;
-    cardContainer.appendChild(allTimeRow);
+    card.appendChild(allTimeRow);
 
     const todayRow = document.createElement('div');
     todayRow.className = 'node-card-today';
     todayRow.textContent = minedToday;
-    cardContainer.appendChild(todayRow);
+    card.appendChild(todayRow);
 
     const stateRow = document.createElement('div');
     stateRow.className = 'node-card-state';
     stateRow.textContent = nodeState;
-    cardContainer.appendChild(stateRow);
-
-    card.appendChild(cardContainer);
+    card.appendChild(stateRow);
 
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Удалить';
@@ -183,7 +178,7 @@ function createCard(ip, blockHeight, version, time, hours, minedForAllTime, mine
             .catch(error => {
                 console.error("Ошибка при отправке данных:", error);
             });
-
+        
         card.remove();
     });
 

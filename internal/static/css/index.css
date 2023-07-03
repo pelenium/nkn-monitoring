@@ -61,7 +61,6 @@ li {
 .node-card {
     display: flex;
     justify-content: space-between;
-    /* Изменено на пространство между элементами */
     align-items: center;
     border: 2px solid black;
     border-radius: 5px;
