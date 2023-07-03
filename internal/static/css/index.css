@@ -60,7 +60,8 @@ li {
 
 .node-card {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    /* Изменено на пространство между элементами */
     align-items: center;
     border: 2px solid black;
     border-radius: 5px;
@@ -117,4 +118,14 @@ li {
 
 .node-card-state {
     border-right: none;
+}
+
+.delete-button {
+    background-color: #ff0000;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
 }
