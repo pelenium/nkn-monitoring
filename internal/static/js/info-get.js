@@ -1,7 +1,5 @@
 // WORKING VERSION
 
-let blockData = {};
-
 async function main() {
     fetch('/api')
         .then(function (response) {
@@ -22,7 +20,6 @@ async function main() {
         .catch(function (error) {
             console.log('Ошибка:', error);
         });
-
 }
 
 function createCard(ip, blockHeight, version, time, hours, minedForAllTime, minedToday, nodeState) {
@@ -108,6 +105,15 @@ function createCard(ip, blockHeight, version, time, hours, minedForAllTime, mine
     if (list !== null) {
         list.appendChild(card);
     }
+}
+
+function updateCard(card, blockHeight, version, time, minedForAllTime, minedToday, nodeState) {
+    card.querySelector('.node-card-height').textContent = blockHeight;
+    card.querySelector('.node-card-version').textContent = version;
+    card.querySelector('.node-card-time').textContent = time;
+    card.querySelector('.node-card-all').textContent = minedForAllTime;
+    card.querySelector('.node-card-today').textContent = minedToday;
+    card.querySelector('.node-card-state').textContent = nodeState;
 }
 
 main();
