@@ -46,15 +46,18 @@ input[type="text"] {
     margin-right: 20px;
 }
 
-.names,
-ul {
+ul#names {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    width: 80%;
+    width: 83%;
 }
 
-.list {
+ul#list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 85%;
     margin-left: 50px;
 }
 
