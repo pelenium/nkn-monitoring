@@ -53,7 +53,7 @@ repeat:
 			nodeState := gjson.Get(getData("getnodestate", ip), "result").String()
 			version := gjson.Get(getData("getversion", ip), "result").String()
 
-			totalBlocks := int(gjson.Get(getData("getnodestate", ip), "result.height").Int())
+			totalBlocks := int(gjson.Get(getData("getnodestate", ip), "result.proposalSubmitted").Int())
 			var blocksForToday int
 			if blocks[indx] != "-" {
 				lastBlockNumber, err := strconv.Atoi(blocks[indx])
