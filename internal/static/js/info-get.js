@@ -80,7 +80,7 @@ function createCard(ip, blockHeight, version, time, minedForAllTime, minedToday,
     card.appendChild(buttonContainer);
 
     deleteButton.addEventListener('click', function () {
-        var ip = String(document.getElementById('ip').value);
+        var ip = String(card.getAttribute('data-ip'));
 
         console.log(ip);
 
