@@ -83,6 +83,8 @@ repeat:
 			} else {
 				db.Exec(updateData, height, version, workTime, totalBlocks, blocksForToday, state, actualTime, ip)
 			}
+		} else {
+			db.Exec(updateData, "-", "-", "-", "-", "-", "OFFLINE", strings.Split(time.Now().String(), " ")[0], "-", ip)
 		}
 	}
 	goto repeat
