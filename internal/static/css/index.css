@@ -52,10 +52,10 @@ ul {
     margin: 0;
     padding: 0;
     width: 80%;
+    margin-left: 10px;
 }
 
 li {
-    margin-left: 10px;
     margin-top: 10px;
 }
 
