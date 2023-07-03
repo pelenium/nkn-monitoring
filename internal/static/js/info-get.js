@@ -29,7 +29,7 @@ async function main() {
         });
 }
 
-function createCard(ip, blockHeight, version, hours, minedForAllTime, minedToday, nodeState) {
+function createCard(ip, blockHeight, version, time, minedForAllTime, minedToday, nodeState) {
     const card = document.createElement('div');
     card.className = 'node-card';
     card.setAttribute('data-ip', ip);
