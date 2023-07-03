@@ -70,7 +70,7 @@ function createCard(ip, blockHeight, version, time, hours, minedForAllTime, mine
     card.appendChild(stateRow);
 
     const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Удалить';
+    deleteButton.textContent = 'Delete';
     deleteButton.className = 'delete-button';
 
     const buttonContainer = document.createElement('div');

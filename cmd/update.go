@@ -83,10 +83,8 @@ repeat:
 			} else {
 				db.Exec(updateData, height, version, workTime, totalBlocks, blocksForToday, state, actualTime, ip)
 			}
-			fmt.Println(height, version, workTime, totalBlocks, blocksForToday, state, actualTime, ip)
 		}
 	}
-	time.Sleep(time.Second)
 	goto repeat
 }
 
