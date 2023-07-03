@@ -12,7 +12,7 @@ func ApiGET(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		result := []interface{}{}
 
-		rows, err := db.Query("SELECT (ip, generation, height, version, work_time, mined_ever, mined_today, node_status) FROM nodes_ip;")
+		rows, err := db.Query("SELECT ip, generation, height, version, work_time, mined_ever, mined_today, node_status FROM nodes_ip;")
 		if err != nil {
 			fmt.Println(err)
 		}
