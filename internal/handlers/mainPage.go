@@ -53,7 +53,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 			}
 
 			if ip != "" {
-				add := "INSERT INTO nodes_ip (ip, generation, height, version, work_time, mined_ever, mined_today, node_status, last_update) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)"
+				add := "INSERT INTO nodes_ip (ip, generation, height, version, work_time, mined_ever, mined_today, node_status, last_block_number, last_update) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
 				var exists bool
 
@@ -67,7 +67,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 					fmt.Println("there's such ip")
 				} else {
 					fmt.Println("there no node with such ip")
-					_, err = db.Exec(add, ip, generation, "-", "-", "-", "-", "-", "-", "OFFLINE")
+					_, err = db.Exec(add, ip, generation, "-", "-", "-", "-", "-", "-", "OFFLINE", "-", "-")
 
 					if err != nil {
 						panic(err)
