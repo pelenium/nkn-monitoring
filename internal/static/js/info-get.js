@@ -7,14 +7,21 @@ async function main() {
         })
         .then(function (jsonArray) {
             jsonArray.forEach(function (i) {
-                console.log("ip:", i.ip);
-                console.log("generation:", i.generation);
-                console.log("height:", i.height);
-                console.log("version:", i.version);
-                console.log("work_time:", i.work_time);
-                console.log("mined_ever:", i.mined_ever);
-                console.log("mined_today:", i.mined_today);
-                console.log("node_status:", i.node_status);
+                const ip = i.ip;
+                const generation = i.generation;
+                const height = i.height;
+                const version = i.version;
+                const workTime = i.work_time;
+                const minedEver = i.mined_ever;
+                const minedToday = i.mined_today;
+                const nodeStatus = i.node_status;
+
+                const existingCard = document.querySelector(`.node-card[data-ip="${ip}"]`);
+                if (existingCard) {
+                    updateCard(existingCard, height, version, workTime, minedEver, minedToday, nodeStatus);
+                } else {
+                    createCard(ip, height, version, workTime, minedEver, minedToday, nodeStatus);
+                }
             });
         })
         .catch(function (error) {
