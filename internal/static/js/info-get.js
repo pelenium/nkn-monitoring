@@ -18,9 +18,9 @@ async function main() {
 
                 const existingCard = document.querySelector(`.node-card[data-ip="${ip}"]`);
                 if (existingCard) {
-                    updateCard(existingCard, height, version, workTime, minedEver, minedToday, nodeStatus);
+                    updateCard(existingCard, height, version, generation, workTime, minedEver, minedToday, nodeStatus);
                 } else {
-                    createCard(ip, height, version, workTime, minedEver, minedToday, nodeStatus);
+                    createCard(ip, height, version, generation, workTime, minedEver, minedToday, nodeStatus);
                 }
             });
         })
@@ -29,7 +29,7 @@ async function main() {
         });
 }
 
-function createCard(ip, blockHeight, version, time, minedForAllTime, minedToday, nodeState) {
+function createCard(ip, blockHeight, version, generation, time, minedForAllTime, minedToday, nodeState) {
     const card = document.createElement('div');
     card.className = 'node-card';
     card.setAttribute('data-ip', ip);
@@ -48,6 +48,11 @@ function createCard(ip, blockHeight, version, time, minedForAllTime, minedToday,
     versionRow.className = 'node-card-version';
     versionRow.textContent = version;
     card.appendChild(versionRow);
+
+    const generationRow = document.createElement('div');
+    generationRow.className = 'node-card-generation';
+    generationRow.textContent = generation;
+    card.appendChild(generationRow);
 
     const timeRow = document.createElement('div');
     timeRow.className = 'node-card-time';
@@ -82,8 +87,6 @@ function createCard(ip, blockHeight, version, time, minedForAllTime, minedToday,
     deleteButton.addEventListener('click', function () {
         var ip = String(card.getAttribute('data-ip'));
 
-        console.log(ip);
-
         var jsn = {
             ip: ip,
         };
@@ -114,9 +117,10 @@ function createCard(ip, blockHeight, version, time, minedForAllTime, minedToday,
     }
 }
 
-function updateCard(card, blockHeight, version, time, minedForAllTime, minedToday, nodeState) {
+function updateCard(card, blockHeight, version, generation, time, minedForAllTime, minedToday, nodeState) {
     card.querySelector('.node-card-height').textContent = blockHeight;
     card.querySelector('.node-card-version').textContent = version;
+    card.querySelector('.node-card-generation').textContent = generation;
     card.querySelector('.node-card-time').textContent = time;
     card.querySelector('.node-card-all').textContent = minedForAllTime;
     card.querySelector('.node-card-today').textContent = minedToday;

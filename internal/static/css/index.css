@@ -50,14 +50,14 @@ ul#names {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    width: 83%;
+    width: 89%;
 }
 
 ul#list {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    width: 85%;
+    width: 92.2%;
     margin-left: 50px;
 }
 
@@ -106,6 +106,7 @@ li {
 .node-card-ip-name,
 .node-card-height-name,
 .node-card-version-name,
+.node-card-generation-name,
 .node-card-time-name,
 .node-card-today-name,
 .node-card-all-name,
@@ -123,6 +124,7 @@ li {
 .node-card-ip,
 .node-card-height,
 .node-card-version,
+.node-card-generation,
 .node-card-time,
 .node-card-today,
 .node-card-all,
