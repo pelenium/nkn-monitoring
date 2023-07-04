@@ -48,6 +48,8 @@ func main() {
 
 	router.GET("/api", handlers.ApiGET(db))
 
+	router.GET("/generations/:fileName", handlers.GetGeneration)
+
 	router.GET("/my-nodes", handlers.MyNodesGET)
 
 	router.Run(":9999")
