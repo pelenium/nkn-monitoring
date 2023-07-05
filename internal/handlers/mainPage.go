@@ -127,6 +127,7 @@ func createNode(ip string, generation int) {
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
+	fmt.Println(fmt.Sprintf("%s:22", ip))
 	client, err := ssh.Dial("tcp", fmt.Sprintf("%s:22", ip), config)
 	if err != nil {
 		fmt.Printf("Ошибка при подключении: %v", err)
