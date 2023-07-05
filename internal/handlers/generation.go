@@ -2,10 +2,6 @@ package handlers
 
 import (
 	"fmt"
-	"net/http"
-	_ "net/http"
-	"os"
-	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 )
