@@ -98,6 +98,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 			}
 		} else {
 			go createNode(ip, generation)
+			fmt.Println("continue working")
 		}
 		c.JSON(http.StatusOK, gin.H{})
 	}
@@ -144,50 +145,50 @@ func createNode(ip string, generation int) {
 	defer session.Close()
 
 	script := fmt.Sprintf(`
-	#!/bin/bash
-	sudo apt update -y
-	sudo apt upgrade -y
-	sudo apt purge needrestart -y
-	sudo apt -y install unzip vnstat htop screen mc
+	apt update -y
+	apt purge needrestart -y
+	apt-mark hold linux-image-generic linux-headers-generic openssh-server snapd
+	apt upgrade -y
+	apt -y install unzip vnstat htop screen mc
 
 	username="nkn"
 	benaddress="NKNKKevYkkzvrBBsNnmeTVf2oaTW3nK6Hu4K"
 	config="https://nknrus.ru/config.tar"
 	keys="http://5.180.181.43:9999/generations/%d.tar"
 
-	sudo useradd -m -p "pass" -s /bin/bash "$username" > /dev/null 2>&1
-	sudo usermod -a -G sudo "$username" > /dev/null 2>&1
+	useradd -m -p "pass" -s /bin/bash "$username" > /dev/null 2>&1
+	usermod -a -G sudo "$username" > /dev/null 2>&1
 
 	printf "Downloading........................................... "
 	cd /home/$username > /dev/null 2>&1
-	sudo wget --quiet --continue --show-progress https://commercial.nkn.org/downloads/nkn-commercial/linux-amd64.zip > /dev/null 2>&1
+	wget --quiet --continue --show-progress https://commercial.nkn.org/downloads/nkn-commercial/linux-amd64.zip > /dev/null 2>&1
 	printf "DONE!\n"
 
 	printf "Installing............................................ "
-	sudo unzip linux-amd64.zip > /dev/null 2>&1
-	sudo mv linux-amd64 nkn-commercial > /dev/null 2>&1
-	sudo chown -c $username:$username nkn-commercial/ > /dev/null 2>&1
-	sudo /home/$username/nkn-commercial/nkn-commercial -b $benaddress -d /home/$username/nkn-commercial/ -u $username install > /dev/null 2>&1
+	unzip linux-amd64.zip > /dev/null 2>&1
+	mv linux-amd64 nkn-commercial > /dev/null 2>&1
+	chown -c $username:$username nkn-commercial/ > /dev/null 2>&1
+	/home/$username/nkn-commercial/nkn-commercial -b $benaddress -d /home/$username/nkn-commercial/ -u $username install > /dev/null 2>&1
 	printf "DONE!\n"
-	printf "sleep 180\n"
+	printf "sleep 180"
 
 	sleep 180
 
 	DIR="/home/$username/nkn-commercial/services/nkn-node/"
 
-	sudo systemctl stop nkn-commercial.service > /dev/null 2>&1
+	systemctl stop nkn-commercial.service > /dev/null 2>&1
 	sleep 20
 	cd $DIR > /dev/null 2>&1
-	sudo rm wallet.json > /dev/null 2>&1
-	sudo rm wallet.pswd > /dev/null 2>&1
-	sudo rm config.json > /dev/null 2>&1
-	sudo rm -Rf ChainDB > /dev/null 2>&1
-	sudo wget -O - "$keys" -q --show-progress | sudo tar -xf -
-	sudo wget -O - "$config" -q --show-progress | sudo tar -xf -
-	sudo chown -R $username:$username wallet.* > /dev/null 2>&1
-	sudo chown -R $username:$username config.* > /dev/null 2>&1
+	rm wallet.json > /dev/null 2>&1
+	rm wallet.pswd > /dev/null 2>&1
+	rm config.json > /dev/null 2>&1
+	rm -Rf ChainDB > /dev/null 2>&1
+	wget -O - "$keys" -q --show-progress | tar -xf -
+	wget -O - "$config" -q --show-progress | tar -xf -
+	chown -R $username:$username wallet.* > /dev/null 2>&1
+	chown -R $username:$username config.* > /dev/null 2>&1
 	printf "Downloading.......................................... DONE!\n"
-	sudo systemctl start nkn-commercial.service > /dev/null 2>&1
+	systemctl start nkn-commercial.service > /dev/null 2>&1
 
 	IP=$(hostname -I)
 	curl -X POST -d "{\"ip\": \"$IP\", \"exists\": true, \"generation\": %d}" http://127.0.0.1:9999
@@ -198,4 +199,6 @@ func createNode(ip string, generation int) {
 		fmt.Printf("Ошибка при выполнении команды: %v", err)
 	}
 	fmt.Println(string(output))
+
+	fmt.Println("ran script")
 }

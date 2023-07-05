@@ -11,6 +11,7 @@ function send() {
         var jsn = {
             ip: ip,
             generation: generation,
+            exists: true,
         };
 
         fetch("/", {
