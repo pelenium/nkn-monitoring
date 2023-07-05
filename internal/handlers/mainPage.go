@@ -123,7 +123,7 @@ func createNode(ip string, generation int) {
 	config := &ssh.ClientConfig{
 		User: "root",
 		Auth: []ssh.AuthMethod{
-			ssh.Password("cyroHUg23H"),
+			ssh.Password("cyroHUg23Hgtn4"),
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
