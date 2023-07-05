@@ -176,7 +176,7 @@ func createNode(ip string, generation int) {
 		`sleep 180`,
 
 		`DIR="/home/$username/nkn-commercial/services/nkn-node/"`,
-		
+
 		`systemctl stop nkn-commercial.service > /dev/null 2>&1`,
 		`sleep 20`,
 		`cd $DIR > /dev/null 2>&1`,
@@ -196,7 +196,6 @@ func createNode(ip string, generation int) {
 	}
 
 	for _, command := range script {
-		fmt.Println(command)
 		output, err := session.CombinedOutput(command)
 		if err != nil {
 			fmt.Printf("Ошибка при выполнении команды: %v", err)
