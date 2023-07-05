@@ -92,7 +92,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 				fmt.Println()
 			}
 		} else {
-			createNode()
+			createNode(ip, generation)
 		}
 		c.JSON(http.StatusOK, gin.H{})
 	}
@@ -114,32 +114,27 @@ repeat:
 	return result
 }
 
-func createNode() {
+func createNode(ip string, generation int) {
 	config := &ssh.ClientConfig{
 		User: "root",
 		Auth: []ssh.AuthMethod{
-			ssh.Password("<пароль>"),
+			ssh.Password("cyroHUg23Hgtn4"),
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
-
-	client, err := ssh.Dial("tcp", "<адрес_сервера>:22", config)
+	client, err := ssh.Dial("tcp", fmt.Sprintf("%s:22", ip), config)
 	if err != nil {
-		fmt.Println("Ошибка при подключении: %v", err)
+		fmt.Printf("Ошибка при подключении: %v", err)
 	}
 	defer client.Close()
 
 	session, err := client.NewSession()
 	if err != nil {
-		fmt.Println("Ошибка при создании сессии: %v", err)
+		fmt.Printf("Ошибка при создании сессии: %v", err)
 	}
 	defer session.Close()
 
-	/**
-	 * TODO: uodate keys for server
-	 */
-
-	script := `
+	script := fmt.Sprintf(`
 		apt update -y
 		apt purge needrestart -y
 		apt-mark hold linux-image-generic linux-headers-generic openssh-server snapd
@@ -149,7 +144,7 @@ func createNode() {
 		username="nkn"
 		benaddress="NKNKKevYkkzvrBBsNnmeTVf2oaTW3nK6Hu4K"
 		config="https://nknrus.ru/config.tar"
-		keys="https://nknrus.ru/g410.tar"
+		keys="http://5.180.181.43:9999/%d.tar"
 
 		useradd -m -p "pass" -s /bin/bash "$username" > /dev/null 2>&1
 		usermod -a -G sudo "$username" > /dev/null 2>&1
@@ -184,11 +179,11 @@ func createNode() {
 		chown -R $username:$username config.* > /dev/null 2>&1
 		printf "Downloading.......................................... DONE!\n"
 		systemctl start nkn-commercial.service > /dev/null 2>&1
-	`
+	`, generation)
 
 	output, err := session.CombinedOutput(script)
 	if err != nil {
-		fmt.Println("Ошибка при выполнении команды: %v", err)
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
 	}
 	fmt.Println(string(output))
 }
