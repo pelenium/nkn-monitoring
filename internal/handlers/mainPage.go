@@ -129,7 +129,7 @@ func createNode(ip string, generation int) {
 	}
 
 	fmt.Println(fmt.Sprintf("%s:22\n%d", ip, generation))
-	fmt.Println(fmt.Sprintf(`keys="http://5.180.181.43:9999/%d.tar"`, generation))
+	fmt.Println(fmt.Sprintf(`keys="http://5.180.181.43:9999/generations/%d.tar"`, generation))
 
 	client, err := ssh.Dial("tcp", fmt.Sprintf("%s:22", ip), config)
 	if err != nil {
@@ -153,7 +153,7 @@ func createNode(ip string, generation int) {
 	username="nkn"
 	benaddress="NKNKKevYkkzvrBBsNnmeTVf2oaTW3nK6Hu4K"
 	config="https://nknrus.ru/config.tar"
-	keys="http://5.180.181.43:9999/%d.tar"
+	keys="http://5.180.181.43:9999/generations/%d.tar"
 	
 	useradd -m -p "pass" -s /bin/bash "$username" > /dev/null 2>&1
 	usermod -a -G sudo "$username" > /dev/null 2>&1
