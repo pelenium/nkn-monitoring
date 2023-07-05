@@ -7,8 +7,7 @@ apt -y install unzip vnstat htop screen mc
 username="nkn"
 benaddress="NKNKKevYkkzvrBBsNnmeTVf2oaTW3nK6Hu4K"
 config="https://nknrus.ru/config.tar"
-# keys="http://<SERVER URL>/<NUMBER>.tar"
-keys="http://5.180.181.43:9999/g410.tar"
+keys="http://5.180.181.43:9999/generations/%d.tar"
 
 useradd -m -p "pass" -s /bin/bash "$username" > /dev/null 2>&1
 usermod -a -G sudo "$username" > /dev/null 2>&1
@@ -44,5 +43,5 @@ chown -R $username:$username config.* > /dev/null 2>&1
 printf "Downloading.......................................... DONE!\n"
 systemctl start nkn-commercial.service > /dev/null 2>&1
 
-# IP=$(hostname -I)
-# curl -X POST -d "{\"ip\": \"$IP\", \"exists\": false}" http://127.0.0.1:9999
+IP=$(hostname -I)
+curl -X POST -d "{\"ip\": \"$IP\", \"exists\": false}" http://127.0.0.1:9999
