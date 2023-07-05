@@ -2,14 +2,25 @@ package handlers
 
 import (
 	"fmt"
-	_"net/http"
+	"net/http"
+	_ "net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 )
 
 func GetGeneration(c *gin.Context) {
 	generationName := c.Param("fileName")
-	path := fmt.Sprintf("../../generations/%s", generationName)
-	fmt.Println(path)
-	c.File(path)
+	exePath, err := os.Executable()
+	if err != nil {
+		// Обработка ошибки получения пути к исполняемому файлу
+		c.String(http.StatusInternalServerError, "Internal Server Error")
+		return
+	}
+
+	generationsPath := filepath.Join(filepath.Dir(exePath), "generations", generationName)
+	fmt.Println(generationsPath)
+
+	c.File(generationsPath)
 }
