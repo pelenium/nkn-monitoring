@@ -29,7 +29,12 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 		ip := strings.TrimSpace(gjson.Get(string(jsn), "ip").String())
 		shouldCreate := gjson.Get(string(jsn), "exists").Bool()
 		fmt.Println(ip)
-		generation, err := strconv.Atoi(strings.TrimSpace(gjson.Get(string(jsn), "generation").String()))
+		var generation int
+		if strings.TrimSpace(gjson.Get(string(jsn), "generation").String()) != "" {
+			generation, err = strconv.Atoi(strings.TrimSpace(gjson.Get(string(jsn), "generation").String()))
+		} else {
+			generation = 0
+		}
 
 		if err != nil {
 			panic(err)
