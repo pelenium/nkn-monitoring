@@ -97,7 +97,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 				fmt.Println()
 			}
 		} else {
-			createNode(ip, generation)
+			go createNode(ip, generation)
 		}
 		c.JSON(http.StatusOK, gin.H{})
 	}
