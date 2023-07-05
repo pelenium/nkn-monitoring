@@ -12,15 +12,7 @@ import (
 
 func GetGeneration(c *gin.Context) {
 	generationName := c.Param("fileName")
-	exePath, err := os.Executable()
-	if err != nil {
-		// Обработка ошибки получения пути к исполняемому файлу
-		c.String(http.StatusInternalServerError, "Internal Server Error")
-		return
-	}
-
-	generationsPath := filepath.Join(filepath.Dir(exePath), "generations", generationName)
+	generationsPath :=  fmt.Sprintf("/root/nkn-monitoring/generations/%s", generationName)
 	fmt.Println(generationsPath)
-
 	c.File(generationsPath)
 }
