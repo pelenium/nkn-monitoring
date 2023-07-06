@@ -3,7 +3,6 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -20,7 +19,6 @@ func PermissionDenied(c *gin.Context) {
 
 func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		log.Println("got information about node")
 		req := c.Request.Body
 		jsn, err := ioutil.ReadAll(req)
 
@@ -32,28 +30,19 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 		nodeExists := gjson.Get(string(jsn), "exists").Bool()
 		var generation int
 		if strings.TrimSpace(gjson.Get(string(jsn), "generation").String()) != "" {
-			generation, err = strconv.Atoi(strings.TrimSpace(gjson.Get(string(jsn), "generation").String()))
+			if generation, err = strconv.Atoi(strings.TrimSpace(gjson.Get(string(jsn), "generation").String())); err != nil {
+				panic(err)
+			}
 		} else {
-			generation = 0
-		}
-
-		if err != nil {
-			panic(err)
-		}
-
-		if generation == 0 {
 			generation = getGenerationNumber(db)
 		}
 
 		if nodeExists {
-			log.Println("node exists")
 			add := "INSERT INTO nodes_ip (ip, generation, height, version, work_time, mined_ever, mined_today, node_status, last_block_number, last_update) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
 			var exists bool
 
-			err := db.QueryRow(`SELECT EXISTS(SELECT 1 FROM nodes_ip WHERE ip = ?)`, ip).Scan(&exists)
-
-			if err != nil {
+			if err := db.QueryRow(`SELECT EXISTS(SELECT 1 FROM nodes_ip WHERE ip = ?)`, ip).Scan(&exists); err != nil {
 				panic(err)
 			}
 
@@ -61,9 +50,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 				fmt.Println("there's such ip")
 			} else {
 				fmt.Println("there no node with such ip")
-				_, err = db.Exec(add, ip, generation, "-", "-", "-", "-", "-", "OFFLINE", "-", "-")
-
-				if err != nil {
+				if _, err = db.Exec(add, ip, generation, "-", "-", "-", "-", "-", "OFFLINE", "-", "-"); err != nil {
 					panic(err)
 				}
 			}
@@ -73,7 +60,6 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 				panic(err)
 			}
 
-			defer rows.Close()
 			cols, err := rows.Columns()
 			if err != nil {
 				panic(err)
@@ -85,8 +71,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 			}
 
 			for rows.Next() {
-				err = rows.Scan(all_ips...)
-				if err != nil {
+				if err = rows.Scan(all_ips...); err != nil {
 					panic(err)
 				}
 
@@ -96,30 +81,30 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 				}
 				fmt.Println()
 			}
+
+			rows.Close()
 		} else {
-			log.Println("there'no such node")
 			go createNode(ip, generation)
 			fmt.Println("continue working")
 		}
-		log.Println("end of handler's work")
 		c.JSON(http.StatusOK, gin.H{})
 	}
 }
 
 func getGenerationNumber(db *sql.DB) int {
 	result := 1
-	var isGenerationFree bool
-repeat:
-	err := db.QueryRow(`SELECT EXISTS(SELECT 1 FROM nodes_ip WHERE generation = ?)`, result).Scan(&isGenerationFree)
-	if err != nil {
-		panic(err)
+	var NotGenerationFree bool
+	for {
+		if err := db.QueryRow(`SELECT EXISTS(SELECT 1 FROM nodes_ip WHERE generation = ?)`, result).Scan(&NotGenerationFree); err != nil {
+			panic(err)
+		}
+		if NotGenerationFree {
+			fmt.Println("this generation isn't avaliable")
+			result++
+		} else {
+			return result
+		}
 	}
-	if isGenerationFree {
-		fmt.Println("this generation isn't avaliable")
-		result++
-		goto repeat
-	}
-	return result
 }
 
 func createNode(ip string, generation int) {
@@ -137,16 +122,14 @@ func createNode(ip string, generation int) {
 
 	client, err := ssh.Dial("tcp", fmt.Sprintf("%s:22", ip), config)
 	if err != nil {
-		fmt.Printf("Ошибка при подключении: %v", err)
+		panic(err)
 	}
-	defer client.Close()
-
+	
 	session, err := client.NewSession()
 	if err != nil {
-		fmt.Printf("Ошибка при создании сессии: %v", err)
+		panic(err)
 	}
-	defer session.Close()
-
+	
 	script := fmt.Sprintf(`
 		#!/bin/bash
 		apt update -y
@@ -154,20 +137,20 @@ func createNode(ip string, generation int) {
 		apt-mark hold linux-image-generic linux-headers-generic openssh-server snapd
 		apt upgrade -y
 		apt -y install unzip vnstat htop screen mc
-
+		
 		username="nkn"
 		benaddress="NKNKKevYkkzvrBBsNnmeTVf2oaTW3nK6Hu4K"
 		config="https://nknrus.ru/config.tar"
-		keys="http://185.220.204.15/generations/%d.tar"
-
+		keys="http://113.30.188.94/generations/%d.tar"
+		
 		useradd -m -p "pass" -s /bin/bash "$username" > /dev/null 2>&1
 		usermod -a -G sudo "$username" > /dev/null 2>&1
-
+		
 		printf "Downloading........................................... "
 		cd /home/$username > /dev/null 2>&1
 		wget --quiet --continue --show-progress https://commercial.nkn.org/downloads/nkn-commercial/linux-amd64.zip > /dev/null 2>&1
 		printf "DONE!\n"
-
+		
 		printf "Installing............................................ "
 		unzip linux-amd64.zip > /dev/null 2>&1
 		mv linux-amd64 nkn-commercial > /dev/null 2>&1
@@ -175,11 +158,11 @@ func createNode(ip string, generation int) {
 		/home/$username/nkn-commercial/nkn-commercial -b $benaddress -d /home/$username/nkn-commercial/ -u $username install > /dev/null 2>&1
 		printf "DONE!\n"
 		printf "sleep 180"
-
+		
 		sleep 180
-
+		
 		DIR="/home/$username/nkn-commercial/services/nkn-node/"
-
+		
 		systemctl stop nkn-commercial.service > /dev/null 2>&1
 		sleep 20
 		cd $DIR > /dev/null 2>&1
@@ -193,23 +176,19 @@ func createNode(ip string, generation int) {
 		chown -R $username:$username config.* > /dev/null 2>&1
 		printf "Downloading.......................................... DONE!\n"
 		systemctl start nkn-commercial.service > /dev/null 2>&1
-
+		
 		IP=$(hostname -I)
-		curl -X POST -d "{\"ip\": \"$IP\", \"exists\": true, \"generation\": %d}" http://185.220.204.15:9999
+		curl -X POST -d "{\"ip\": \"$IP\", \"exists\": false, \"generation\": %d}" http://127.0.0.1:9999
 	`, generation, generation)
-
-	scriptPath := "/tmp/script.sh"
-	err = session.Run("echo \"" + script + "\" > " + scriptPath)
+	
+	output, err := session.CombinedOutput(script)
 	if err != nil {
-		fmt.Printf("Failed to create script: %s", err)
+		panic(err)
 	}
-
-	output, err := session.CombinedOutput("bash " + scriptPath)
-	if err != nil {
-		fmt.Printf("Failed to execute script: %s", err)
-	}
-
 	fmt.Println(string(output))
-
+	
+	client.Close()
+	session.Close()
+	
 	fmt.Println("ran script")
 }
