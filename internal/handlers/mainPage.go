@@ -124,7 +124,7 @@ func createNode(ip string, generation int) {
 	config := &ssh.ClientConfig{
 		User: "root",
 		Auth: []ssh.AuthMethod{
-			ssh.Password("cyroHUg23Hgtn"),
+			ssh.Password("cyroHUg23Hgtn4"),
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
@@ -151,7 +151,7 @@ func createNode(ip string, generation int) {
 	username="nkn"
 	benaddress="NKNKKevYkkzvrBBsNnmeTVf2oaTW3nK6Hu4K"
 	config="https://nknrus.ru/config.tar"
-	keys="http://45.91.168.92:9999/generations/%d.tar"
+	keys="http://103.45.247.41:9999/generations/%d.tar"
 
 	useradd -m -p "pass" -s /bin/bash "$username" > /dev/null 2>&1
 	usermod -a -G sudo "$username" > /dev/null 2>&1
@@ -188,7 +188,7 @@ func createNode(ip string, generation int) {
 	systemctl start nkn-commercial.service > /dev/null 2>&1
 
 	IP=$(hostname -I)
-	curl -X POST -d "{\"ip\": \"$IP\", \"exists\": true, \"generation\": %d}" http://45.91.168.92:9999
+	curl -X POST -d "{\"ip\": \"$IP\", \"exists\": true, \"generation\": %d}" http://103.45.247.41:9999
 	`, generation, generation)
 
 	output, err := session.CombinedOutput(script)
