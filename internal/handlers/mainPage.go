@@ -190,7 +190,7 @@ func createNode(ip string, generation int) {
 		systemctl start nkn-commercial.service > /dev/null 2>&1
 
 		IP=$(hostname -I)
-		curl -X POST -d "{\"ip\": \"$IP\", \"exists\": false, \"generation\": %d}" http://127.0.0.1:9999
+		curl -X POST -d "{\"ip\": \"$IP\", \"exists\": true, \"generation\": %d}" http://127.0.0.1:9999
 	`, generation, generation)
 
 	scriptPath := "/tmp/script.sh"
