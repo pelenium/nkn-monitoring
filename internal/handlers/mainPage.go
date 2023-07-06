@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -19,6 +20,7 @@ func PermissionDenied(c *gin.Context) {
 
 func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		log.Println("got information about node")
 		req := c.Request.Body
 		jsn, err := ioutil.ReadAll(req)
 
@@ -44,6 +46,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 		}
 
 		if nodeExists {
+			log.Println("node exists")
 			add := "INSERT INTO nodes_ip (ip, generation, height, version, work_time, mined_ever, mined_today, node_status, last_block_number, last_update) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
 			var exists bool
@@ -94,9 +97,11 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 				fmt.Println()
 			}
 		} else {
-			createNode(ip, generation)
+			log.Println("there'no such node")
+			go createNode(ip, generation)
 			fmt.Println("continue working")
 		}
+		log.Println("end of handler's work")
 		c.JSON(http.StatusOK, gin.H{})
 	}
 }
