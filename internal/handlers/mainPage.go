@@ -129,71 +129,247 @@ func createNode(ip string, generation int) {
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
+	fmt.Printf("%s:22\n%d\n", ip, generation)
+	fmt.Printf(`keys="http://5.180.181.43:9999/generations/%d.tar"`, generation)
+	fmt.Println()
+
 	client, err := ssh.Dial("tcp", fmt.Sprintf("%s:22", ip), config)
 	if err != nil {
-		fmt.Printf("Ошибка при подключении: %v\n", err)
+		fmt.Printf("Ошибка при подключении: %v", err)
 	}
 	defer client.Close()
 
 	session, err := client.NewSession()
 	if err != nil {
-		fmt.Printf("Ошибка при создании сессии: %v\n", err)
+		fmt.Printf("Ошибка при создании сессии: %v", err)
 	}
 	defer session.Close()
 
-	script := fmt.Sprintf(`
-	apt update -y &&
-	apt purge needrestart -y &&
-	apt-mark hold linux-image-generic linux-headers-generic openssh-server snapd &&
-	apt upgrade -y &&
-	apt -y install unzip vnstat htop screen mc &&
-
-	username="nkn" &&
-	benaddress="NKNKKevYkkzvrBBsNnmeTVf2oaTW3nK6Hu4K" &&
-	config="https://nknrus.ru/config.tar" &&
-	keys="http://103.45.247.41:9999/generations/%d.tar" &&
-
-	useradd -m -p "pass" -s /bin/bash "$username" > /dev/null 2>&1 &&
-	usermod -a -G sudo "$username" > /dev/null 2>&1 &&
-
-	printf "Downloading........................................... " &&
-	cd /home/$username > /dev/null 2>&1 &&
-	wget --quiet --continue --show-progress https://commercial.nkn.org/downloads/nkn-commercial/linux-amd64.zip > /dev/null 2>&1 &&
-	printf "DONE!\n" &&
-
-	printf "Installing............................................ " &&
-	unzip linux-amd64.zip > /dev/null 2>&1 &&
-	mv linux-amd64 nkn-commercial > /dev/null 2>&1 &&
-	chown -c $username:$username nkn-commercial/ > /dev/null 2>&1 &&
-	/home/$username/nkn-commercial/nkn-commercial -b $benaddress -d /home/$username/nkn-commercial/ -u $username install > /dev/null 2>&1 &&
-	printf "DONE!\n" &&
-	printf "sleep 180" &&
-
-	sleep 180 &&
-
-	DIR="/home/$username/nkn-commercial/services/nkn-node/" &&
-
-	systemctl stop nkn-commercial.service > /dev/null 2>&1 &&
-	sleep 20 &&
-	cd $DIR > /dev/null 2>&1 &&
-	rm wallet.json > /dev/null 2>&1 &&
-	rm wallet.pswd > /dev/null 2>&1 &&
-	rm config.json > /dev/null 2>&1 &&
-	rm -Rf ChainDB > /dev/null 2>&1 &&
-	wget -O - "$(printf $keys $generation)" -q --show-progress | tar -xf - &&
-	wget -O - "$config" -q --show-progress | tar -xf - &&
-	chown -R $username:$username wallet.* > /dev/null 2>&1 &&
-	chown -R $username:$username config.* > /dev/null 2>&1 &&
-	printf "Downloading.......................................... DONE!\n" &&
-	systemctl start nkn-commercial.service > /dev/null 2>&1 &&
-
-	IP=$(hostname -I) &&
-	curl -X POST -d "{\"ip\": \"$IP\", \"exists\": true, \"generation\": %d}" http://103.45.247.41:9999
-	`, generation, generation)
-
-	output, err := session.CombinedOutput(script)
+	output, err := session.CombinedOutput("apt update -y")
 	if err != nil {
-		fmt.Printf("Ошибка при выполнении команды: %v\n", err)
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput("apt purge needrestart -y")
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput("apt-mark hold linux-image-generic linux-headers-generic openssh-server snapd")
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput("apt upgrade -y")
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput("apt -y install unzip vnstat htop screen mc")
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`username="nkn"`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`benaddress="NKNKKevYkkzvrBBsNnmeTVf2oaTW3nK6Hu4K"`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`config="https://nknrus.ru/config.tar"`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(fmt.Sprintf(`keys="http://103.45.247.41:9999/generations/%d.tar"`, generation))
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`useradd -m -p "pass" -s /bin/bash "$username" > /dev/null 2>&1`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`usermod -a -G sudo "$username" > /dev/null 2>&1`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`printf "Downloading........................................... "`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`cd /home/$username > /dev/null 2>&1`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`wget --quiet --continue --show-progress https://commercial.nkn.org/downloads/nkn-commercial/linux-amd64.zip > /dev/null 2>&1`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`printf "DONE!\n"`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`printf "Installing............................................ "`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`unzip linux-amd64.zip > /dev/null 2>&1`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`mv linux-amd64 nkn-commercial > /dev/null 2>&1`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`chown -c $username:$username nkn-commercial/ > /dev/null 2>&1`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`/home/$username/nkn-commercial/nkn-commercial -b $benaddress -d /home/$username/nkn-commercial/ -u $username install > /dev/null 2>&1`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`printf "DONE!\n"`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`printf "sleep 180"`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`sleep 180`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`DIR="/home/$username/nkn-commercial/services/nkn-node/"`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`systemctl stop nkn-commercial.service > /dev/null 2>&1`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`sleep 20`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`cd $DIR > /dev/null 2>&1`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`rm wallet.json > /dev/null 2>&1`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`rm wallet.pswd > /dev/null 2>&1`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`rm config.json > /dev/null 2>&1`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`rm -Rf ChainDB > /dev/null 2>&1`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`wget -O - "$keys" -q --show-progress | tar -xf -`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`wget -O - "$config" -q --show-progress | tar -xf -`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`chown -R $username:$username wallet.* > /dev/null 2>&1`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`chown -R $username:$username config.* > /dev/null 2>&1`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`printf "Downloading.......................................... DONE!\n"1`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(`systemctl start nkn-commercial.service > /dev/null 2>&1`)
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
+	}
+	fmt.Println(string(output))
+
+	output, err = session.CombinedOutput(fmt.Sprintf(`curl -X POST -d "{\"ip\": \"%s\", \"exists\": true, \"generation\": %d}" http://103.45.247.41:9999`, ip, generation))
+	if err != nil {
+		fmt.Printf("Ошибка при выполнении команды: %v", err)
 	}
 	fmt.Println(string(output))
 
