@@ -143,6 +143,7 @@ func createNode(ip string, generation int) {
 	defer session.Close()
 
 	script := fmt.Sprintf(`
+		#!/bin/bash
 		apt update -y
 		apt purge needrestart -y
 		apt-mark hold linux-image-generic linux-headers-generic openssh-server snapd
@@ -192,10 +193,17 @@ func createNode(ip string, generation int) {
 		curl -X POST -d "{\"ip\": \"$IP\", \"exists\": false, \"generation\": %d}" http://127.0.0.1:9999
 	`, generation, generation)
 
-	output, err := session.CombinedOutput(script)
+	scriptPath := "/tmp/script.sh"
+	err = session.Run("echo \"" + script + "\" > " + scriptPath)
 	if err != nil {
-		fmt.Printf("Ошибка при выполнении команды: %v", err)
+		fmt.Printf("Failed to create script: %s", err)
 	}
+
+	output, err := session.CombinedOutput("bash " + scriptPath)
+	if err != nil {
+		fmt.Printf("Failed to execute script: %s", err)
+	}
+
 	fmt.Println(string(output))
 
 	fmt.Println("ran script")
