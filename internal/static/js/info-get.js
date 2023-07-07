@@ -33,22 +33,6 @@ async function main() {
     getWalletBalance("NKNEfKFwLjdN2SXJU2UZaY3aECVuC6kTjwzz");
     var mt = document.getElementById("mined-today");
     mt.textContent = blocksToday;
-    sortCardsByGeneration();
-}
-
-function sortCardsByGeneration() {
-    const cardList = document.getElementById("list");
-    const cards = Array.from(cardList.getElementsByClassName("node-card"));
-
-    cards.sort((a, b) => {
-        const genA = parseInt(a.querySelector('.node-card-generation').textContent);
-        const genB = parseInt(b.querySelector('.node-card-generation').textContent);
-
-        return genA - genB;
-    });
-
-    cardList.innerHTML = "";
-    cards.forEach(card => cardList.appendChild(card));
 }
 
 function getWalletBalance(wallet) {
