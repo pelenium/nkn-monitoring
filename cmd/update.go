@@ -46,8 +46,8 @@ func update(db *sql.DB) {
 		}
 
 		actualTime := strings.Split(time.Now().String(), " ")[0]
-
 		for _, node := range nodes {
+			fmt.Println(node.ip, checkConnection(node.ip))
 			if checkConnection(node.ip) {
 				height := int(gjson.Get(getData("getnodestate", node.ip), "result.height").Int())
 				nodeState := gjson.Get(getData("getnodestate", node.ip), "result").String()
