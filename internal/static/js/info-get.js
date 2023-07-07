@@ -1,6 +1,7 @@
-// WORKING VERSION
+var blocksToday = 0;
 
 async function main() {
+    blocksToday = 0;
     fetch('/api')
         .then(function (response) {
             return response.json();
@@ -16,20 +17,41 @@ async function main() {
                 const minedToday = i.mined_today;
                 const nodeStatus = i.node_status;
 
+                blocksToday += minedToday;
+
                 const existingCard = document.querySelector(`.node-card[data-ip="${ip}"]`);
                 if (existingCard) {
-                    updateCard(existingCard, height, version, generation, workTime, minedEver, minedToday, nodeStatus);
+                    updateCard(existingCard, height, version, generation, workTime, minedEver, nodeStatus);
                 } else {
-                    createCard(ip, height, version, generation, workTime, minedEver, minedToday, nodeStatus);
+                    createCard(ip, height, version, generation, workTime, minedEver, nodeStatus);
                 }
             });
         })
         .catch(function (error) {
             console.log('Ошибка:', error);
         });
+    getWalletBalance("NKNEfKFwLjdN2SXJU2UZaY3aECVuC6kTjwzz");
+    var mt = document.getElementById("mined-today");
+    mt.textContent = blocksToday;
 }
 
-function createCard(ip, blockHeight, version, generation, time, minedForAllTime, minedToday, nodeState) {
+function getWalletBalance(wallet) {
+    var url = `https://openapi.nkn.org/api/v1/addresses/${wallet}`
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.balance);
+            var mt = document.getElementById("balance");
+            mt.textContent = data.balance;
+        })
+        .catch(error => {
+            // Обработка возможных ошибок
+            console.log('Произошла ошибка', error);
+        });
+
+}
+
+function createCard(ip, blockHeight, version, generation, time, minedForAllTime, nodeState) {
     const card = document.createElement('div');
     card.className = 'node-card';
     card.setAttribute('data-ip', ip);
@@ -63,11 +85,6 @@ function createCard(ip, blockHeight, version, generation, time, minedForAllTime,
     allTimeRow.className = 'node-card-all';
     allTimeRow.textContent = minedForAllTime;
     card.appendChild(allTimeRow);
-
-    const todayRow = document.createElement('div');
-    todayRow.className = 'node-card-today';
-    todayRow.textContent = minedToday;
-    card.appendChild(todayRow);
 
     const stateRow = document.createElement('div');
     stateRow.className = 'node-card-state';
@@ -117,13 +134,12 @@ function createCard(ip, blockHeight, version, generation, time, minedForAllTime,
     }
 }
 
-function updateCard(card, blockHeight, version, generation, time, minedForAllTime, minedToday, nodeState) {
+function updateCard(card, blockHeight, version, generation, time, minedForAllTime, nodeState) {
     card.querySelector('.node-card-height').textContent = blockHeight;
     card.querySelector('.node-card-version').textContent = version;
     card.querySelector('.node-card-generation').textContent = generation;
     card.querySelector('.node-card-time').textContent = time;
     card.querySelector('.node-card-all').textContent = minedForAllTime;
-    card.querySelector('.node-card-today').textContent = minedToday;
     card.querySelector('.node-card-state').textContent = nodeState;
 }
 
