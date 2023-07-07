@@ -5,6 +5,8 @@ var offlineNumber = 0;
 
 async function main() {
     blocksToday = 0;
+    number = 0;
+    offlineNumber = 0;
     fetch('/api')
         .then(function (response) {
             return response.json();
@@ -39,6 +41,9 @@ async function main() {
     getWalletBalance("NKNEfKFwLjdN2SXJU2UZaY3aECVuC6kTjwzz");
     var mt = document.getElementById("mined-today");
     mt.textContent = blocksToday;
+
+    var t = document.getElementById("title");
+    t.textContent = `My working nodes ${number - offlineNumber}/${number}`;
 }
 
 function getWalletBalance(wallet) {
