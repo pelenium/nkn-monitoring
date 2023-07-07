@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -21,6 +22,8 @@ func GetGenerationNumber(c *gin.Context) {
 			count++
 		}
 	}
+
+	fmt.Println(count)
 
 	c.JSON(http.StatusOK, gin.H{"number": count})
 }
