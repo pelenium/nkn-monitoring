@@ -30,7 +30,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 		ip := strings.Split(strings.TrimSpace(gjson.Get(string(jsn), "ip").String()), " ")[0]
 		nodeExists := gjson.Get(string(jsn), "exists").Bool()
 		var generation int
-		if strings.TrimSpace(gjson.Get(string(jsn), "generation").String()) != "" {
+		if strings.TrimSpace(gjson.Get(string(jsn), "generation").String()) != "" && strings.TrimSpace(gjson.Get(string(jsn), "generation").String()) != "0" {
 			if generation, err = strconv.Atoi(strings.TrimSpace(gjson.Get(string(jsn), "generation").String())); err != nil {
 				panic(err)
 			}
@@ -38,7 +38,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 			generation = getGenerationNumber(db)
 		}
 
-		actualTime := strings.Split(time.Now().String(), " ")[0]
+		actualTime := time.Now().Format("2006-01-02 15:04:05")
 
 		add := "INSERT INTO nodes_ip (ip, generation, height, version, work_time, mined_ever, mined_today, node_status, last_block_number, last_update, last_offline_time) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 		if nodeExists {
