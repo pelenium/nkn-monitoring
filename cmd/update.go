@@ -93,15 +93,12 @@ func update(db *sql.DB) {
 				if err != nil {
 					db.Exec("UPDATE nodes_ip SET last_offline_time=? WHERE ip=?;", actualTime, node.ip)
 				}
+
 				delta := now.Sub(t)
-				fmt.Println()
-				fmt.Println(delta)
-				fmt.Println(delta.String())
-				if delta.Minutes() < 1 {
-					fmt.Println("node is offline less than a minute")
+				
+				if delta.Hours() < 24 {
 					db.Exec(updateData, "-", "-", "-", "-", "-", "OFFLINE", time.Now().Format("2006-01-02"), node.ip)
 				} else {
-					fmt.Println("node is offline more than a minute")
 					remove := "DELETE FROM nodes_ip WHERE ip = ?"
 					fmt.Println(node.ip)
 					db.Exec(remove, node.ip)

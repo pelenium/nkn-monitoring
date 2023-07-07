@@ -1,5 +1,8 @@
 var blocksToday = 0;
 
+var number = 0;
+var offlineNumber = 0;
+
 async function main() {
     blocksToday = 0;
     fetch('/api')
@@ -25,6 +28,9 @@ async function main() {
                 } else {
                     createCard(ip, height, version, generation, workTime, minedEver, nodeStatus);
                 }
+
+                number++;
+                offlineNumber = nodeStatus == "OFFLINE" ? offlineNumber + 1 : offlineNumber;
             });
         })
         .catch(function (error) {
@@ -47,7 +53,6 @@ function getWalletBalance(wallet) {
         .catch(error => {
             console.log('Произошла ошибка', error);
         });
-
 }
 
 function createCard(ip, blockHeight, version, generation, time, minedForAllTime, nodeState) {
