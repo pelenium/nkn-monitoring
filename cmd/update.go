@@ -27,7 +27,7 @@ func update(db *sql.DB) {
 	for {
 		nodes := []nodeData{}
 
-		rows, err := db.Query("SELECT ip, last_update, last_block_number, last_offline_time, last_state FROM nodes_ip;")
+		rows, err := db.Query("SELECT ip, last_update, last_block_number, last_offline_time, node_status FROM nodes_ip;")
 
 		if err != nil {
 			fmt.Println(err)
