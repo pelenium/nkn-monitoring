@@ -83,12 +83,14 @@ func update(db *sql.DB) {
 					db.Exec(updateData, height, version, workTime, totalBlocks, blocksForToday, state, actualTime, node.ip)
 				}
 			} else {
-				if node.last_offline != actualTime {
+				if node.last_offline != actualTime && node.last_offline != "-"{
 					remove := "DELETE FROM nodes_ip WHERE ip = ?"
 					fmt.Println(node.ip)
 					db.Exec(remove, node.ip)
-				} else {
+				} else if node.last_offline == actualTime{
 					db.Exec(updateData, "-", "-", "-", "-", "-", "OFFLINE", strings.Split(time.Now().String(), " ")[0], "-", node.ip)
+				} else {
+					
 				}
 			}
 		}
