@@ -54,7 +54,7 @@ func ApiGET(db *sql.DB) gin.HandlerFunc {
 		}
 
 		sort.Slice(result, func(i, j int) bool {
-			return result[i]["generation"].(int) < result[i]["generation"].(int)
+			return result[i]["generation"].(int) < result[j]["generation"].(int)
 		})
 
 		c.JSON(http.StatusOK, result)
