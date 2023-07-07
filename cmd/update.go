@@ -8,7 +8,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -25,10 +24,10 @@ type nodeData struct {
 func update(db *sql.DB) {
 	updateData := `UPDATE nodes_ip SET height=?, version=?, work_time=?, mined_ever=?, mined_today=?, node_status=?, last_update=? WHERE ip=?;`
 	for {
+		fmt.Println("update data")
 		nodes := []nodeData{}
 
 		rows, err := db.Query("SELECT ip, last_update, last_block_number, last_offline_time FROM nodes_ip;")
-
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -37,15 +36,15 @@ func update(db *sql.DB) {
 			var node nodeData
 
 			err = rows.Scan(&node.ip, &node.last_update, &node.blockNumber, &node.last_offline)
-
 			if err != nil {
 				fmt.Println(err)
 			}
 
 			nodes = append(nodes, node)
 		}
+		rows.Close()
 
-		actualTime := strings.Split(time.Now().String(), " ")[0]
+		actualTime := time.Now().Format("2006-01-02 15:04:05")
 
 		for _, node := range nodes {
 			if checkConnection(node.ip) {
@@ -60,7 +59,7 @@ func update(db *sql.DB) {
 					if err != nil {
 						panic(err)
 					}
-					blocksForToday = int(totalBlocks) - lastBlockNumber
+					blocksForToday = totalBlocks - lastBlockNumber
 				} else {
 					blocksForToday = 0
 				}
@@ -82,21 +81,35 @@ func update(db *sql.DB) {
 				} else {
 					db.Exec(updateData, height, version, workTime, totalBlocks, blocksForToday, state, actualTime, node.ip)
 				}
+				db.Exec("UPDATE nodes_ip SET last_offline_time=? WHERE ip=?;", "-", node.ip)
 			} else {
-				if node.last_offline != actualTime && node.last_offline != "-"{
+				fmt.Println("node is offline")
+				t, err := time.Parse("2006-01-02 15:04:05", node.last_offline)
+				if err != nil {
+					fmt.Println("node has just become offline")
+					db.Exec("UPDATE nodes_ip SET last_offline_time=? WHERE ip=?;", actualTime, node.ip)
+				}
+				now, err := time.Parse("2006-01-02 15:04:05", actualTime)
+				if err != nil {
+					db.Exec("UPDATE nodes_ip SET last_offline_time=? WHERE ip=?;", actualTime, node.ip)
+				}
+				delta := now.Sub(t)
+				fmt.Println()
+				fmt.Println(delta)
+				fmt.Println(delta.String())
+				if delta.Minutes() < 1 {
+					fmt.Println("node is offline less than a minute")
+					db.Exec(updateData, "-", "-", "-", "-", "-", "OFFLINE", time.Now().Format("2006-01-02"), node.ip)
+				} else {
+					fmt.Println("node is offline more than a minute")
 					remove := "DELETE FROM nodes_ip WHERE ip = ?"
 					fmt.Println(node.ip)
 					db.Exec(remove, node.ip)
-				} else if node.last_offline == actualTime{
-					db.Exec(updateData, "-", "-", "-", "-", "-", "OFFLINE", strings.Split(time.Now().String(), " ")[0], "-", node.ip)
-				} else {
-					
 				}
 			}
 		}
-		rows.Close()
 
-		time.Sleep(time.Second * 10)
+		time.Sleep(time.Second * 5)
 	}
 }
 
