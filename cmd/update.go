@@ -48,7 +48,6 @@ func update(db *sql.DB) {
 		actualTime := time.Now().Format("2006-01-02 15:04:05")
 
 		for _, node := range nodes {
-			fmt.Println(node.ip, checkConnection(node.ip))
 			if checkConnection(node.ip) {
 				height := int(gjson.Get(getData("getnodestate", node.ip), "result.height").Int())
 				nodeState := gjson.Get(getData("getnodestate", node.ip), "result").String()
@@ -96,11 +95,8 @@ func update(db *sql.DB) {
 					if err != nil {
 						panic(err)
 					}
-					fmt.Println(t)
-					fmt.Println(now)
 					delta := now.Sub(t)
-					fmt.Println(delta)
-					if delta.Minutes() > 1 {
+					if delta.Hours() > 24 {
 						remove := "DELETE FROM nodes_ip WHERE ip = ?"
 						fmt.Println(node.ip)
 						db.Exec(remove, node.ip)

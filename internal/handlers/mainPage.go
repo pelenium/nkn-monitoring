@@ -42,7 +42,6 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 
 		add := "INSERT INTO nodes_ip (ip, generation, height, version, work_time, mined_ever, mined_today, node_status, last_block_number, last_update, last_offline_time) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 		if nodeExists {
-
 			var exists bool
 
 			if err := db.QueryRow(`SELECT EXISTS(SELECT 1 FROM nodes_ip WHERE ip = ?)`, ip).Scan(&exists); err != nil {
@@ -122,10 +121,6 @@ func createNode(ip *string, generation *int) {
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
-
-	fmt.Printf("%s:22\n%d\n", *ip, *generation)
-	fmt.Printf(`keys="http://5.180.183.19:9999/generations/%d.tar"`, *generation)
-	fmt.Println()
 
 	client, err := ssh.Dial("tcp", fmt.Sprintf("%s:22", *ip), config)
 	if err != nil {

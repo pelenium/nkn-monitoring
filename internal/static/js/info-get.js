@@ -53,7 +53,7 @@ function getWalletBalance(wallet) {
         .then(data => {
             console.log(data.balance);
             var mt = document.getElementById("balance");
-            mt.textContent = data.balance;
+            mt.textContent = parseFloat(data.balance) / parseFloat(1000000);
         })
         .catch(error => {
             console.log('Произошла ошибка', error);
@@ -153,4 +153,4 @@ function updateCard(card, blockHeight, version, generation, time, minedForAllTim
 }
 
 main();
-setInterval(main, 10000);
+setInterval(main, 60000);
