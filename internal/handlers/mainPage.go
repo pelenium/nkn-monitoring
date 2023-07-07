@@ -84,7 +84,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 
 			rows.Close()
 		} else {
-			go createNode(ip, generation)
+			go createNode(&ip, &generation)
 			fmt.Println("continue working")
 		}
 		c.JSON(http.StatusOK, gin.H{})
@@ -107,7 +107,7 @@ func getGenerationNumber(db *sql.DB) int {
 	}
 }
 
-func createNode(ip string, generation int) {
+func createNode(ip *string, generation *int) {
 	config := &ssh.ClientConfig{
 		User: "root",
 		Auth: []ssh.AuthMethod{
@@ -116,11 +116,11 @@ func createNode(ip string, generation int) {
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
-	fmt.Printf("%s:22\n%d\n", ip, generation)
-	fmt.Printf(`keys="http://5.180.181.43:9999/generations/%d.tar"`, generation)
+	fmt.Printf("%s:22\n%d\n", *ip, *generation)
+	fmt.Printf(`keys="http://5.180.183.19:9999/generations/%d.tar"`, generation)
 	fmt.Println()
 
-	client, err := ssh.Dial("tcp", fmt.Sprintf("%s:22", ip), config)
+	client, err := ssh.Dial("tcp", fmt.Sprintf("%s:22", *ip), config)
 	if err != nil {
 		panic(err)
 	}
@@ -141,7 +141,7 @@ func createNode(ip string, generation int) {
 		username="nkn"
 		benaddress="NKNKKevYkkzvrBBsNnmeTVf2oaTW3nK6Hu4K"
 		config="https://nknrus.ru/config.tar"
-		keys="http://113.30.188.94/generations/%d.tar"
+		keys="http://5.180.183.19:9999/generations/%d.tar"
 		
 		useradd -m -p "pass" -s /bin/bash "$username" > /dev/null 2>&1
 		usermod -a -G sudo "$username" > /dev/null 2>&1
@@ -178,8 +178,8 @@ func createNode(ip string, generation int) {
 		systemctl start nkn-commercial.service > /dev/null 2>&1
 		
 		IP=$(hostname -I)
-		curl -X POST -d "{\"ip\": \"$IP\", \"exists\": false, \"generation\": %d}" http://127.0.0.1:9999
-	`, generation, generation)
+		curl -X POST -d "{\"ip\": \"$IP\", \"exists\": true, \"generation\": %d}" http://5.180.183.19:9999
+	`, *generation, *generation)
 	
 	output, err := session.CombinedOutput(script)
 	if err != nil {
@@ -190,5 +190,5 @@ func createNode(ip string, generation int) {
 	client.Close()
 	session.Close()
 	
-	fmt.Println("ran script")
+	fmt.Println("ran script successfully")
 }
