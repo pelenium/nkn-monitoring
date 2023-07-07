@@ -24,7 +24,6 @@ type nodeData struct {
 func update(db *sql.DB) {
 	updateData := `UPDATE nodes_ip SET height=?, version=?, work_time=?, mined_ever=?, mined_today=?, node_status=?, last_update=? WHERE ip=?;`
 	for {
-		fmt.Println("update data")
 		nodes := []nodeData{}
 
 		rows, err := db.Query("SELECT ip, last_update, last_block_number, last_offline_time FROM nodes_ip;")
@@ -86,22 +85,18 @@ func update(db *sql.DB) {
 				fmt.Println("node is offline")
 				t, err := time.Parse("2006-01-02 15:04:05", node.last_offline)
 				if err != nil {
-					fmt.Println("node has just become offline")
 					db.Exec("UPDATE nodes_ip SET last_offline_time=? WHERE ip=?;", actualTime, node.ip)
 				}
 				now, err := time.Parse("2006-01-02 15:04:05", actualTime)
 				if err != nil {
 					db.Exec("UPDATE nodes_ip SET last_offline_time=? WHERE ip=?;", actualTime, node.ip)
 				}
+
 				delta := now.Sub(t)
-				fmt.Println()
-				fmt.Println(delta)
-				fmt.Println(delta.String())
-				if delta.Minutes() < 1 {
-					fmt.Println("node is offline less than a minute")
+				
+				if delta.Hours() < 24 {
 					db.Exec(updateData, "-", "-", "-", "-", "-", "OFFLINE", time.Now().Format("2006-01-02"), node.ip)
 				} else {
-					fmt.Println("node is offline more than a minute")
 					remove := "DELETE FROM nodes_ip WHERE ip = ?"
 					fmt.Println(node.ip)
 					db.Exec(remove, node.ip)
