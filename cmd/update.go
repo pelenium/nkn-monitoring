@@ -92,7 +92,7 @@ func update(db *sql.DB) {
 					if err != nil {
 						panic(err)
 					}
-					now, err := time.Parse("2006-01-02 15:04:05", time.Now().String())
+					now, err := time.Parse("2006-01-02 15:04:05", time.Now().Format("2006-01-02 15:04:05"))
 					if err != nil {
 						panic(err)
 					}
