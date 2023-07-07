@@ -1,7 +1,8 @@
 var blocksToday = 0;
-
+var nodeNumber
 async function main() {
     blocksToday = 0;
+    nodeNumber = 0;
     fetch('/api')
         .then(function (response) {
             return response.json();
@@ -25,10 +26,20 @@ async function main() {
                 } else {
                     createCard(ip, height, version, generation, workTime, minedEver, nodeStatus);
                 }
+                nodeNumber++;
             });
         })
         .catch(function (error) {
             console.log('Ошибка:', error);
+        });
+    fetch(`/api/usage`)
+        .then(response => response.json())
+        .then(data => {
+            var n = document.getElementById("title");
+            n.textContent = `My working nodes ${nodeNumber}/${data.number}`;
+        })
+        .catch(error => {
+            console.log('Произошла ошибка', error);
         });
     getWalletBalance("NKNEfKFwLjdN2SXJU2UZaY3aECVuC6kTjwzz");
     var mt = document.getElementById("mined-today");
@@ -45,10 +56,8 @@ function getWalletBalance(wallet) {
             mt.textContent = data.balance;
         })
         .catch(error => {
-            // Обработка возможных ошибок
             console.log('Произошла ошибка', error);
         });
-
 }
 
 function createCard(ip, blockHeight, version, generation, time, minedForAllTime, nodeState) {

@@ -48,6 +48,7 @@ func main() {
 	router.POST("/delete", handlers.Delete(db))
 
 	router.GET("/api", handlers.ApiGET(db))
+	router.GET("/api/usage", handlers.GetGenerationNumber)
 
 	router.GET("/generations/:fileName", handlers.GetGeneration)
 
