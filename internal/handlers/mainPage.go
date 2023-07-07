@@ -37,8 +37,8 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 			generation = getGenerationNumber(db)
 		}
 
+		add := "INSERT INTO nodes_ip (ip, generation, height, version, work_time, mined_ever, mined_today, node_status, last_block_number, last_update) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 		if nodeExists {
-			add := "INSERT INTO nodes_ip (ip, generation, height, version, work_time, mined_ever, mined_today, node_status, last_block_number, last_update) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
 			var exists bool
 
@@ -84,6 +84,10 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 
 			rows.Close()
 		} else {
+			fmt.Println("there no node with such ip")
+			if _, err = db.Exec(add, ip, generation, "-", "-", "-", "-", "-", "OFFLINE", "-", "-"); err != nil {
+				panic(err)
+			}
 			go createNode(&ip, &generation)
 			fmt.Println("continue working")
 		}
@@ -111,7 +115,7 @@ func createNode(ip *string, generation *int) {
 	config := &ssh.ClientConfig{
 		User: "root",
 		Auth: []ssh.AuthMethod{
-			ssh.Password("cyroHUg23Hgtn4"),
+			ssh.Password("cyroHUg23Hgtn"),
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
@@ -124,12 +128,12 @@ func createNode(ip *string, generation *int) {
 	if err != nil {
 		panic(err)
 	}
-	
+
 	session, err := client.NewSession()
 	if err != nil {
 		panic(err)
 	}
-	
+
 	script := fmt.Sprintf(`
 		#!/bin/bash
 		apt update -y
@@ -180,15 +184,15 @@ func createNode(ip *string, generation *int) {
 		IP=$(hostname -I)
 		curl -X POST -d "{\"ip\": \"$IP\", \"exists\": true, \"generation\": %d}" http://5.180.183.19:9999
 	`, *generation, *generation)
-	
+
 	output, err := session.CombinedOutput(script)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println(string(output))
-	
+
 	client.Close()
 	session.Close()
-	
+
 	fmt.Println("ran script successfully")
 }
