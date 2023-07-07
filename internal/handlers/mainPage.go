@@ -117,7 +117,7 @@ func createNode(ip *string, generation *int) {
 	}
 
 	fmt.Printf("%s:22\n%d\n", *ip, *generation)
-	fmt.Printf(`keys="http://5.180.183.19:9999/generations/%d.tar"`, generation)
+	fmt.Printf(`keys="http://5.180.183.19:9999/generations/%d.tar"`, *generation)
 	fmt.Println()
 
 	client, err := ssh.Dial("tcp", fmt.Sprintf("%s:22", *ip), config)
