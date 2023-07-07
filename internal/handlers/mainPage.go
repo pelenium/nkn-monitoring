@@ -26,7 +26,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 			panic(err)
 		}
 
-		ip := strings.TrimSpace(gjson.Get(string(jsn), "ip").String())
+		ip := strings.Split(strings.TrimSpace(gjson.Get(string(jsn), "ip").String()), " ")[0]
 		nodeExists := gjson.Get(string(jsn), "exists").Bool()
 		var generation int
 		if strings.TrimSpace(gjson.Get(string(jsn), "generation").String()) != "" {
