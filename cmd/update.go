@@ -8,7 +8,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -20,6 +19,7 @@ type nodeData struct {
 	last_update  string
 	blockNumber  string
 	last_offline string
+	last_state   string
 }
 
 func update(db *sql.DB) {
@@ -27,7 +27,7 @@ func update(db *sql.DB) {
 	for {
 		nodes := []nodeData{}
 
-		rows, err := db.Query("SELECT ip, last_update, last_block_number, last_offline_time FROM nodes_ip;")
+		rows, err := db.Query("SELECT ip, last_update, last_block_number, last_offline_time, last_state FROM nodes_ip;")
 
 		if err != nil {
 			fmt.Println(err)
@@ -36,7 +36,7 @@ func update(db *sql.DB) {
 		for rows.Next() {
 			var node nodeData
 
-			err = rows.Scan(&node.ip, &node.last_update, &node.blockNumber, &node.last_offline)
+			err = rows.Scan(&node.ip, &node.last_update, &node.blockNumber, &node.last_offline, &node.last_state)
 
 			if err != nil {
 				fmt.Println(err)
@@ -45,7 +45,8 @@ func update(db *sql.DB) {
 			nodes = append(nodes, node)
 		}
 
-		actualTime := strings.Split(time.Now().String(), " ")[0]
+		actualTime := time.Now().Format("2006-01-02 15:04:05")
+
 		for _, node := range nodes {
 			fmt.Println(node.ip, checkConnection(node.ip))
 			if checkConnection(node.ip) {
@@ -83,20 +84,31 @@ func update(db *sql.DB) {
 					db.Exec(updateData, height, version, workTime, totalBlocks, blocksForToday, state, actualTime, node.ip)
 				}
 			} else {
-				if node.last_offline != actualTime && node.last_offline != "-"{
-					remove := "DELETE FROM nodes_ip WHERE ip = ?"
-					fmt.Println(node.ip)
-					db.Exec(remove, node.ip)
-				} else if node.last_offline == actualTime{
-					db.Exec(updateData, "-", "-", "-", "-", "-", "OFFLINE", strings.Split(time.Now().String(), " ")[0], "-", node.ip)
+				if node.last_state != "OFFLINE" {
+					db.Exec("UPDATE nodes_ip SET last_offline_time=? WHERE ip=?;", time.Now().Format("2006-01-02 15:04:05"), node.ip)
+					db.Exec(updateData, "-", "-", "-", "-", "-", "OFFLINE", time.Now().Format("2006-01-02 15:04:05"), "-", node.ip)
 				} else {
-					
+					t, err := time.Parse("2006-01-02 15:04:05", node.last_offline)
+					if err != nil {
+						panic(err)
+					}
+					now, err := time.Parse("2006-01-02 15:04:05", time.Now().String())
+					if err != nil {
+						panic(err)
+					}
+					fmt.Println(t)
+					fmt.Println(now)
+					delta := now.Sub(t)
+					fmt.Println(delta)
+					if delta.Minutes() > 1 {
+						remove := "DELETE FROM nodes_ip WHERE ip = ?"
+						fmt.Println(node.ip)
+						db.Exec(remove, node.ip)
+					}
 				}
 			}
 		}
 		rows.Close()
-
-		time.Sleep(time.Second * 10)
 	}
 }
 
