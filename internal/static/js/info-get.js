@@ -42,7 +42,7 @@ function getWalletBalance(wallet) {
         .then(data => {
             console.log(data.balance);
             var mt = document.getElementById("balance");
-            mt.textContent = data.balance;
+            mt.textContent = parseFloat(data.balance) / parseFloat(100000000);
         })
         .catch(error => {
             // Обработка возможных ошибок
