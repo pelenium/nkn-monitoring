@@ -32,7 +32,7 @@ async function main() {
         .catch(function (error) {
             console.log('Ошибка:', error);
         });
-    fetch(`/api/usage`)
+    fetch(`/usage`)
         .then(response => response.json())
         .then(data => {
             var n = document.getElementById("title");
