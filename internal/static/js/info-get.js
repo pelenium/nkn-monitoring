@@ -1,7 +1,8 @@
 var blocksToday = 0;
-var nodeNumber
+var nodeNumber = 0;
 async function main() {
     blocksToday = 0;
+    nodeNumber = 0;
     fetch('/api')
         .then(function (response) {
             return response.json();
