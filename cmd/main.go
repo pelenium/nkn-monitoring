@@ -28,7 +28,8 @@ func main() {
 		mined_today TEXT NOT NULL,
 		node_status TEXT NOT NULL,
 		last_block_number TEXT NOT NULL,
-		last_update TEXT NOT NULL);`)
+		last_update TEXT NOT NULL,
+		last_offline_time TEXT NOT NULL);`)
 
 	if err != nil {
 		panic(err)

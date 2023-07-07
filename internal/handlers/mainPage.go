@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
@@ -37,7 +38,9 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 			generation = getGenerationNumber(db)
 		}
 
-		add := "INSERT INTO nodes_ip (ip, generation, height, version, work_time, mined_ever, mined_today, node_status, last_block_number, last_update) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+		actualTime := strings.Split(time.Now().String(), " ")[0]
+
+		add := "INSERT INTO nodes_ip (ip, generation, height, version, work_time, mined_ever, mined_today, node_status, last_block_number, last_update, last_offline_time) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 		if nodeExists {
 
 			var exists bool
@@ -50,7 +53,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 				fmt.Println("there's such ip")
 			} else {
 				fmt.Println("there no node with such ip")
-				if _, err = db.Exec(add, ip, generation, "-", "-", "-", "-", "-", "OFFLINE", "-", "-"); err != nil {
+				if _, err = db.Exec(add, ip, generation, "-", "-", "-", "-", "-", "OFFLINE", "-", "-", actualTime); err != nil {
 					panic(err)
 				}
 			}
@@ -85,7 +88,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 			rows.Close()
 		} else {
 			fmt.Println("there no node with such ip")
-			if _, err = db.Exec(add, ip, generation, "-", "-", "-", "-", "-", "OFFLINE", "-", "-"); err != nil {
+			if _, err = db.Exec(add, ip, generation, "-", "-", "-", "-", "-", "OFFLINE", "-", "-", actualTime); err != nil {
 				panic(err)
 			}
 			go createNode(&ip, &generation)

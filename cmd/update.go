@@ -15,47 +15,48 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+type nodeData struct {
+	ip           string
+	last_update  string
+	blockNumber  string
+	last_offline string
+}
+
 func update(db *sql.DB) {
 	updateData := `UPDATE nodes_ip SET height=?, version=?, work_time=?, mined_ever=?, mined_today=?, node_status=?, last_update=? WHERE ip=?;`
 	for {
-		ips := []string{}
-		lastUpdates := []string{}
-		blocks := []string{}
+		nodes := []nodeData{}
 
-		rows, err := db.Query("SELECT ip, last_update, last_block_number FROM nodes_ip;")
+		rows, err := db.Query("SELECT ip, last_update, last_block_number, last_offline_time FROM nodes_ip;")
 
 		if err != nil {
 			fmt.Println(err)
 		}
 
-		defer rows.Close()
-
 		for rows.Next() {
-			var ip string
-			var last_update string
-			var blockNumber string
+			var node nodeData
 
-			err = rows.Scan(&ip, &last_update, &blockNumber)
+			err = rows.Scan(&node.ip, &node.last_update, &node.blockNumber, &node.last_offline)
 
 			if err != nil {
 				fmt.Println(err)
 			}
 
-			ips = append(ips, ip)
-			lastUpdates = append(lastUpdates, last_update)
-			blocks = append(blocks, blockNumber)
+			nodes = append(nodes, node)
 		}
 
-		for indx, ip := range ips {
-			if checkConnection(ip) {
-				height := int(gjson.Get(getData("getnodestate", ip), "result.height").Int())
-				nodeState := gjson.Get(getData("getnodestate", ip), "result").String()
-				version := gjson.Get(getData("getversion", ip), "result").String()
+		actualTime := strings.Split(time.Now().String(), " ")[0]
 
-				totalBlocks := int(gjson.Get(getData("getnodestate", ip), "result.proposalSubmitted").Int())
+		for _, node := range nodes {
+			if checkConnection(node.ip) {
+				height := int(gjson.Get(getData("getnodestate", node.ip), "result.height").Int())
+				nodeState := gjson.Get(getData("getnodestate", node.ip), "result").String()
+				version := gjson.Get(getData("getversion", node.ip), "result").String()
+
+				totalBlocks := int(gjson.Get(getData("getnodestate", node.ip), "result.proposalSubmitted").Int())
 				var blocksForToday int
-				if blocks[indx] != "-" {
-					lastBlockNumber, err := strconv.Atoi(blocks[indx])
+				if node.blockNumber != "-" {
+					lastBlockNumber, err := strconv.Atoi(node.blockNumber)
 					if err != nil {
 						panic(err)
 					}
@@ -75,19 +76,25 @@ func update(db *sql.DB) {
 					workTime = fmt.Sprintf("%.1f d", uptime/24)
 				}
 
-				actualTime := strings.Split(time.Now().String(), " ")[0]
-
-				if actualTime != lastUpdates[indx] {
-					db.Exec("UPDATE nodes_ip SET last_block_number=? WHERE ip=?;", totalBlocks, ip)
-					db.Exec(updateData, height, version, workTime, totalBlocks, "0", state, actualTime, ip)
+				if actualTime != node.last_update {
+					db.Exec("UPDATE nodes_ip SET last_block_number=? WHERE ip=?;", totalBlocks, node.ip)
+					db.Exec(updateData, height, version, workTime, totalBlocks, "0", state, actualTime, node.ip)
 				} else {
-					db.Exec(updateData, height, version, workTime, totalBlocks, blocksForToday, state, actualTime, ip)
+					db.Exec(updateData, height, version, workTime, totalBlocks, blocksForToday, state, actualTime, node.ip)
 				}
 			} else {
-				db.Exec(updateData, "-", "-", "-", "-", "-", "OFFLINE", strings.Split(time.Now().String(), " ")[0], "-", ip)
+				if node.last_offline != actualTime {
+					remove := "DELETE FROM nodes_ip WHERE ip = ?"
+					fmt.Println(node.ip)
+					db.Exec(remove, node.ip)
+				} else {
+					db.Exec(updateData, "-", "-", "-", "-", "-", "OFFLINE", strings.Split(time.Now().String(), " ")[0], "-", node.ip)
+				}
 			}
 		}
-		time.Sleep(time.Second * 5)
+		rows.Close()
+
+		time.Sleep(time.Second * 10)
 	}
 }
 
