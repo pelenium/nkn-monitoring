@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"sort"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,7 +24,7 @@ type nodeData struct {
 
 func ApiGET(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		result := []map[string]interface{}{}
+		result := []interface{}{}
 
 		rows, err := db.Query("SELECT * FROM nodes_ip;")
 		if err != nil {
@@ -52,10 +51,6 @@ func ApiGET(db *sql.DB) gin.HandlerFunc {
 
 			result = append(result, data)
 		}
-
-		sort.Slice(result, func(i, j int) bool {
-			return result[i]["generation"].(int) < result[j]["generation"].(int)
-		})
 
 		c.JSON(http.StatusOK, result)
 	}
