@@ -8,55 +8,54 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/tidwall/gjson"
 )
 
-type nodeData struct {
-	ip           string
-	last_update  string
-	blockNumber  string
-	last_offline string
-	last_state   string
-}
-
 func update(db *sql.DB) {
 	updateData := `UPDATE nodes_ip SET height=?, version=?, work_time=?, mined_ever=?, mined_today=?, node_status=?, last_update=? WHERE ip=?;`
 	for {
-		nodes := []nodeData{}
+		ips := []string{}
+		lastUpdates := []string{}
+		blocks := []string{}
 
-		rows, err := db.Query("SELECT ip, last_update, last_block_number, last_offline_time, node_status FROM nodes_ip;")
+		rows, err := db.Query("SELECT ip, last_update, last_block_number FROM nodes_ip;")
 
 		if err != nil {
 			fmt.Println(err)
 		}
 
-		for rows.Next() {
-			var node nodeData
+		defer rows.Close()
 
-			err = rows.Scan(&node.ip, &node.last_update, &node.blockNumber, &node.last_offline, &node.last_state)
+		for rows.Next() {
+			var ip string
+			var last_update string
+			var blockNumber string
+
+			err = rows.Scan(&ip, &last_update, &blockNumber)
 
 			if err != nil {
 				fmt.Println(err)
 			}
 
-			nodes = append(nodes, node)
+			ips = append(ips, ip)
+			lastUpdates = append(lastUpdates, last_update)
+			blocks = append(blocks, blockNumber)
 		}
 
-		actualTime := time.Now().Format("2006-01-02 15:04:05")
+		for indx, ip := range ips {
+			if checkConnection(ip) {
+				height := int(gjson.Get(getData("getnodestate", ip), "result.height").Int())
+				nodeState := gjson.Get(getData("getnodestate", ip), "result").String()
+				version := gjson.Get(getData("getversion", ip), "result").String()
 
-		for _, node := range nodes {
-			if checkConnection(node.ip) {
-				height := int(gjson.Get(getData("getnodestate", node.ip), "result.height").Int())
-				nodeState := gjson.Get(getData("getnodestate", node.ip), "result").String()
-				version := gjson.Get(getData("getversion", node.ip), "result").String()
-
-				totalBlocks := int(gjson.Get(getData("getnodestate", node.ip), "result.proposalSubmitted").Int())
+				totalBlocks := int(gjson.Get(getData("getnodestate", ip), "result.proposalSubmitted").Int())
 				var blocksForToday int
-				if node.blockNumber != "-" {
-					lastBlockNumber, err := strconv.Atoi(node.blockNumber)
+				if blocks[indx] != "-" {
+					lastBlockNumber, err := strconv.Atoi(blocks[indx])
 					if err != nil {
 						panic(err)
 					}
@@ -76,35 +75,19 @@ func update(db *sql.DB) {
 					workTime = fmt.Sprintf("%.1f d", uptime/24)
 				}
 
-				if actualTime != node.last_update {
-					db.Exec("UPDATE nodes_ip SET last_block_number=? WHERE ip=?;", totalBlocks, node.ip)
-					db.Exec(updateData, height, version, workTime, totalBlocks, "0", state, actualTime, node.ip)
+				actualTime := strings.Split(time.Now().String(), " ")[0]
+
+				if actualTime != lastUpdates[indx] {
+					db.Exec("UPDATE nodes_ip SET last_block_number=? WHERE ip=?;", totalBlocks, ip)
+					db.Exec(updateData, height, version, workTime, totalBlocks, "0", state, actualTime, ip)
 				} else {
-					db.Exec(updateData, height, version, workTime, totalBlocks, blocksForToday, state, actualTime, node.ip)
+					db.Exec(updateData, height, version, workTime, totalBlocks, blocksForToday, state, actualTime, ip)
 				}
 			} else {
-				if node.last_state != "OFFLINE" {
-					db.Exec("UPDATE nodes_ip SET last_offline_time=? WHERE ip=?;", time.Now().Format("2006-01-02 15:04:05"), node.ip)
-					db.Exec(updateData, "-", "-", "-", "-", "-", "OFFLINE", time.Now().Format("2006-01-02 15:04:05"), "-", node.ip)
-				} else {
-					t, err := time.Parse("2006-01-02 15:04:05", node.last_offline)
-					if err != nil {
-						panic(err)
-					}
-					now, err := time.Parse("2006-01-02 15:04:05", time.Now().Format("2006-01-02 15:04:05"))
-					if err != nil {
-						panic(err)
-					}
-					delta := now.Sub(t)
-					if delta.Hours() > 24 {
-						remove := "DELETE FROM nodes_ip WHERE ip = ?"
-						fmt.Println(node.ip)
-						db.Exec(remove, node.ip)
-					}
-				}
+				db.Exec(updateData, "-", "-", "-", "-", "-", "OFFLINE", strings.Split(time.Now().String(), " ")[0], "-", ip)
 			}
 		}
-		rows.Close()
+		time.Sleep(time.Second * 5)
 	}
 }
 

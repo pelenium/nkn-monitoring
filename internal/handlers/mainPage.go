@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
@@ -30,7 +29,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 		ip := strings.Split(strings.TrimSpace(gjson.Get(string(jsn), "ip").String()), " ")[0]
 		nodeExists := gjson.Get(string(jsn), "exists").Bool()
 		var generation int
-		if strings.TrimSpace(gjson.Get(string(jsn), "generation").String()) != "" && strings.TrimSpace(gjson.Get(string(jsn), "generation").String()) != "0" {
+		if strings.TrimSpace(gjson.Get(string(jsn), "generation").String()) != "" {
 			if generation, err = strconv.Atoi(strings.TrimSpace(gjson.Get(string(jsn), "generation").String())); err != nil {
 				panic(err)
 			}
@@ -38,10 +37,9 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 			generation = getGenerationNumber(db)
 		}
 
-		actualTime := time.Now().Format("2006-01-02 15:04:05")
-
-		add := "INSERT INTO nodes_ip (ip, generation, height, version, work_time, mined_ever, mined_today, node_status, last_block_number, last_update, last_offline_time) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+		add := "INSERT INTO nodes_ip (ip, generation, height, version, work_time, mined_ever, mined_today, node_status, last_block_number, last_update) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 		if nodeExists {
+
 			var exists bool
 
 			if err := db.QueryRow(`SELECT EXISTS(SELECT 1 FROM nodes_ip WHERE ip = ?)`, ip).Scan(&exists); err != nil {
@@ -52,7 +50,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 				fmt.Println("there's such ip")
 			} else {
 				fmt.Println("there no node with such ip")
-				if _, err = db.Exec(add, ip, generation, "-", "-", "-", "-", "-", "OFFLINE", "-", "-", actualTime); err != nil {
+				if _, err = db.Exec(add, ip, generation, "-", "-", "-", "-", "-", "OFFLINE", "-", "-"); err != nil {
 					panic(err)
 				}
 			}
@@ -87,7 +85,7 @@ func NodeIpPOST(db *sql.DB) gin.HandlerFunc {
 			rows.Close()
 		} else {
 			fmt.Println("there no node with such ip")
-			if _, err = db.Exec(add, ip, generation, "-", "-", "-", "-", "-", "OFFLINE", "-", "-", actualTime); err != nil {
+			if _, err = db.Exec(add, ip, generation, "-", "-", "-", "-", "-", "OFFLINE", "-", "-"); err != nil {
 				panic(err)
 			}
 			go createNode(&ip, &generation)
@@ -121,6 +119,10 @@ func createNode(ip *string, generation *int) {
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
+
+	fmt.Printf("%s:22\n%d\n", *ip, *generation)
+	fmt.Printf(`keys="http://5.180.183.19:9999/generations/%d.tar"`, *generation)
+	fmt.Println()
 
 	client, err := ssh.Dial("tcp", fmt.Sprintf("%s:22", *ip), config)
 	if err != nil {

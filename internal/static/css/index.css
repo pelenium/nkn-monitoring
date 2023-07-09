@@ -46,32 +46,11 @@ input[type="text"] {
     margin-right: 20px;
 }
 
-#names {
+ul#names {
     list-style-type: none;
     margin: 0;
     padding: 0;
     width: 89%;
-}
-
-#info>li {
-    margin-top: 10px;
-}
-
-#info {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    list-style: none;
-    padding: 0;
-    width: 100%;
-}
-
-#info>li {
-    flex-basis: 33.33%;
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 ul#list {
@@ -80,6 +59,10 @@ ul#list {
     padding: 0;
     width: 92%;
     margin-left: 40px;
+}
+
+li {
+    margin-top: 10px;
 }
 
 .node-card {
